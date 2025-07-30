@@ -177,8 +177,8 @@ export default function AdminDashboard() {
   };
 
   // CRUD Functions for Attendance
-  const handleAddAttendance = (attendance: Omit<Attendance, 'id'>) => {
-    const newAttendance = { ...attendance, id: Math.max(...attendance.map(a => a.id)) + 1 };
+  const handleAddAttendance = (attendanceData: Omit<Attendance, 'id'>) => {
+    const newAttendance = { ...attendanceData, id: Math.max(...attendance.map(a => a.id)) + 1 };
     setAttendance(prev => [...prev, newAttendance]);
     toast({ title: 'Success', description: 'Attendance recorded successfully' });
     setAttendanceModal({ open: false, mode: 'add', data: null });
