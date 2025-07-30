@@ -28,7 +28,13 @@ import {
   Check,
   X,
   Clock,
-  Eye
+  Eye,
+  Download,
+  Mail,
+  Printer,
+  BarChart3,
+  PieChart,
+  FileBarChart
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
@@ -112,6 +118,13 @@ export default function AdminDashboard() {
   const [gradeFilterGrade, setGradeFilterGrade] = useState('all');
   const [gradeFilterClass, setGradeFilterClass] = useState('all');
   const [selectedStudentForGrade, setSelectedStudentForGrade] = useState<number | null>(null);
+
+  // Report states
+  const [selectedReportType, setSelectedReportType] = useState<string | null>(null);
+  const [reportGrade, setReportGrade] = useState('all');
+  const [reportClass, setReportClass] = useState('all');
+  const [emailAddress, setEmailAddress] = useState('');
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
   // Modal states
   const [studentModal, setStudentModal] = useState({ open: false, mode: 'add', data: null as Student | null });
@@ -331,6 +344,102 @@ export default function AdminDashboard() {
     return students.filter(student =>
       student.grade === historyGrade && student.class === historyClass
     );
+  };
+
+  // Admin report generation functions
+  const generateAdminStudentPerformanceReport = () => {
+    const reportStudents = reportGrade !== 'all' && reportClass !== 'all'
+      ? students.filter(s => s.grade === reportGrade && s.class === reportClass)
+      : students;
+
+    return reportStudents.map(student => {
+      const studentGrades = grades.filter(grade => grade.studentId === student.id);
+      const attendanceStats = getStudentAttendanceStats(student.id);
+      const avgPercentage = studentGrades.length > 0
+        ? studentGrades.reduce((sum, grade) => sum + grade.percentage, 0) / studentGrades.length
+        : 0;
+
+      return {
+        ...student,
+        averageGrade: Math.round(avgPercentage * 10) / 10,
+        totalGrades: studentGrades.length,
+        attendanceRate: attendanceStats.attendanceRate,
+        totalDays: attendanceStats.totalDays,
+        presentDays: attendanceStats.presentDays,
+        grades: studentGrades
+      };
+    });
+  };
+
+  const generateAdminGradeDistribution = () => {
+    const allGrades = grades.filter(grade =>
+      reportGrade === 'all' || students.find(s => s.id === grade.studentId)?.grade === reportGrade
+    );
+
+    const distribution = {
+      'A+': allGrades.filter(g => g.score === 'A+').length,
+      'A': allGrades.filter(g => g.score === 'A').length,
+      'A-': allGrades.filter(g => g.score === 'A-').length,
+      'B+': allGrades.filter(g => g.score === 'B+').length,
+      'B': allGrades.filter(g => g.score === 'B').length,
+      'B-': allGrades.filter(g => g.score === 'B-').length,
+      'C+': allGrades.filter(g => g.score === 'C+').length,
+      'C': allGrades.filter(g => g.score === 'C').length,
+      'C-': allGrades.filter(g => g.score === 'C-').length,
+      'D': allGrades.filter(g => g.score === 'D').length,
+      'F': allGrades.filter(g => g.score === 'F').length,
+    };
+
+    return { distribution, total: allGrades.length };
+  };
+
+  const generateFinancialReport = () => {
+    const reportStudents = reportGrade !== 'all' && reportClass !== 'all'
+      ? students.filter(s => s.grade === reportGrade && s.class === reportClass)
+      : students;
+
+    const totalRevenue = finance.filter(f => f.status === 'Paid').reduce((sum, f) => sum + f.amount, 0);
+    const pendingRevenue = finance.filter(f => f.status === 'Pending').reduce((sum, f) => sum + f.amount, 0);
+
+    return {
+      totalRevenue,
+      pendingRevenue,
+      totalStudents: reportStudents.length,
+      paidStudents: finance.filter(f => f.status === 'Paid').length,
+      pendingStudents: finance.filter(f => f.status === 'Pending').length
+    };
+  };
+
+  const handleAdminEmailReport = async (reportType: string) => {
+    if (!emailAddress) {
+      toast({ title: 'Error', description: 'Please enter an email address' });
+      return;
+    }
+
+    setIsGeneratingReport(true);
+    // Simulate email sending
+    setTimeout(() => {
+      setIsGeneratingReport(false);
+      toast({
+        title: 'Success',
+        description: `${reportType} report has been sent to ${emailAddress}`
+      });
+    }, 2000);
+  };
+
+  const handleAdminPrintReport = (reportType: string) => {
+    toast({
+      title: 'Printing',
+      description: `${reportType} report is being prepared for printing`
+    });
+    window.print();
+  };
+
+  const handleAdminDownloadReport = (reportType: string) => {
+    toast({
+      title: 'Download Started',
+      description: `${reportType} report is being downloaded as PDF`
+    });
   };
 
   // Get students for grade filtering
@@ -1502,24 +1611,402 @@ export default function AdminDashboard() {
 
           {activeSection === 'reports' && (
             <div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">Student Reports</h2>
-              
-              <Card>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">Administrative Reports</h2>
+                <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                  <Eye className="mr-1 h-3 w-3" />
+                  Admin Access
+                </Badge>
+              </div>
+
+              {/* Report Filters */}
+              <Card className="mb-6">
                 <CardHeader>
-                  <CardTitle>Generate Reports</CardTitle>
+                  <CardTitle>Report Filters</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 mb-4">
-                    Generate comprehensive reports for students, attendance, grades, and financial records.
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Button variant="outline">Student Performance Report</Button>
-                    <Button variant="outline">Attendance Summary</Button>
-                    <Button variant="outline">Financial Report</Button>
-                    <Button variant="outline">Staff Report</Button>
+                  <div className="flex flex-wrap gap-4 items-center">
+                    <div className="flex items-center gap-2">
+                      <Label className="text-sm font-medium whitespace-nowrap">Filter by:</Label>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Select
+                        value={reportGrade}
+                        onValueChange={(value) => {
+                          setReportGrade(value);
+                          setReportClass('all');
+                        }}
+                      >
+                        <SelectTrigger className="w-[160px]">
+                          <SelectValue placeholder="All Students" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Students</SelectItem>
+                          <SelectItem value="Grade 9">Grade 9</SelectItem>
+                          <SelectItem value="Grade 10">Grade 10</SelectItem>
+                          <SelectItem value="Grade 11">Grade 11</SelectItem>
+                          <SelectItem value="Grade 12">Grade 12</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {reportGrade !== 'all' && (
+                      <div className="flex items-center gap-2">
+                        <Select
+                          value={reportClass}
+                          onValueChange={setReportClass}
+                        >
+                          <SelectTrigger className="w-[120px]">
+                            <SelectValue placeholder="All Classes" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Classes</SelectItem>
+                            {getClassOptions(reportGrade).map((classOption) => (
+                              <SelectItem key={classOption} value={classOption}>
+                                {classOption}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Report Types */}
+              <div className="grid gap-6">
+                {/* Student Performance Report */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="h-5 w-5" />
+                      Student Performance Report
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="mb-4">
+                      <p className="text-gray-600 mb-4">
+                        Comprehensive performance analysis for {reportGrade !== 'all' && reportClass !== 'all' ? `${reportGrade} ${reportClass}` : 'all students'}.
+                      </p>
+
+                      {selectedReportType === 'performance' ? (
+                        <div className="space-y-4">
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <h4 className="font-semibold mb-3">Performance Summary (Admin View)</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              {generateAdminStudentPerformanceReport().map((student) => (
+                                <div key={student.id} className="bg-white p-3 rounded border">
+                                  <h5 className="font-medium">{student.name}</h5>
+                                  <p className="text-sm text-gray-600">{student.grade} {student.class}</p>
+                                  <div className="mt-2 space-y-1">
+                                    <div className="flex justify-between text-sm">
+                                      <span>Average Grade:</span>
+                                      <span className="font-medium">{student.averageGrade}%</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                      <span>Total Assessments:</span>
+                                      <span>{student.totalGrades}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                      <span>Attendance Rate:</span>
+                                      <span>{student.attendanceRate}%</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="flex gap-2 items-center">
+                            <Input
+                              placeholder="Enter email address"
+                              value={emailAddress}
+                              onChange={(e) => setEmailAddress(e.target.value)}
+                              className="flex-1"
+                            />
+                            <Button
+                              onClick={() => handleAdminEmailReport('Student Performance')}
+                              disabled={isGeneratingReport}
+                            >
+                              <Mail className="mr-1 h-4 w-4" />
+                              Email
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => handleAdminDownloadReport('Student Performance')}
+                            >
+                              <Download className="mr-1 h-4 w-4" />
+                              Download PDF
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => handleAdminPrintReport('Student Performance')}
+                            >
+                              <Printer className="mr-1 h-4 w-4" />
+                              Print
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <Button
+                          onClick={() => setSelectedReportType('performance')}
+                          className="w-full"
+                        >
+                          Generate Performance Report
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Grade Distribution Report */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <PieChart className="h-5 w-5" />
+                      Grade Distribution Report
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="mb-4">
+                      <p className="text-gray-600 mb-4">
+                        School-wide grade distribution for {reportGrade !== 'all' ? reportGrade : 'all grades'}.
+                      </p>
+
+                      {selectedReportType === 'distribution' ? (
+                        <div className="space-y-4">
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <h4 className="font-semibold mb-3">Grade Distribution (School-wide)</h4>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                              {Object.entries(generateAdminGradeDistribution().distribution).map(([grade, count]) => (
+                                <div key={grade} className="bg-white p-3 rounded border text-center">
+                                  <div className="font-semibold text-lg">{count}</div>
+                                  <div className="text-sm text-gray-600">Grade {grade}</div>
+                                  <div className="text-xs text-gray-500">
+                                    {generateAdminGradeDistribution().total > 0
+                                      ? Math.round((count / generateAdminGradeDistribution().total) * 100)
+                                      : 0}%
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                            <div className="mt-4 text-center">
+                              <span className="text-sm text-gray-600">
+                                Total Assessments: {generateAdminGradeDistribution().total}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-2 items-center">
+                            <Input
+                              placeholder="Enter email address"
+                              value={emailAddress}
+                              onChange={(e) => setEmailAddress(e.target.value)}
+                              className="flex-1"
+                            />
+                            <Button
+                              onClick={() => handleAdminEmailReport('Grade Distribution')}
+                              disabled={isGeneratingReport}
+                            >
+                              <Mail className="mr-1 h-4 w-4" />
+                              Email
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => handleAdminDownloadReport('Grade Distribution')}
+                            >
+                              <Download className="mr-1 h-4 w-4" />
+                              Download PDF
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => handleAdminPrintReport('Grade Distribution')}
+                            >
+                              <Printer className="mr-1 h-4 w-4" />
+                              Print
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <Button
+                          onClick={() => setSelectedReportType('distribution')}
+                          className="w-full"
+                        >
+                          Generate Distribution Report
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Financial Report */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <DollarSign className="h-5 w-5" />
+                      Financial Report
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="mb-4">
+                      <p className="text-gray-600 mb-4">
+                        Comprehensive financial overview including revenue and outstanding payments.
+                      </p>
+
+                      {selectedReportType === 'financial' ? (
+                        <div className="space-y-4">
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <h4 className="font-semibold mb-3">Financial Overview</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                              <div className="bg-white p-4 rounded border">
+                                <h5 className="font-medium text-green-600">Total Revenue</h5>
+                                <p className="text-2xl font-bold">K{generateFinancialReport().totalRevenue.toLocaleString()}</p>
+                                <p className="text-sm text-gray-600">{generateFinancialReport().paidStudents} students paid</p>
+                              </div>
+                              <div className="bg-white p-4 rounded border">
+                                <h5 className="font-medium text-yellow-600">Pending Payments</h5>
+                                <p className="text-2xl font-bold">K{generateFinancialReport().pendingRevenue.toLocaleString()}</p>
+                                <p className="text-sm text-gray-600">{generateFinancialReport().pendingStudents} students pending</p>
+                              </div>
+                              <div className="bg-white p-4 rounded border">
+                                <h5 className="font-medium text-blue-600">Collection Rate</h5>
+                                <p className="text-2xl font-bold">
+                                  {generateFinancialReport().totalRevenue + generateFinancialReport().pendingRevenue > 0
+                                    ? Math.round((generateFinancialReport().totalRevenue / (generateFinancialReport().totalRevenue + generateFinancialReport().pendingRevenue)) * 100)
+                                    : 0}%
+                                </p>
+                                <p className="text-sm text-gray-600">Payment collection rate</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-2 items-center">
+                            <Input
+                              placeholder="Enter email address"
+                              value={emailAddress}
+                              onChange={(e) => setEmailAddress(e.target.value)}
+                              className="flex-1"
+                            />
+                            <Button
+                              onClick={() => handleAdminEmailReport('Financial Report')}
+                              disabled={isGeneratingReport}
+                            >
+                              <Mail className="mr-1 h-4 w-4" />
+                              Email
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => handleAdminDownloadReport('Financial Report')}
+                            >
+                              <Download className="mr-1 h-4 w-4" />
+                              Download PDF
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => handleAdminPrintReport('Financial Report')}
+                            >
+                              <Printer className="mr-1 h-4 w-4" />
+                              Print
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <Button
+                          onClick={() => setSelectedReportType('financial')}
+                          className="w-full"
+                        >
+                          Generate Financial Report
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Attendance Summary Report */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <UserCheck className="h-5 w-5" />
+                      Attendance Summary Report
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="mb-4">
+                      <p className="text-gray-600 mb-4">
+                        School-wide attendance analysis for {reportGrade !== 'all' && reportClass !== 'all' ? `${reportGrade} ${reportClass}` : 'all students'}.
+                      </p>
+
+                      {selectedReportType === 'attendance' ? (
+                        <div className="space-y-4">
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <h4 className="font-semibold mb-3">Attendance Overview (Admin View)</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {generateAdminStudentPerformanceReport().map((student) => (
+                                <div key={student.id} className="bg-white p-3 rounded border">
+                                  <h5 className="font-medium">{student.name}</h5>
+                                  <p className="text-sm text-gray-600">{student.grade} {student.class}</p>
+                                  <div className="mt-2 space-y-1">
+                                    <div className="flex justify-between text-sm">
+                                      <span>Attendance Rate:</span>
+                                      <span className={`font-medium ${
+                                        student.attendanceRate >= 90 ? 'text-green-600' :
+                                        student.attendanceRate >= 80 ? 'text-yellow-600' : 'text-red-600'
+                                      }`}>{student.attendanceRate}%</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                      <span>Present Days:</span>
+                                      <span>{student.presentDays}/{student.totalDays}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="flex gap-2 items-center">
+                            <Input
+                              placeholder="Enter email address"
+                              value={emailAddress}
+                              onChange={(e) => setEmailAddress(e.target.value)}
+                              className="flex-1"
+                            />
+                            <Button
+                              onClick={() => handleAdminEmailReport('Attendance Summary')}
+                              disabled={isGeneratingReport}
+                            >
+                              <Mail className="mr-1 h-4 w-4" />
+                              Email
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => handleAdminDownloadReport('Attendance Summary')}
+                            >
+                              <Download className="mr-1 h-4 w-4" />
+                              Download PDF
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => handleAdminPrintReport('Attendance Summary')}
+                            >
+                              <Printer className="mr-1 h-4 w-4" />
+                              Print
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <Button
+                          onClick={() => setSelectedReportType('attendance')}
+                          className="w-full"
+                        >
+                          Generate Attendance Report
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           )}
         </main>
