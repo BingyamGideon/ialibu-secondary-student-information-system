@@ -103,10 +103,16 @@ export default function AdminDashboard() {
 
   // Sample data
   const [students, setStudents] = useState<Student[]>([
-    { id: 1, name: 'John Doe', grade: 'Grade 9', class: 'A', dob: '2007-05-15', gender: 'Male', address: '123 Main St, Ialibu', email: 'john.doe@example.com', phone: '123-456-7890' },
-    { id: 2, name: 'Jane Smith', grade: 'Grade 9', class: 'A', dob: '2008-03-22', gender: 'Female', address: '456 Oak Ave, Ialibu', email: 'jane.smith@example.com', phone: '123-456-7891' },
-    { id: 3, name: 'Michael Johnson', grade: 'Grade 10', class: 'B', dob: '2006-11-08', gender: 'Male', address: '789 Pine Rd, Ialibu', email: 'michael.johnson@example.com', phone: '123-456-7892' },
-    { id: 4, name: 'Emily Williams', grade: 'Grade 10', class: 'A', dob: '2007-07-12', gender: 'Female', address: '101 Maple St, Ialibu', email: 'emily.williams@example.com', phone: '123-456-7893' },
+    { id: 1, name: 'John Doe', grade: 'Grade 9', class: '9A', dob: '2007-05-15', gender: 'Male', address: '123 Main St, Ialibu', email: 'john.doe@example.com', phone: '123-456-7890' },
+    { id: 2, name: 'Jane Smith', grade: 'Grade 9', class: '9A', dob: '2008-03-22', gender: 'Female', address: '456 Oak Ave, Ialibu', email: 'jane.smith@example.com', phone: '123-456-7891' },
+    { id: 3, name: 'Michael Johnson', grade: 'Grade 9', class: '9B', dob: '2006-11-08', gender: 'Male', address: '789 Pine Rd, Ialibu', email: 'michael.johnson@example.com', phone: '123-456-7892' },
+    { id: 4, name: 'Emily Williams', grade: 'Grade 10', class: '10A', dob: '2007-07-12', gender: 'Female', address: '101 Maple St, Ialibu', email: 'emily.williams@example.com', phone: '123-456-7893' },
+    { id: 5, name: 'David Brown', grade: 'Grade 10', class: '10B', dob: '2006-09-20', gender: 'Male', address: '202 Cedar Ln, Ialibu', email: 'david.brown@example.com', phone: '123-456-7894' },
+    { id: 6, name: 'Sarah Davis', grade: 'Grade 11', class: '11A', dob: '2005-12-03', gender: 'Female', address: '303 Birch St, Ialibu', email: 'sarah.davis@example.com', phone: '123-456-7895' },
+    { id: 7, name: 'Chris Wilson', grade: 'Grade 11', class: '11C', dob: '2005-08-17', gender: 'Male', address: '404 Elm Ave, Ialibu', email: 'chris.wilson@example.com', phone: '123-456-7896' },
+    { id: 8, name: 'Lisa Anderson', grade: 'Grade 12', class: '12A', dob: '2004-04-25', gender: 'Female', address: '505 Spruce Rd, Ialibu', email: 'lisa.anderson@example.com', phone: '123-456-7897' },
+    { id: 9, name: 'Kevin Taylor', grade: 'Grade 12', class: '12B', dob: '2004-07-10', gender: 'Male', address: '606 Willow St, Ialibu', email: 'kevin.taylor@example.com', phone: '123-456-7898' },
+    { id: 10, name: 'Amy Martinez', grade: 'Grade 9', class: '9C', dob: '2007-02-14', gender: 'Female', address: '707 Oak Hill, Ialibu', email: 'amy.martinez@example.com', phone: '123-456-7899' },
   ]);
 
   const [attendance, setAttendance] = useState<Attendance[]>([
