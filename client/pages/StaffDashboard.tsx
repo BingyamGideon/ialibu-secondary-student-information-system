@@ -81,6 +81,8 @@ export default function StaffDashboard() {
   const [attendanceClass, setAttendanceClass] = useState('all');
   const [attendanceRecords, setAttendanceRecords] = useState<{[studentId: number]: {status: 'Present' | 'Absent' | 'Late', notes: string}}>({});
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [selectedStudentForHistory, setSelectedStudentForHistory] = useState<number | null>(null);
 
   // Modal states
   const [studentModal, setStudentModal] = useState({ open: false, mode: 'add', data: null as Student | null });
@@ -134,7 +136,6 @@ export default function StaffDashboard() {
     { id: 'dashboard', label: 'Dashboard', icon: Home },
     { id: 'students', label: 'Students', icon: Users },
     { id: 'attendance', label: 'Take Attendance', icon: UserCheck },
-    { id: 'attendance-records', label: 'Attendance Records', icon: CalendarDays },
     { id: 'grades', label: 'Grades', icon: TrendingUp },
     { id: 'reports', label: 'Reports', icon: FileText },
   ];
@@ -246,6 +247,31 @@ export default function StaffDashboard() {
     return myStudents.filter(student =>
       student.grade === attendanceGrade && student.class === attendanceClass
     );
+  };
+
+  // Calculate attendance statistics for a student
+  const getStudentAttendanceStats = (studentId: number) => {
+    const studentRecords = myAttendance.filter(record => record.studentId === studentId);
+    const totalDays = studentRecords.length;
+    const presentDays = studentRecords.filter(record => record.status === 'Present').length;
+    const absentDays = studentRecords.filter(record => record.status === 'Absent').length;
+    const lateDays = studentRecords.filter(record => record.status === 'Late').length;
+    const attendanceRate = totalDays > 0 ? (presentDays / totalDays) * 100 : 0;
+
+    return {
+      totalDays,
+      presentDays,
+      absentDays,
+      lateDays,
+      attendanceRate: Math.round(attendanceRate * 10) / 10
+    };
+  };
+
+  // Get detailed attendance history for a student
+  const getStudentAttendanceHistory = (studentId: number) => {
+    return myAttendance
+      .filter(record => record.studentId === studentId)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   };
 
   // Generate class options based on selected grade
@@ -740,75 +766,180 @@ export default function StaffDashboard() {
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
                       <span>Students in {attendanceGrade} {attendanceClass}</span>
-                      <Button
-                        onClick={handleSubmitAttendance}
-                        disabled={Object.keys(attendanceRecords).length === 0}
-                      >
-                        Save Attendance
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          onClick={() => setShowHistory(!showHistory)}
+                        >
+                          {showHistory ? 'Hide History' : 'View History'}
+                        </Button>
+                        <Button
+                          onClick={handleSubmitAttendance}
+                          disabled={Object.keys(attendanceRecords).length === 0}
+                        >
+                          Save Attendance
+                        </Button>
+                      </div>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-6">
-                    <div className="space-y-4">
-                      {getAttendanceStudents().map((student) => (
-                        <div key={student.id} className="flex items-center justify-between p-4 border rounded-lg">
-                          <div className="flex-1">
-                            <h4 className="font-medium">{student.name}</h4>
-                            <p className="text-sm text-gray-500">{student.grade} {student.class}</p>
+                    {!showHistory ? (
+                      <div className="space-y-4">
+                        {getAttendanceStudents().map((student) => (
+                          <div key={student.id} className="flex items-center justify-between p-4 border rounded-lg">
+                            <div className="flex-1">
+                              <h4 className="font-medium">{student.name}</h4>
+                              <p className="text-sm text-gray-500">{student.grade} {student.class}</p>
+                            </div>
+
+                            {/* Attendance Status Circles */}
+                            <div className="flex items-center gap-3 mr-4">
+                              <button
+                                onClick={() => handleAttendanceStatusChange(student.id, 'Present')}
+                                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors ${
+                                  attendanceRecords[student.id]?.status === 'Present'
+                                    ? 'bg-green-500 border-green-500 text-white'
+                                    : 'border-green-300 hover:border-green-500'
+                                }`}
+                                title="Present"
+                              >
+                                <Check className="w-4 h-4" />
+                              </button>
+
+                              <button
+                                onClick={() => handleAttendanceStatusChange(student.id, 'Absent')}
+                                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors ${
+                                  attendanceRecords[student.id]?.status === 'Absent'
+                                    ? 'bg-red-500 border-red-500 text-white'
+                                    : 'border-red-300 hover:border-red-500'
+                                }`}
+                                title="Absent"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+
+                              <button
+                                onClick={() => handleAttendanceStatusChange(student.id, 'Late')}
+                                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors ${
+                                  attendanceRecords[student.id]?.status === 'Late'
+                                    ? 'bg-yellow-500 border-yellow-500 text-white'
+                                    : 'border-yellow-300 hover:border-yellow-500'
+                                }`}
+                                title="Late"
+                              >
+                                <Clock className="w-4 h-4" />
+                              </button>
+                            </div>
+
+                            {/* Notes Input */}
+                            <div className="w-64">
+                              <Textarea
+                                placeholder="Notes (optional)"
+                                value={attendanceRecords[student.id]?.notes || ''}
+                                onChange={(e) => handleAttendanceNotesChange(student.id, e.target.value)}
+                                rows={2}
+                                className="text-sm"
+                              />
+                            </div>
                           </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="space-y-6">
+                        <h3 className="text-lg font-semibold text-gray-800">Attendance History - {attendanceGrade} {attendanceClass}</h3>
 
-                          {/* Attendance Status Circles */}
-                          <div className="flex items-center gap-3 mr-4">
-                            <button
-                              onClick={() => handleAttendanceStatusChange(student.id, 'Present')}
-                              className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors ${
-                                attendanceRecords[student.id]?.status === 'Present'
-                                  ? 'bg-green-500 border-green-500 text-white'
-                                  : 'border-green-300 hover:border-green-500'
-                              }`}
-                              title="Present"
-                            >
-                              <Check className="w-4 h-4" />
-                            </button>
+                        {getAttendanceStudents().map((student) => {
+                          const stats = getStudentAttendanceStats(student.id);
+                          const history = getStudentAttendanceHistory(student.id);
 
-                            <button
-                              onClick={() => handleAttendanceStatusChange(student.id, 'Absent')}
-                              className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors ${
-                                attendanceRecords[student.id]?.status === 'Absent'
-                                  ? 'bg-red-500 border-red-500 text-white'
-                                  : 'border-red-300 hover:border-red-500'
-                              }`}
-                              title="Absent"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
+                          return (
+                            <div key={student.id} className="border rounded-lg p-4">
+                              <div className="flex items-center justify-between mb-4">
+                                <div>
+                                  <h4 className="font-medium">{student.name}</h4>
+                                  <p className="text-sm text-gray-500">{student.grade} {student.class}</p>
+                                </div>
 
-                            <button
-                              onClick={() => handleAttendanceStatusChange(student.id, 'Late')}
-                              className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors ${
-                                attendanceRecords[student.id]?.status === 'Late'
-                                  ? 'bg-yellow-500 border-yellow-500 text-white'
-                                  : 'border-yellow-300 hover:border-yellow-500'
-                              }`}
-                              title="Late"
-                            >
-                              <Clock className="w-4 h-4" />
-                            </button>
-                          </div>
+                                {/* Attendance Statistics */}
+                                <div className="flex gap-6 text-sm">
+                                  <div className="text-center">
+                                    <div className="font-semibold text-lg">{stats.totalDays}</div>
+                                    <div className="text-gray-500">Total Days</div>
+                                  </div>
+                                  <div className="text-center">
+                                    <div className="font-semibold text-lg text-green-600">{stats.presentDays}</div>
+                                    <div className="text-gray-500">Present</div>
+                                  </div>
+                                  <div className="text-center">
+                                    <div className="font-semibold text-lg text-red-600">{stats.absentDays}</div>
+                                    <div className="text-gray-500">Absent</div>
+                                  </div>
+                                  <div className="text-center">
+                                    <div className="font-semibold text-lg text-yellow-600">{stats.lateDays}</div>
+                                    <div className="text-gray-500">Late</div>
+                                  </div>
+                                  <div className="text-center">
+                                    <div className="font-semibold text-lg text-blue-600">{stats.attendanceRate}%</div>
+                                    <div className="text-gray-500">Rate</div>
+                                  </div>
+                                </div>
+                              </div>
 
-                          {/* Notes Input */}
-                          <div className="w-64">
-                            <Textarea
-                              placeholder="Notes (optional)"
-                              value={attendanceRecords[student.id]?.notes || ''}
-                              onChange={(e) => handleAttendanceNotesChange(student.id, e.target.value)}
-                              rows={2}
-                              className="text-sm"
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                              {/* Recent Attendance Records */}
+                              <div className="mt-4">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setSelectedStudentForHistory(
+                                    selectedStudentForHistory === student.id ? null : student.id
+                                  )}
+                                >
+                                  {selectedStudentForHistory === student.id ? 'Hide Details' : 'View Details'}
+                                </Button>
+
+                                {selectedStudentForHistory === student.id && (
+                                  <div className="mt-4 max-h-60 overflow-y-auto">
+                                    <Table>
+                                      <TableHeader>
+                                        <TableRow>
+                                          <TableHead>Date</TableHead>
+                                          <TableHead>Status</TableHead>
+                                          <TableHead>Notes</TableHead>
+                                        </TableRow>
+                                      </TableHeader>
+                                      <TableBody>
+                                        {history.slice(0, 10).map((record) => (
+                                          <TableRow key={record.id}>
+                                            <TableCell>{record.date}</TableCell>
+                                            <TableCell>
+                                              <Badge
+                                                variant={
+                                                  record.status === 'Present' ? 'default' :
+                                                  record.status === 'Absent' ? 'destructive' :
+                                                  'secondary'
+                                                }
+                                              >
+                                                {record.status}
+                                              </Badge>
+                                            </TableCell>
+                                            <TableCell>{record.notes || '-'}</TableCell>
+                                          </TableRow>
+                                        ))}
+                                      </TableBody>
+                                    </Table>
+                                    {history.length > 10 && (
+                                      <p className="text-sm text-gray-500 mt-2 text-center">
+                                        Showing last 10 records of {history.length} total
+                                      </p>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               )}
