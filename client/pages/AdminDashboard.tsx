@@ -1221,27 +1221,27 @@ export default function AdminDashboard() {
                 <h2 className="text-2xl font-bold text-gray-800">Financial Records</h2>
                 <Dialog open={financeModal.open} onOpenChange={(open) => setFinanceModal(prev => ({ ...prev, open }))}>
                   <DialogTrigger asChild>
-                    <Button onClick={() => setGradeModal({ open: true, mode: 'add', data: null })}>
+                    <Button onClick={() => setFinanceModal({ open: true, mode: 'add', data: null })}>
                       <Plus className="mr-2 h-4 w-4" />
-                      Add Grade
+                      Add Payment
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-md">
                     <DialogHeader>
-                      <DialogTitle>{gradeModal.mode === 'add' ? 'Add Grade' : 'Edit Grade'}</DialogTitle>
+                      <DialogTitle>{financeModal.mode === 'add' ? 'Add Payment' : 'Edit Payment'}</DialogTitle>
                     </DialogHeader>
-                    <GradeForm 
-                      mode={gradeModal.mode}
-                      grade={gradeModal.data}
+                    <FinanceForm
+                      mode={financeModal.mode}
+                      finance={financeModal.data}
                       students={students}
-                      onSave={(grade) => {
-                        if (gradeModal.mode === 'add') {
-                          handleAddGrade(grade);
+                      onSave={(finance) => {
+                        if (financeModal.mode === 'add') {
+                          handleAddFinance(finance);
                         } else {
-                          handleUpdateGrade(grade as Grade);
+                          handleUpdateFinance(finance as Finance);
                         }
                       }}
-                      onCancel={() => setGradeModal({ open: false, mode: 'add', data: null })}
+                      onCancel={() => setFinanceModal({ open: false, mode: 'add', data: null })}
                     />
                   </DialogContent>
                 </Dialog>
@@ -1251,9 +1251,9 @@ export default function AdminDashboard() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
-                    placeholder="Search by student name, subject, or assignment..."
-                    value={gradeSearch}
-                    onChange={(e) => setGradeSearch(e.target.value)}
+                    placeholder="Search by student name, description, or status..."
+                    value={financeSearch}
+                    onChange={(e) => setFinanceSearch(e.target.value)}
                     className="pl-10"
                   />
                 </div>
@@ -1265,36 +1265,38 @@ export default function AdminDashboard() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Student Name</TableHead>
-                        <TableHead>Subject</TableHead>
-                        <TableHead>Assignment</TableHead>
-                        <TableHead>Score</TableHead>
-                        <TableHead>Percentage</TableHead>
-                        <TableHead>Term</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead>Amount</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Status</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredGrades.map((grade) => (
-                        <TableRow key={grade.id}>
-                          <TableCell>{grade.studentName}</TableCell>
-                          <TableCell>{grade.subject}</TableCell>
-                          <TableCell>{grade.assignment}</TableCell>
-                          <TableCell>{grade.score}</TableCell>
-                          <TableCell>{grade.percentage}%</TableCell>
-                          <TableCell>{grade.term}</TableCell>
+                      {filteredFinance.map((payment) => (
+                        <TableRow key={payment.id}>
+                          <TableCell>{payment.studentName}</TableCell>
+                          <TableCell>{payment.description}</TableCell>
+                          <TableCell>K{payment.amount.toFixed(2)}</TableCell>
+                          <TableCell>{payment.date}</TableCell>
+                          <TableCell>
+                            <Badge variant={payment.status === 'Paid' ? 'default' : 'secondary'}>
+                              {payment.status}
+                            </Badge>
+                          </TableCell>
                           <TableCell>
                             <div className="flex gap-2">
-                              <Button 
-                                variant="outline" 
+                              <Button
+                                variant="outline"
                                 size="sm"
-                                onClick={() => setGradeModal({ open: true, mode: 'edit', data: grade })}
+                                onClick={() => setFinanceModal({ open: true, mode: 'edit', data: payment })}
                               >
                                 <Edit className="h-4 w-4" />
                               </Button>
-                              <Button 
-                                variant="destructive" 
+                              <Button
+                                variant="destructive"
                                 size="sm"
-                                onClick={() => handleDeleteGrade(grade.id)}
+                                onClick={() => handleDeleteFinance(payment.id)}
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
