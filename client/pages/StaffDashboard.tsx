@@ -990,35 +990,9 @@ export default function StaffDashboard() {
             <div>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-800">Grade Management</h2>
-                <Dialog open={gradeModal.open} onOpenChange={(open) => setGradeModal(prev => ({ ...prev, open }))}>
-                  <DialogTrigger asChild>
-                    <Button onClick={() => setGradeModal({ open: true, mode: 'add', data: null })}>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Add Grade
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-md">
-                    <DialogHeader>
-                      <DialogTitle>{gradeModal.mode === 'add' ? 'Add Grade' : 'Edit Grade'}</DialogTitle>
-                    </DialogHeader>
-                    <GradeForm 
-                      mode={gradeModal.mode}
-                      grade={gradeModal.data}
-                      students={myStudents}
-                      onSave={(grade) => {
-                        if (gradeModal.mode === 'add') {
-                          handleAddGrade(grade);
-                        } else {
-                          handleUpdateGrade(grade as Grade);
-                        }
-                      }}
-                      onCancel={() => setGradeModal({ open: false, mode: 'add', data: null })}
-                    />
-                  </DialogContent>
-                </Dialog>
               </div>
 
-              <div className="mb-4">
+              <div className="mb-6 space-y-4">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
@@ -1028,55 +1002,243 @@ export default function StaffDashboard() {
                     className="pl-10"
                   />
                 </div>
+
+                {/* Grade and Class Filter Row */}
+                <div className="flex flex-wrap gap-4 items-center">
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm font-medium whitespace-nowrap">Filter by:</Label>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Select
+                      value={gradeFilterGrade}
+                      onValueChange={(value) => {
+                        setGradeFilterGrade(value);
+                        setGradeFilterClass('all');
+                      }}
+                    >
+                      <SelectTrigger className="w-[160px]">
+                        <SelectValue placeholder="All Students" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Students</SelectItem>
+                        <SelectItem value="Grade 9">Grade 9</SelectItem>
+                        <SelectItem value="Grade 10">Grade 10</SelectItem>
+                        <SelectItem value="Grade 11">Grade 11</SelectItem>
+                        <SelectItem value="Grade 12">Grade 12</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {gradeFilterGrade !== 'all' && (
+                    <div className="flex items-center gap-2">
+                      <Select
+                        value={gradeFilterClass}
+                        onValueChange={setGradeFilterClass}
+                      >
+                        <SelectTrigger className="w-[120px]">
+                          <SelectValue placeholder="All Classes" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Classes</SelectItem>
+                          {getClassOptions(gradeFilterGrade).map((classOption) => (
+                            <SelectItem key={classOption} value={classOption}>
+                              {classOption}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {(gradeFilterGrade !== 'all' || gradeFilterClass !== 'all') && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setGradeFilterGrade('all');
+                        setGradeFilterClass('all');
+                      }}
+                      className="text-xs"
+                    >
+                      Clear Filters
+                    </Button>
+                  )}
+                </div>
               </div>
 
-              <Card>
-                <CardContent className="p-6">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Student Name</TableHead>
-                        <TableHead>Subject</TableHead>
-                        <TableHead>Assignment</TableHead>
-                        <TableHead>Score</TableHead>
-                        <TableHead>Percentage</TableHead>
-                        <TableHead>Term</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredGrades.map((grade) => (
-                        <TableRow key={grade.id}>
-                          <TableCell>{grade.studentName}</TableCell>
-                          <TableCell>{grade.subject}</TableCell>
-                          <TableCell>{grade.assignment}</TableCell>
-                          <TableCell>{grade.score}</TableCell>
-                          <TableCell>{grade.percentage}%</TableCell>
-                          <TableCell>{grade.term}</TableCell>
-                          <TableCell>
-                            <div className="flex gap-2">
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => setGradeModal({ open: true, mode: 'edit', data: grade })}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button 
-                                variant="destructive" 
-                                size="sm"
-                                onClick={() => handleDeleteGrade(grade.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
+              {/* Student-based Grade View */}
+              {gradeFilterGrade !== 'all' && gradeFilterClass !== 'all' ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Students in {gradeFilterGrade} {gradeFilterClass}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      {getGradeFilteredStudents().map((student) => {
+                        const studentGrades = getStudentGrades(student.id);
+                        return (
+                          <div key={student.id} className="border rounded-lg p-4">
+                            <div className="flex items-center justify-between mb-4">
+                              <div>
+                                <h4 className="font-medium">{student.name}</h4>
+                                <p className="text-sm text-gray-500">{student.grade} {student.class}</p>
+                              </div>
+
+                              <div className="flex gap-2">
+                                <Dialog open={gradeModal.open} onOpenChange={(open) => setGradeModal(prev => ({ ...prev, open }))}>
+                                  <DialogTrigger asChild>
+                                    <Button
+                                      size="sm"
+                                      onClick={() => setGradeModal({
+                                        open: true,
+                                        mode: 'add',
+                                        data: { studentId: student.id, studentName: student.name } as any
+                                      })}
+                                    >
+                                      <Plus className="mr-1 h-3 w-3" />
+                                      Add Grade
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent className="max-w-md">
+                                    <DialogHeader>
+                                      <DialogTitle>Add Grade for {student.name}</DialogTitle>
+                                    </DialogHeader>
+                                    <GradeForm
+                                      mode="add"
+                                      grade={null}
+                                      preselectedStudent={student}
+                                      students={myStudents}
+                                      onSave={(grade) => {
+                                        handleAddGrade(grade);
+                                      }}
+                                      onCancel={() => setGradeModal({ open: false, mode: 'add', data: null })}
+                                    />
+                                  </DialogContent>
+                                </Dialog>
+
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setSelectedStudentForGrade(
+                                    selectedStudentForGrade === student.id ? null : student.id
+                                  )}
+                                >
+                                  {selectedStudentForGrade === student.id ? 'Hide Grades' : 'View Grades'}
+                                </Button>
+                              </div>
                             </div>
-                          </TableCell>
+
+                            {selectedStudentForGrade === student.id && (
+                              <div className="mt-4">
+                                {studentGrades.length > 0 ? (
+                                  <Table>
+                                    <TableHeader>
+                                      <TableRow>
+                                        <TableHead>Subject</TableHead>
+                                        <TableHead>Assignment</TableHead>
+                                        <TableHead>Score</TableHead>
+                                        <TableHead>Percentage</TableHead>
+                                        <TableHead>Ranking</TableHead>
+                                        <TableHead>Term</TableHead>
+                                        <TableHead>Actions</TableHead>
+                                      </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                      {studentGrades.map((grade) => (
+                                        <TableRow key={grade.id}>
+                                          <TableCell>{grade.subject}</TableCell>
+                                          <TableCell>{grade.assignment}</TableCell>
+                                          <TableCell>{grade.score}</TableCell>
+                                          <TableCell>{grade.percentage}%</TableCell>
+                                          <TableCell>
+                                            <Badge variant="outline">
+                                              {getStudentRanking(student.id, grade.subject, grade.term) || 'N/A'}
+                                            </Badge>
+                                          </TableCell>
+                                          <TableCell>{grade.term}</TableCell>
+                                          <TableCell>
+                                            <div className="flex gap-1">
+                                              <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => setGradeModal({ open: true, mode: 'edit', data: grade })}
+                                              >
+                                                <Edit className="h-3 w-3" />
+                                              </Button>
+                                              <Button
+                                                variant="destructive"
+                                                size="sm"
+                                                onClick={() => handleDeleteGrade(grade.id)}
+                                              >
+                                                <Trash2 className="h-3 w-3" />
+                                              </Button>
+                                            </div>
+                                          </TableCell>
+                                        </TableRow>
+                                      ))}
+                                    </TableBody>
+                                  </Table>
+                                ) : (
+                                  <p className="text-gray-500 text-center py-4">No grades recorded for this student</p>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card>
+                  <CardContent className="p-6">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Student Name</TableHead>
+                          <TableHead>Subject</TableHead>
+                          <TableHead>Assignment</TableHead>
+                          <TableHead>Score</TableHead>
+                          <TableHead>Percentage</TableHead>
+                          <TableHead>Term</TableHead>
+                          <TableHead>Actions</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredGrades.map((grade) => (
+                          <TableRow key={grade.id}>
+                            <TableCell>{grade.studentName}</TableCell>
+                            <TableCell>{grade.subject}</TableCell>
+                            <TableCell>{grade.assignment}</TableCell>
+                            <TableCell>{grade.score}</TableCell>
+                            <TableCell>{grade.percentage}%</TableCell>
+                            <TableCell>{grade.term}</TableCell>
+                            <TableCell>
+                              <div className="flex gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setGradeModal({ open: true, mode: 'edit', data: grade })}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => handleDeleteGrade(grade.id)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
 
