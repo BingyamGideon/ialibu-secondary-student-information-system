@@ -102,11 +102,11 @@ export default function AdminDashboard() {
   const [selectedGrade, setSelectedGrade] = useState('all');
   const [selectedClass, setSelectedClass] = useState('all');
 
-  // Attendance view states (read-only for admin)
-  const [attendanceViewDate, setAttendanceViewDate] = useState<Date>(new Date());
-  const [attendanceViewGrade, setAttendanceViewGrade] = useState('all');
-  const [attendanceViewClass, setAttendanceViewClass] = useState('all');
-  const [isAttendanceCalendarOpen, setIsAttendanceCalendarOpen] = useState(false);
+  // Attendance history states
+  const [showAttendanceHistory, setShowAttendanceHistory] = useState(false);
+  const [historyGrade, setHistoryGrade] = useState('all');
+  const [historyClass, setHistoryClass] = useState('all');
+  const [selectedStudentForHistory, setSelectedStudentForHistory] = useState<number | null>(null);
 
   // Modal states
   const [studentModal, setStudentModal] = useState({ open: false, mode: 'add', data: null as Student | null });
@@ -186,7 +186,6 @@ export default function AdminDashboard() {
   const adminMenuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
     { id: 'students', label: 'Students', icon: Users },
-    { id: 'attendance', label: 'View Attendance', icon: UserCheck },
     { id: 'attendance-records', label: 'Attendance Records', icon: CalendarDays },
     { id: 'grades', label: 'Grades', icon: TrendingUp },
     { id: 'finance', label: 'Finance', icon: CreditCard },
@@ -296,20 +295,36 @@ export default function AdminDashboard() {
     return ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(letter => `${gradeNumber}${letter}`);
   };
 
-  // Get students for attendance viewing (read-only for admin)
-  const getAttendanceViewStudents = () => {
-    if (attendanceViewGrade === 'all' || attendanceViewClass === 'all') return [];
-    return students.filter(student =>
-      student.grade === attendanceViewGrade && student.class === attendanceViewClass
-    );
+  // Calculate attendance statistics for a student (Admin version)
+  const getStudentAttendanceStats = (studentId: number) => {
+    const studentRecords = attendance.filter(record => record.studentId === studentId);
+    const totalDays = studentRecords.length;
+    const presentDays = studentRecords.filter(record => record.status === 'Present').length;
+    const absentDays = studentRecords.filter(record => record.status === 'Absent').length;
+    const lateDays = studentRecords.filter(record => record.status === 'Late').length;
+    const attendanceRate = totalDays > 0 ? (presentDays / totalDays) * 100 : 0;
+
+    return {
+      totalDays,
+      presentDays,
+      absentDays,
+      lateDays,
+      attendanceRate: Math.round(attendanceRate * 10) / 10
+    };
   };
 
-  // Get attendance data for specific date and class
-  const getAttendanceForDateAndClass = () => {
-    const dateStr = format(attendanceViewDate, 'yyyy-MM-dd');
-    return attendance.filter(record =>
-      record.date === dateStr &&
-      getAttendanceViewStudents().some(student => student.id === record.studentId)
+  // Get detailed attendance history for a student (Admin version)
+  const getStudentAttendanceHistory = (studentId: number) => {
+    return attendance
+      .filter(record => record.studentId === studentId)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  };
+
+  // Get students for history viewing
+  const getHistoryStudents = () => {
+    if (historyGrade === 'all' || historyClass === 'all') return [];
+    return students.filter(student =>
+      student.grade === historyGrade && student.class === historyClass
     );
   };
 
