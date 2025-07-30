@@ -90,6 +90,10 @@ export default function AdminDashboard() {
   const [financeSearch, setFinanceSearch] = useState('');
   const [staffSearch, setStaffSearch] = useState('');
 
+  // Student filter states
+  const [selectedGrade, setSelectedGrade] = useState('all');
+  const [selectedClass, setSelectedClass] = useState('all');
+
   // Modal states
   const [studentModal, setStudentModal] = useState({ open: false, mode: 'add', data: null as Student | null });
   const [attendanceModal, setAttendanceModal] = useState({ open: false, mode: 'add', data: null as Attendance | null });
@@ -252,12 +256,28 @@ export default function AdminDashboard() {
     toast({ title: 'Success', description: 'Staff member deleted successfully' });
   };
 
+  // Generate class options based on selected grade
+  const getClassOptions = (grade: string) => {
+    if (grade === 'all') return [];
+    const gradeNumber = grade.replace('Grade ', '');
+    return ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(letter => `${gradeNumber}${letter}`);
+  };
+
   // Filter functions
-  const filteredStudents = students.filter(student => 
-    student.name.toLowerCase().includes(studentSearch.toLowerCase()) ||
-    student.grade.toLowerCase().includes(studentSearch.toLowerCase()) ||
-    student.class.toLowerCase().includes(studentSearch.toLowerCase())
-  );
+  const filteredStudents = students.filter(student => {
+    // Apply text search filter
+    const matchesSearch = student.name.toLowerCase().includes(studentSearch.toLowerCase()) ||
+      student.grade.toLowerCase().includes(studentSearch.toLowerCase()) ||
+      student.class.toLowerCase().includes(studentSearch.toLowerCase());
+
+    // Apply grade filter
+    const matchesGrade = selectedGrade === 'all' || student.grade === selectedGrade;
+
+    // Apply class filter
+    const matchesClass = selectedClass === 'all' || student.class === selectedClass;
+
+    return matchesSearch && matchesGrade && matchesClass;
+  });
 
   const filteredAttendance = attendance.filter(record => 
     record.studentName.toLowerCase().includes(attendanceSearch.toLowerCase()) ||
@@ -521,9 +541,11 @@ export default function AdminDashboard() {
                     <DialogHeader>
                       <DialogTitle>{studentModal.mode === 'add' ? 'Add New Student' : 'Edit Student'}</DialogTitle>
                     </DialogHeader>
-                    <AdminStudentForm 
+                    <AdminStudentForm
                       mode={studentModal.mode}
                       student={studentModal.data}
+                      selectedGrade={selectedGrade !== 'all' ? selectedGrade : ''}
+                      selectedClass={selectedClass !== 'all' ? selectedClass : ''}
                       onSave={(student) => {
                         if (studentModal.mode === 'add') {
                           handleAddStudent(student);
@@ -537,7 +559,7 @@ export default function AdminDashboard() {
                 </Dialog>
               </div>
 
-              <div className="mb-4">
+              <div className="mb-6 space-y-4">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
@@ -546,6 +568,69 @@ export default function AdminDashboard() {
                     onChange={(e) => setStudentSearch(e.target.value)}
                     className="pl-10"
                   />
+                </div>
+
+                {/* Grade and Class Filter Row */}
+                <div className="flex flex-wrap gap-4 items-center">
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm font-medium whitespace-nowrap">Filter by:</Label>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Select
+                      value={selectedGrade}
+                      onValueChange={(value) => {
+                        setSelectedGrade(value);
+                        setSelectedClass('all'); // Reset class when grade changes
+                      }}
+                    >
+                      <SelectTrigger className="w-[160px]">
+                        <SelectValue placeholder="All Students" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Students</SelectItem>
+                        <SelectItem value="Grade 9">Grade 9</SelectItem>
+                        <SelectItem value="Grade 10">Grade 10</SelectItem>
+                        <SelectItem value="Grade 11">Grade 11</SelectItem>
+                        <SelectItem value="Grade 12">Grade 12</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {selectedGrade !== 'all' && (
+                    <div className="flex items-center gap-2">
+                      <Select
+                        value={selectedClass}
+                        onValueChange={setSelectedClass}
+                      >
+                        <SelectTrigger className="w-[120px]">
+                          <SelectValue placeholder="All Classes" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Classes</SelectItem>
+                          {getClassOptions(selectedGrade).map((classOption) => (
+                            <SelectItem key={classOption} value={classOption}>
+                              {classOption}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {(selectedGrade !== 'all' || selectedClass !== 'all') && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedGrade('all');
+                        setSelectedClass('all');
+                      }}
+                      className="text-xs"
+                    >
+                      Clear Filters
+                    </Button>
+                  )}
                 </div>
               </div>
 
@@ -1013,22 +1098,26 @@ export default function AdminDashboard() {
 }
 
 // Admin Student Form Component (with more fields than staff version)
-function AdminStudentForm({ 
-  mode, 
-  student, 
-  onSave, 
-  onCancel 
-}: { 
-  mode: 'add' | 'edit'; 
-  student: Student | null; 
-  onSave: (student: Omit<Student, 'id'> | Student) => void; 
-  onCancel: () => void; 
+function AdminStudentForm({
+  mode,
+  student,
+  selectedGrade,
+  selectedClass,
+  onSave,
+  onCancel
+}: {
+  mode: 'add' | 'edit';
+  student: Student | null;
+  selectedGrade?: string;
+  selectedClass?: string;
+  onSave: (student: Omit<Student, 'id'> | Student) => void;
+  onCancel: () => void;
 }) {
   const [formData, setFormData] = useState<Partial<Student>>(
     student || {
       name: '',
-      grade: '',
-      class: '',
+      grade: selectedGrade || '',
+      class: selectedClass || '',
       dob: '',
       gender: '',
       address: '',
@@ -1036,6 +1125,13 @@ function AdminStudentForm({
       phone: '',
     }
   );
+
+  // Generate class options based on selected grade in form
+  const getFormClassOptions = (grade: string) => {
+    if (!grade) return [];
+    const gradeNumber = grade.replace('Grade ', '');
+    return ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(letter => `${gradeNumber}${letter}`);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -1084,8 +1180,17 @@ function AdminStudentForm({
               <SelectValue placeholder="Select Class" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="A">Class A</SelectItem>
-              <SelectItem value="B">Class B</SelectItem>
+              {formData.grade ? (
+                getFormClassOptions(formData.grade).map((classOption) => (
+                  <SelectItem key={classOption} value={classOption}>
+                    {classOption}
+                  </SelectItem>
+                ))
+              ) : (
+                <SelectItem value="" disabled>
+                  Select Grade First
+                </SelectItem>
+              )}
             </SelectContent>
           </Select>
         </div>
