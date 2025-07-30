@@ -736,103 +736,160 @@ export default function AdminDashboard() {
 
           {activeSection === 'attendance' && (
             <div>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Attendance Records</h2>
-                <Dialog open={attendanceModal.open} onOpenChange={(open) => setAttendanceModal(prev => ({ ...prev, open }))}>
-                  <DialogTrigger asChild>
-                    <Button onClick={() => setAttendanceModal({ open: true, mode: 'add', data: null })}>
-                      <CalendarDays className="mr-2 h-4 w-4" />
-                      Record Attendance
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-md">
-                    <DialogHeader>
-                      <DialogTitle>{attendanceModal.mode === 'add' ? 'Record Attendance' : 'Edit Attendance'}</DialogTitle>
-                    </DialogHeader>
-                    <AttendanceForm 
-                      mode={attendanceModal.mode}
-                      attendance={attendanceModal.data}
-                      students={students}
-                      onSave={(attendance) => {
-                        if (attendanceModal.mode === 'add') {
-                          handleAddAttendance(attendance);
-                        } else {
-                          handleUpdateAttendance(attendance as Attendance);
-                        }
-                      }}
-                      onCancel={() => setAttendanceModal({ open: false, mode: 'add', data: null })}
-                    />
-                  </DialogContent>
-                </Dialog>
-              </div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">View Attendance</h2>
 
-              <div className="mb-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input
-                    placeholder="Search by student name, date, or status..."
-                    value={attendanceSearch}
-                    onChange={(e) => setAttendanceSearch(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-
-              <Card>
+              {/* Date Selection */}
+              <Card className="mb-6">
                 <CardContent className="p-6">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Student Name</TableHead>
-                        <TableHead>Subject</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Notes</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredAttendance.map((record) => (
-                        <TableRow key={record.id}>
-                          <TableCell>{record.date}</TableCell>
-                          <TableCell>{record.studentName}</TableCell>
-                          <TableCell>{record.subject}</TableCell>
-                          <TableCell>
-                            <Badge 
-                              variant={
-                                record.status === 'Present' ? 'default' : 
-                                record.status === 'Absent' ? 'destructive' : 
-                                'secondary'
-                              }
-                            >
-                              {record.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{record.notes}</TableCell>
-                          <TableCell>
-                            <div className="flex gap-2">
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => setAttendanceModal({ open: true, mode: 'edit', data: record })}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button 
-                                variant="destructive" 
-                                size="sm"
-                                onClick={() => handleDeleteAttendance(record.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                  <div className="flex items-center gap-4 mb-4">
+                    <Label className="text-sm font-medium">Select Date:</Label>
+                    <Popover open={isAttendanceCalendarOpen} onOpenChange={setIsAttendanceCalendarOpen}>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-[240px] justify-start text-left font-normal">
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {format(attendanceViewDate, 'EEEE, MMMM d, yyyy')}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={attendanceViewDate}
+                          onSelect={(date) => {
+                            if (date) {
+                              setAttendanceViewDate(date);
+                              setIsAttendanceCalendarOpen(false);
+                            }
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                 </CardContent>
               </Card>
+
+              {/* Grade and Class Selection */}
+              <Card className="mb-6">
+                <CardContent className="p-6">
+                  <div className="flex flex-wrap gap-4 items-center">
+                    <div className="flex items-center gap-2">
+                      <Label className="text-sm font-medium whitespace-nowrap">Select Class:</Label>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Select
+                        value={attendanceViewGrade}
+                        onValueChange={(value) => {
+                          setAttendanceViewGrade(value);
+                          setAttendanceViewClass('all');
+                        }}
+                      >
+                        <SelectTrigger className="w-[160px]">
+                          <SelectValue placeholder="Select Grade" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Select Grade</SelectItem>
+                          <SelectItem value="Grade 9">Grade 9</SelectItem>
+                          <SelectItem value="Grade 10">Grade 10</SelectItem>
+                          <SelectItem value="Grade 11">Grade 11</SelectItem>
+                          <SelectItem value="Grade 12">Grade 12</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {attendanceViewGrade !== 'all' && (
+                      <div className="flex items-center gap-2">
+                        <Select
+                          value={attendanceViewClass}
+                          onValueChange={setAttendanceViewClass}
+                        >
+                          <SelectTrigger className="w-[120px]">
+                            <SelectValue placeholder="Select Class" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">Select Class</SelectItem>
+                            {getClassOptions(attendanceViewGrade).map((classOption) => (
+                              <SelectItem key={classOption} value={classOption}>
+                                {classOption}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Student Attendance Display (Read-Only) */}
+              {attendanceViewGrade !== 'all' && attendanceViewClass !== 'all' && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Eye className="h-5 w-5" />
+                      Attendance for {attendanceViewGrade} {attendanceViewClass} - {format(attendanceViewDate, 'MMMM d, yyyy')}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      {getAttendanceViewStudents().map((student) => {
+                        const attendanceRecord = getAttendanceForDateAndClass().find(record => record.studentId === student.id);
+                        return (
+                          <div key={student.id} className="flex items-center justify-between p-4 border rounded-lg bg-gray-50">
+                            <div className="flex-1">
+                              <h4 className="font-medium">{student.name}</h4>
+                              <p className="text-sm text-gray-500">{student.grade} {student.class}</p>
+                            </div>
+
+                            {/* Attendance Status Display */}
+                            <div className="flex items-center gap-3 mr-4">
+                              <div
+                                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${
+                                  attendanceRecord?.status === 'Present'
+                                    ? 'bg-green-500 border-green-500 text-white'
+                                    : 'border-green-300 opacity-30'
+                                }`}
+                                title="Present"
+                              >
+                                <Check className="w-4 h-4" />
+                              </div>
+
+                              <div
+                                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${
+                                  attendanceRecord?.status === 'Absent'
+                                    ? 'bg-red-500 border-red-500 text-white'
+                                    : 'border-red-300 opacity-30'
+                                }`}
+                                title="Absent"
+                              >
+                                <X className="w-4 h-4" />
+                              </div>
+
+                              <div
+                                className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${
+                                  attendanceRecord?.status === 'Late'
+                                    ? 'bg-yellow-500 border-yellow-500 text-white'
+                                    : 'border-yellow-300 opacity-30'
+                                }`}
+                                title="Late"
+                              >
+                                <Clock className="w-4 h-4" />
+                              </div>
+                            </div>
+
+                            {/* Notes Display */}
+                            <div className="w-64">
+                              <div className="text-sm p-2 bg-white border rounded min-h-[2.5rem] text-gray-600">
+                                {attendanceRecord?.notes || 'No notes'}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
 
