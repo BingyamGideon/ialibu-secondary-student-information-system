@@ -199,7 +199,7 @@ export default function AdminDashboard() {
                   <p className="text-sm text-gray-600 mb-4">
                     Track payments, fees, and financial records for all students.
                   </p>
-                  <Button onClick={() => navigate('/admin/finance')} className="w-full">
+                  <Button onClick={() => setActiveSection('finance')} className="w-full">
                     Manage Finances
                   </Button>
                 </CardContent>
@@ -216,7 +216,7 @@ export default function AdminDashboard() {
                   <p className="text-sm text-gray-600 mb-4">
                     Manage staff records, roles, and administrative functions.
                   </p>
-                  <Button onClick={() => navigate('/admin/staff')} className="w-full">
+                  <Button onClick={() => setActiveSection('staff')} className="w-full">
                     Manage Staff
                   </Button>
                 </CardContent>
@@ -233,7 +233,7 @@ export default function AdminDashboard() {
                   <p className="text-sm text-gray-600 mb-4">
                     Monitor and manage student attendance across all grades.
                   </p>
-                  <Button onClick={() => navigate('/admin/attendance')} className="w-full">
+                  <Button onClick={() => setActiveSection('attendance')} className="w-full">
                     View Attendance
                   </Button>
                 </CardContent>
@@ -250,7 +250,7 @@ export default function AdminDashboard() {
                   <p className="text-sm text-gray-600 mb-4">
                     Track grades, assessments, and academic progress.
                   </p>
-                  <Button onClick={() => navigate('/admin/grades')} className="w-full">
+                  <Button onClick={() => setActiveSection('grades')} className="w-full">
                     View Grades
                   </Button>
                 </CardContent>
@@ -267,7 +267,7 @@ export default function AdminDashboard() {
                   <p className="text-sm text-gray-600 mb-4">
                     Generate comprehensive reports and analytics.
                   </p>
-                  <Button onClick={() => navigate('/admin/reports')} className="w-full">
+                  <Button onClick={() => setActiveSection('reports')} className="w-full">
                     View Reports
                   </Button>
                 </CardContent>
