@@ -815,6 +815,108 @@ export default function StaffDashboard() {
             </div>
           )}
 
+          {activeSection === 'attendance-records' && (
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">Attendance Records</h2>
+                <Dialog open={attendanceModal.open} onOpenChange={(open) => setAttendanceModal(prev => ({ ...prev, open }))}>
+                  <DialogTrigger asChild>
+                    <Button onClick={() => setAttendanceModal({ open: true, mode: 'add', data: null })}>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Record
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>{attendanceModal.mode === 'add' ? 'Add Attendance Record' : 'Edit Attendance'}</DialogTitle>
+                    </DialogHeader>
+                    <AttendanceForm
+                      mode={attendanceModal.mode}
+                      attendance={attendanceModal.data}
+                      students={myStudents}
+                      onSave={(attendance) => {
+                        if (attendanceModal.mode === 'add') {
+                          handleAddAttendance(attendance);
+                        } else {
+                          handleUpdateAttendance(attendance as Attendance);
+                        }
+                      }}
+                      onCancel={() => setAttendanceModal({ open: false, mode: 'add', data: null })}
+                    />
+                  </DialogContent>
+                </Dialog>
+              </div>
+
+              <div className="mb-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    placeholder="Search by student name, date, or status..."
+                    value={attendanceSearch}
+                    onChange={(e) => setAttendanceSearch(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+
+              <Card>
+                <CardContent className="p-6">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Student Name</TableHead>
+                        <TableHead>Subject</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Notes</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredAttendance.map((record) => (
+                        <TableRow key={record.id}>
+                          <TableCell>{record.date}</TableCell>
+                          <TableCell>{record.studentName}</TableCell>
+                          <TableCell>{record.subject}</TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={
+                                record.status === 'Present' ? 'default' :
+                                record.status === 'Absent' ? 'destructive' :
+                                'secondary'
+                              }
+                            >
+                              {record.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{record.notes}</TableCell>
+                          <TableCell>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setAttendanceModal({ open: true, mode: 'edit', data: record })}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => handleDeleteAttendance(record.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
           {activeSection === 'grades' && (
             <div>
               <div className="flex justify-between items-center mb-6">
