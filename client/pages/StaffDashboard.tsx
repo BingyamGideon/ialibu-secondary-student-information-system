@@ -149,7 +149,7 @@ export default function StaffDashboard() {
                   <p className="text-sm text-gray-600 mb-4">
                     View and manage information for students in your assigned classes.
                   </p>
-                  <Button onClick={() => navigate('/staff/students')} className="w-full">
+                  <Button onClick={() => setActiveSection('students')} className="w-full">
                     View My Students
                   </Button>
                 </CardContent>
@@ -166,7 +166,7 @@ export default function StaffDashboard() {
                   <p className="text-sm text-gray-600 mb-4">
                     Record and track attendance for your assigned classes.
                   </p>
-                  <Button onClick={() => navigate('/staff/attendance')} className="w-full">
+                  <Button onClick={() => setActiveSection('attendance')} className="w-full">
                     Manage Attendance
                   </Button>
                 </CardContent>
@@ -183,7 +183,7 @@ export default function StaffDashboard() {
                   <p className="text-sm text-gray-600 mb-4">
                     Enter and update grades for students in your classes.
                   </p>
-                  <Button onClick={() => navigate('/staff/grades')} className="w-full">
+                  <Button onClick={() => setActiveSection('grades')} className="w-full">
                     Manage Grades
                   </Button>
                 </CardContent>
@@ -200,7 +200,7 @@ export default function StaffDashboard() {
                   <p className="text-sm text-gray-600 mb-4">
                     Generate reports for your students and classes.
                   </p>
-                  <Button onClick={() => navigate('/staff/reports')} className="w-full">
+                  <Button onClick={() => setActiveSection('reports')} className="w-full">
                     View Reports
                   </Button>
                 </CardContent>
