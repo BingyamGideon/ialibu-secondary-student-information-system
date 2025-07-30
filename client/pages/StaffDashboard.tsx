@@ -1590,21 +1590,27 @@ function GradeForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <Label htmlFor="student">Student</Label>
-        <Select
-          value={formData.studentId?.toString() || ''}
-          onValueChange={(value) => setFormData(prev => ({ ...prev, studentId: parseInt(value) }))}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select Student" />
-          </SelectTrigger>
-          <SelectContent>
-            {students.map((student) => (
-              <SelectItem key={student.id} value={student.id.toString()}>
-                {student.name} ({student.grade} {student.class})
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {preselectedStudent ? (
+          <div className="flex h-10 w-full rounded-md border border-input bg-gray-50 px-3 py-2 text-sm">
+            {preselectedStudent.name} ({preselectedStudent.grade} {preselectedStudent.class})
+          </div>
+        ) : (
+          <Select
+            value={formData.studentId?.toString() || ''}
+            onValueChange={(value) => setFormData(prev => ({ ...prev, studentId: parseInt(value) }))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select Student" />
+            </SelectTrigger>
+            <SelectContent>
+              {students.map((student) => (
+                <SelectItem key={student.id} value={student.id.toString()}>
+                  {student.name} ({student.grade} {student.class})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </div>
 
       <div>
