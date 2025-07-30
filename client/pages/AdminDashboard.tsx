@@ -1618,7 +1618,7 @@ function AdminStudentForm({
                   </SelectItem>
                 ))
               ) : (
-                <SelectItem value="" disabled>
+                <SelectItem value="no-grade" disabled>
                   Select Grade First
                 </SelectItem>
               )}
