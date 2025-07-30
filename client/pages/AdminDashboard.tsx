@@ -182,7 +182,7 @@ export default function AdminDashboard() {
                   <p className="text-sm text-gray-600 mb-4">
                     Manage student records, enrollments, and academic information.
                   </p>
-                  <Button onClick={() => navigate('/admin/students')} className="w-full">
+                  <Button onClick={() => setActiveSection('students')} className="w-full">
                     Manage Students
                   </Button>
                 </CardContent>
