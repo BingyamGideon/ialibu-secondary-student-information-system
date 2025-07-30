@@ -196,6 +196,58 @@ export default function StaffDashboard() {
     toast({ title: 'Success', description: 'Grade deleted successfully' });
   };
 
+  // New attendance functions
+  const handleAttendanceStatusChange = (studentId: number, status: 'Present' | 'Absent' | 'Late') => {
+    setAttendanceRecords(prev => ({
+      ...prev,
+      [studentId]: {
+        status,
+        notes: prev[studentId]?.notes || ''
+      }
+    }));
+  };
+
+  const handleAttendanceNotesChange = (studentId: number, notes: string) => {
+    setAttendanceRecords(prev => ({
+      ...prev,
+      [studentId]: {
+        status: prev[studentId]?.status || 'Present',
+        notes
+      }
+    }));
+  };
+
+  const handleSubmitAttendance = () => {
+    const dateStr = format(attendanceDate, 'yyyy-MM-dd');
+    const newAttendanceRecords = Object.entries(attendanceRecords).map(([studentId, record]) => {
+      const student = myStudents.find(s => s.id === parseInt(studentId));
+      return {
+        id: Math.max(...myAttendance.map(a => a.id), 0) + Math.random(),
+        date: dateStr,
+        studentId: parseInt(studentId),
+        studentName: student?.name || '',
+        status: record.status,
+        subject: 'Mathematics', // Default subject for staff
+        notes: record.notes
+      };
+    });
+
+    setMyAttendance(prev => [...prev.filter(a => a.date !== dateStr), ...newAttendanceRecords]);
+    setAttendanceRecords({});
+    toast({
+      title: 'Success',
+      description: `Attendance recorded for ${format(attendanceDate, 'MMMM d, yyyy')}`
+    });
+  };
+
+  // Get students for selected class in attendance
+  const getAttendanceStudents = () => {
+    if (attendanceGrade === 'all' || attendanceClass === 'all') return [];
+    return myStudents.filter(student =>
+      student.grade === attendanceGrade && student.class === attendanceClass
+    );
+  };
+
   // Generate class options based on selected grade
   const getClassOptions = (grade: string) => {
     if (grade === 'all') return [];
