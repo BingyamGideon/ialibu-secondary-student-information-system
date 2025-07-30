@@ -1547,23 +1547,25 @@ function AttendanceForm({
 }
 
 // Grade Form Component
-function GradeForm({ 
-  mode, 
-  grade, 
+function GradeForm({
+  mode,
+  grade,
   students,
-  onSave, 
-  onCancel 
-}: { 
-  mode: 'add' | 'edit'; 
-  grade: Grade | null; 
+  preselectedStudent,
+  onSave,
+  onCancel
+}: {
+  mode: 'add' | 'edit';
+  grade: Grade | null;
   students: Student[];
-  onSave: (grade: Omit<Grade, 'id'> | Grade) => void; 
-  onCancel: () => void; 
+  preselectedStudent?: Student;
+  onSave: (grade: Omit<Grade, 'id'> | Grade) => void;
+  onCancel: () => void;
 }) {
   const [formData, setFormData] = useState<Partial<Grade>>(
     grade || {
-      studentId: 0,
-      studentName: '',
+      studentId: preselectedStudent?.id || 0,
+      studentName: preselectedStudent?.name || '',
       subject: 'Mathematics',
       score: '',
       percentage: 0,
