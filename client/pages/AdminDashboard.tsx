@@ -893,6 +893,67 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {activeSection === 'attendance-records' && (
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">Attendance Records</h2>
+                <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                  <Eye className="mr-1 h-3 w-3" />
+                  View Only
+                </Badge>
+              </div>
+
+              <div className="mb-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    placeholder="Search by student name, date, or status..."
+                    value={attendanceSearch}
+                    onChange={(e) => setAttendanceSearch(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+
+              <Card>
+                <CardContent className="p-6">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Student Name</TableHead>
+                        <TableHead>Subject</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Notes</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredAttendance.map((record) => (
+                        <TableRow key={record.id}>
+                          <TableCell>{record.date}</TableCell>
+                          <TableCell>{record.studentName}</TableCell>
+                          <TableCell>{record.subject}</TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={
+                                record.status === 'Present' ? 'default' :
+                                record.status === 'Absent' ? 'destructive' :
+                                'secondary'
+                              }
+                            >
+                              {record.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{record.notes}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
           {activeSection === 'grades' && (
             <div>
               <div className="flex justify-between items-center mb-6">
