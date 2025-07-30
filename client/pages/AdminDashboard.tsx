@@ -108,6 +108,11 @@ export default function AdminDashboard() {
   const [historyClass, setHistoryClass] = useState('all');
   const [selectedStudentForHistory, setSelectedStudentForHistory] = useState<number | null>(null);
 
+  // Grade filter states
+  const [gradeFilterGrade, setGradeFilterGrade] = useState('all');
+  const [gradeFilterClass, setGradeFilterClass] = useState('all');
+  const [selectedStudentForGrade, setSelectedStudentForGrade] = useState<number | null>(null);
+
   // Modal states
   const [studentModal, setStudentModal] = useState({ open: false, mode: 'add', data: null as Student | null });
   const [attendanceModal, setAttendanceModal] = useState({ open: false, mode: 'add', data: null as Attendance | null });
@@ -326,6 +331,39 @@ export default function AdminDashboard() {
     return students.filter(student =>
       student.grade === historyGrade && student.class === historyClass
     );
+  };
+
+  // Get students for grade filtering
+  const getGradeFilteredStudents = () => {
+    if (gradeFilterGrade === 'all' || gradeFilterClass === 'all') return [];
+    return students.filter(student =>
+      student.grade === gradeFilterGrade && student.class === gradeFilterClass
+    );
+  };
+
+  // Calculate ranking for students in a class and subject
+  const getStudentRanking = (studentId: number, subject: string, term: string) => {
+    const classStudents = getGradeFilteredStudents();
+    const subjectGrades = grades.filter(grade =>
+      grade.subject === subject &&
+      grade.term === term &&
+      classStudents.some(student => student.id === grade.studentId)
+    );
+
+    // Sort by percentage descending
+    const sortedGrades = subjectGrades.sort((a, b) => b.percentage - a.percentage);
+    const position = sortedGrades.findIndex(grade => grade.studentId === studentId) + 1;
+
+    if (position === 0) return null;
+
+    const suffix = position === 1 ? 'st' : position === 2 ? 'nd' : position === 3 ? 'rd' : 'th';
+    return `${position}${suffix}`;
+  };
+
+  // Get grades for a specific student
+  const getStudentGrades = (studentId: number) => {
+    return grades.filter(grade => grade.studentId === studentId)
+      .sort((a, b) => new Date(b.term).getTime() - new Date(a.term).getTime());
   };
 
   // Filter functions
@@ -992,7 +1030,196 @@ export default function AdminDashboard() {
             <div>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-800">Academic Performance</h2>
-                <Dialog open={gradeModal.open} onOpenChange={(open) => setGradeModal(prev => ({ ...prev, open }))}>
+                <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                  <Eye className="mr-1 h-3 w-3" />
+                  View Only
+                </Badge>
+              </div>
+
+              <div className="mb-6 space-y-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    placeholder="Search by student name, subject, or assignment..."
+                    value={gradeSearch}
+                    onChange={(e) => setGradeSearch(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+
+                {/* Grade and Class Filter Row */}
+                <div className="flex flex-wrap gap-4 items-center">
+                  <div className="flex items-center gap-2">
+                    <Label className="text-sm font-medium whitespace-nowrap">Filter by:</Label>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Select
+                      value={gradeFilterGrade}
+                      onValueChange={(value) => {
+                        setGradeFilterGrade(value);
+                        setGradeFilterClass('all');
+                      }}
+                    >
+                      <SelectTrigger className="w-[160px]">
+                        <SelectValue placeholder="All Students" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Students</SelectItem>
+                        <SelectItem value="Grade 9">Grade 9</SelectItem>
+                        <SelectItem value="Grade 10">Grade 10</SelectItem>
+                        <SelectItem value="Grade 11">Grade 11</SelectItem>
+                        <SelectItem value="Grade 12">Grade 12</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {gradeFilterGrade !== 'all' && (
+                    <div className="flex items-center gap-2">
+                      <Select
+                        value={gradeFilterClass}
+                        onValueChange={setGradeFilterClass}
+                      >
+                        <SelectTrigger className="w-[120px]">
+                          <SelectValue placeholder="All Classes" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Classes</SelectItem>
+                          {getClassOptions(gradeFilterGrade).map((classOption) => (
+                            <SelectItem key={classOption} value={classOption}>
+                              {classOption}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {(gradeFilterGrade !== 'all' || gradeFilterClass !== 'all') && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setGradeFilterGrade('all');
+                        setGradeFilterClass('all');
+                      }}
+                      className="text-xs"
+                    >
+                      Clear Filters
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* Student-based Grade View */}
+              {gradeFilterGrade !== 'all' && gradeFilterClass !== 'all' ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Students in {gradeFilterGrade} {gradeFilterClass}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      {getGradeFilteredStudents().map((student) => {
+                        const studentGrades = getStudentGrades(student.id);
+                        return (
+                          <div key={student.id} className="border rounded-lg p-4">
+                            <div className="flex items-center justify-between mb-4">
+                              <div>
+                                <h4 className="font-medium">{student.name}</h4>
+                                <p className="text-sm text-gray-500">{student.grade} {student.class}</p>
+                              </div>
+
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setSelectedStudentForGrade(
+                                  selectedStudentForGrade === student.id ? null : student.id
+                                )}
+                              >
+                                {selectedStudentForGrade === student.id ? 'Hide Grades' : 'View Grades'}
+                              </Button>
+                            </div>
+
+                            {selectedStudentForGrade === student.id && (
+                              <div className="mt-4">
+                                {studentGrades.length > 0 ? (
+                                  <Table>
+                                    <TableHeader>
+                                      <TableRow>
+                                        <TableHead>Subject</TableHead>
+                                        <TableHead>Assignment</TableHead>
+                                        <TableHead>Score</TableHead>
+                                        <TableHead>Percentage</TableHead>
+                                        <TableHead>Ranking</TableHead>
+                                        <TableHead>Term</TableHead>
+                                      </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                      {studentGrades.map((grade) => (
+                                        <TableRow key={grade.id}>
+                                          <TableCell>{grade.subject}</TableCell>
+                                          <TableCell>{grade.assignment}</TableCell>
+                                          <TableCell>{grade.score}</TableCell>
+                                          <TableCell>{grade.percentage}%</TableCell>
+                                          <TableCell>
+                                            <Badge variant="outline">
+                                              {getStudentRanking(student.id, grade.subject, grade.term) || 'N/A'}
+                                            </Badge>
+                                          </TableCell>
+                                          <TableCell>{grade.term}</TableCell>
+                                        </TableRow>
+                                      ))}
+                                    </TableBody>
+                                  </Table>
+                                ) : (
+                                  <p className="text-gray-500 text-center py-4">No grades recorded for this student</p>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card>
+                  <CardContent className="p-6">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Student Name</TableHead>
+                          <TableHead>Subject</TableHead>
+                          <TableHead>Assignment</TableHead>
+                          <TableHead>Score</TableHead>
+                          <TableHead>Percentage</TableHead>
+                          <TableHead>Term</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredGrades.map((grade) => (
+                          <TableRow key={grade.id}>
+                            <TableCell>{grade.studentName}</TableCell>
+                            <TableCell>{grade.subject}</TableCell>
+                            <TableCell>{grade.assignment}</TableCell>
+                            <TableCell>{grade.score}</TableCell>
+                            <TableCell>{grade.percentage}%</TableCell>
+                            <TableCell>{grade.term}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
+
+          {activeSection === 'finance' && (
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">Financial Records</h2>
+                <Dialog open={financeModal.open} onOpenChange={(open) => setFinanceModal(prev => ({ ...prev, open }))}>
                   <DialogTrigger asChild>
                     <Button onClick={() => setGradeModal({ open: true, mode: 'add', data: null })}>
                       <Plus className="mr-2 h-4 w-4" />
