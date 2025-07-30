@@ -7,13 +7,15 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  Users, 
-  UserCheck, 
-  TrendingUp, 
-  DollarSign, 
-  CreditCard, 
+import {
+  Users,
+  UserCheck,
+  TrendingUp,
+  DollarSign,
+  CreditCard,
   UserCog,
   FileText,
   Home,
@@ -21,8 +23,14 @@ import {
   Trash2,
   Search,
   Plus,
-  CalendarDays
+  CalendarDays,
+  Calendar as CalendarIcon,
+  Check,
+  X,
+  Clock,
+  Eye
 } from 'lucide-react';
+import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
 interface Student {
@@ -93,6 +101,12 @@ export default function AdminDashboard() {
   // Student filter states
   const [selectedGrade, setSelectedGrade] = useState('all');
   const [selectedClass, setSelectedClass] = useState('all');
+
+  // Attendance view states (read-only for admin)
+  const [attendanceViewDate, setAttendanceViewDate] = useState<Date>(new Date());
+  const [attendanceViewGrade, setAttendanceViewGrade] = useState('all');
+  const [attendanceViewClass, setAttendanceViewClass] = useState('all');
+  const [isAttendanceCalendarOpen, setIsAttendanceCalendarOpen] = useState(false);
 
   // Modal states
   const [studentModal, setStudentModal] = useState({ open: false, mode: 'add', data: null as Student | null });
@@ -172,7 +186,8 @@ export default function AdminDashboard() {
   const adminMenuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
     { id: 'students', label: 'Students', icon: Users },
-    { id: 'attendance', label: 'Attendance', icon: UserCheck },
+    { id: 'attendance', label: 'View Attendance', icon: UserCheck },
+    { id: 'attendance-records', label: 'Attendance Records', icon: CalendarDays },
     { id: 'grades', label: 'Grades', icon: TrendingUp },
     { id: 'finance', label: 'Finance', icon: CreditCard },
     { id: 'staff', label: 'Staff', icon: UserCog },
