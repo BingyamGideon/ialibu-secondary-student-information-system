@@ -57,6 +57,14 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        school: {
+          primary: "hsl(var(--school-primary))",
+          secondary: "hsl(var(--school-secondary))",
+          accent: "hsl(var(--school-accent))",
+          success: "hsl(var(--school-success))",
+          warning: "hsl(var(--school-warning))",
+          info: "hsl(var(--school-info))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
