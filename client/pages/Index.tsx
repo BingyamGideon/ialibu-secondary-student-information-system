@@ -143,13 +143,19 @@ export default function Index() {
   // Handle authentication
   const handleAuth = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (isLogin) {
       const user = users.find(u => u.username === loginForm.username && u.password === loginForm.password);
       if (user) {
         setCurrentUser(user);
         setIsAuthenticated(true);
         toast({ title: 'Login successful', description: `Welcome back, ${user.username}!` });
+        // Redirect based on user type
+        if (user.type === 'admin') {
+          window.location.href = '/admin';
+        } else {
+          window.location.href = '/staff';
+        }
       } else {
         toast({ title: 'Login failed', description: 'Invalid username or password', variant: 'destructive' });
       }
