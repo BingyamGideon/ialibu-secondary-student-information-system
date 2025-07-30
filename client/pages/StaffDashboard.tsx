@@ -84,6 +84,11 @@ export default function StaffDashboard() {
   const [showHistory, setShowHistory] = useState(false);
   const [selectedStudentForHistory, setSelectedStudentForHistory] = useState<number | null>(null);
 
+  // Grade filter states
+  const [gradeFilterGrade, setGradeFilterGrade] = useState('all');
+  const [gradeFilterClass, setGradeFilterClass] = useState('all');
+  const [selectedStudentForGrade, setSelectedStudentForGrade] = useState<number | null>(null);
+
   // Modal states
   const [studentModal, setStudentModal] = useState({ open: false, mode: 'add', data: null as Student | null });
   const [attendanceModal, setAttendanceModal] = useState({ open: false, mode: 'add', data: null as Attendance | null });
@@ -272,6 +277,39 @@ export default function StaffDashboard() {
     return myAttendance
       .filter(record => record.studentId === studentId)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  };
+
+  // Get students for grade filtering
+  const getGradeFilteredStudents = () => {
+    if (gradeFilterGrade === 'all' || gradeFilterClass === 'all') return [];
+    return myStudents.filter(student =>
+      student.grade === gradeFilterGrade && student.class === gradeFilterClass
+    );
+  };
+
+  // Calculate ranking for students in a class and subject
+  const getStudentRanking = (studentId: number, subject: string, term: string) => {
+    const classStudents = getGradeFilteredStudents();
+    const subjectGrades = myGrades.filter(grade =>
+      grade.subject === subject &&
+      grade.term === term &&
+      classStudents.some(student => student.id === grade.studentId)
+    );
+
+    // Sort by percentage descending
+    const sortedGrades = subjectGrades.sort((a, b) => b.percentage - a.percentage);
+    const position = sortedGrades.findIndex(grade => grade.studentId === studentId) + 1;
+
+    if (position === 0) return null;
+
+    const suffix = position === 1 ? 'st' : position === 2 ? 'nd' : position === 3 ? 'rd' : 'th';
+    return `${position}${suffix}`;
+  };
+
+  // Get grades for a specific student
+  const getStudentGrades = (studentId: number) => {
+    return myGrades.filter(grade => grade.studentId === studentId)
+      .sort((a, b) => new Date(b.term).getTime() - new Date(a.term).getTime());
   };
 
   // Generate class options based on selected grade
