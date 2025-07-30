@@ -754,61 +754,237 @@ export default function AdminDashboard() {
           {activeSection === 'attendance-records' && (
             <div>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Attendance Records</h2>
-                <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                  <Eye className="mr-1 h-3 w-3" />
-                  View Only
-                </Badge>
-              </div>
-
-              <div className="mb-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input
-                    placeholder="Search by student name, date, or status..."
-                    value={attendanceSearch}
-                    onChange={(e) => setAttendanceSearch(e.target.value)}
-                    className="pl-10"
-                  />
+                <h2 className="text-2xl font-bold text-gray-800">Attendance Records & History</h2>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant={showAttendanceHistory ? "default" : "outline"}
+                    onClick={() => setShowAttendanceHistory(!showAttendanceHistory)}
+                  >
+                    {showAttendanceHistory ? 'View Records' : 'View History'}
+                  </Button>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                    <Eye className="mr-1 h-3 w-3" />
+                    View Only
+                  </Badge>
                 </div>
               </div>
 
-              <Card>
-                <CardContent className="p-6">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Student Name</TableHead>
-                        <TableHead>Subject</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Notes</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredAttendance.map((record) => (
-                        <TableRow key={record.id}>
-                          <TableCell>{record.date}</TableCell>
-                          <TableCell>{record.studentName}</TableCell>
-                          <TableCell>{record.subject}</TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={
-                                record.status === 'Present' ? 'default' :
-                                record.status === 'Absent' ? 'destructive' :
-                                'secondary'
-                              }
+              {!showAttendanceHistory ? (
+                <div>
+                  <div className="mb-4">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                      <Input
+                        placeholder="Search by student name, date, or status..."
+                        value={attendanceSearch}
+                        onChange={(e) => setAttendanceSearch(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
+                  </div>
+
+                  <Card>
+                    <CardContent className="p-6">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Date</TableHead>
+                            <TableHead>Student Name</TableHead>
+                            <TableHead>Subject</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Notes</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredAttendance.map((record) => (
+                            <TableRow key={record.id}>
+                              <TableCell>{record.date}</TableCell>
+                              <TableCell>{record.studentName}</TableCell>
+                              <TableCell>{record.subject}</TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant={
+                                    record.status === 'Present' ? 'default' :
+                                    record.status === 'Absent' ? 'destructive' :
+                                    'secondary'
+                                  }
+                                >
+                                  {record.status}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{record.notes}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </CardContent>
+                  </Card>
+                </div>
+              ) : (
+                <div>
+                  {/* Grade and Class Selection for History */}
+                  <Card className="mb-6">
+                    <CardContent className="p-6">
+                      <div className="flex flex-wrap gap-4 items-center">
+                        <div className="flex items-center gap-2">
+                          <Label className="text-sm font-medium whitespace-nowrap">Select Class for History:</Label>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Select
+                            value={historyGrade}
+                            onValueChange={(value) => {
+                              setHistoryGrade(value);
+                              setHistoryClass('all');
+                              setSelectedStudentForHistory(null);
+                            }}
+                          >
+                            <SelectTrigger className="w-[160px]">
+                              <SelectValue placeholder="Select Grade" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">Select Grade</SelectItem>
+                              <SelectItem value="Grade 9">Grade 9</SelectItem>
+                              <SelectItem value="Grade 10">Grade 10</SelectItem>
+                              <SelectItem value="Grade 11">Grade 11</SelectItem>
+                              <SelectItem value="Grade 12">Grade 12</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        {historyGrade !== 'all' && (
+                          <div className="flex items-center gap-2">
+                            <Select
+                              value={historyClass}
+                              onValueChange={(value) => {
+                                setHistoryClass(value);
+                                setSelectedStudentForHistory(null);
+                              }}
                             >
-                              {record.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{record.notes}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
+                              <SelectTrigger className="w-[120px]">
+                                <SelectValue placeholder="Select Class" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="all">Select Class</SelectItem>
+                                {getClassOptions(historyGrade).map((classOption) => (
+                                  <SelectItem key={classOption} value={classOption}>
+                                    {classOption}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Student Attendance History */}
+                  {historyGrade !== 'all' && historyClass !== 'all' && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Attendance History - {historyGrade} {historyClass}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-6">
+                        <div className="space-y-6">
+                          {getHistoryStudents().map((student) => {
+                            const stats = getStudentAttendanceStats(student.id);
+                            const history = getStudentAttendanceHistory(student.id);
+
+                            return (
+                              <div key={student.id} className="border rounded-lg p-4">
+                                <div className="flex items-center justify-between mb-4">
+                                  <div>
+                                    <h4 className="font-medium">{student.name}</h4>
+                                    <p className="text-sm text-gray-500">{student.grade} {student.class}</p>
+                                  </div>
+
+                                  {/* Attendance Statistics */}
+                                  <div className="flex gap-6 text-sm">
+                                    <div className="text-center">
+                                      <div className="font-semibold text-lg">{stats.totalDays}</div>
+                                      <div className="text-gray-500">Total Days</div>
+                                    </div>
+                                    <div className="text-center">
+                                      <div className="font-semibold text-lg text-green-600">{stats.presentDays}</div>
+                                      <div className="text-gray-500">Present</div>
+                                    </div>
+                                    <div className="text-center">
+                                      <div className="font-semibold text-lg text-red-600">{stats.absentDays}</div>
+                                      <div className="text-gray-500">Absent</div>
+                                    </div>
+                                    <div className="text-center">
+                                      <div className="font-semibold text-lg text-yellow-600">{stats.lateDays}</div>
+                                      <div className="text-gray-500">Late</div>
+                                    </div>
+                                    <div className="text-center">
+                                      <div className="font-semibold text-lg text-blue-600">{stats.attendanceRate}%</div>
+                                      <div className="text-gray-500">Rate</div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Recent Attendance Records */}
+                                <div className="mt-4">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setSelectedStudentForHistory(
+                                      selectedStudentForHistory === student.id ? null : student.id
+                                    )}
+                                  >
+                                    {selectedStudentForHistory === student.id ? 'Hide Details' : 'View Details'}
+                                  </Button>
+
+                                  {selectedStudentForHistory === student.id && (
+                                    <div className="mt-4 max-h-60 overflow-y-auto">
+                                      <Table>
+                                        <TableHeader>
+                                          <TableRow>
+                                            <TableHead>Date</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead>Subject</TableHead>
+                                            <TableHead>Notes</TableHead>
+                                          </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                          {history.slice(0, 15).map((record) => (
+                                            <TableRow key={record.id}>
+                                              <TableCell>{record.date}</TableCell>
+                                              <TableCell>
+                                                <Badge
+                                                  variant={
+                                                    record.status === 'Present' ? 'default' :
+                                                    record.status === 'Absent' ? 'destructive' :
+                                                    'secondary'
+                                                  }
+                                                >
+                                                  {record.status}
+                                                </Badge>
+                                              </TableCell>
+                                              <TableCell>{record.subject}</TableCell>
+                                              <TableCell>{record.notes || '-'}</TableCell>
+                                            </TableRow>
+                                          ))}
+                                        </TableBody>
+                                      </Table>
+                                      {history.length > 15 && (
+                                        <p className="text-sm text-gray-500 mt-2 text-center">
+                                          Showing last 15 records of {history.length} total
+                                        </p>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
