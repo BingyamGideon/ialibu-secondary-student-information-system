@@ -296,6 +296,23 @@ export default function AdminDashboard() {
     return ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(letter => `${gradeNumber}${letter}`);
   };
 
+  // Get students for attendance viewing (read-only for admin)
+  const getAttendanceViewStudents = () => {
+    if (attendanceViewGrade === 'all' || attendanceViewClass === 'all') return [];
+    return students.filter(student =>
+      student.grade === attendanceViewGrade && student.class === attendanceViewClass
+    );
+  };
+
+  // Get attendance data for specific date and class
+  const getAttendanceForDateAndClass = () => {
+    const dateStr = format(attendanceViewDate, 'yyyy-MM-dd');
+    return attendance.filter(record =>
+      record.date === dateStr &&
+      getAttendanceViewStudents().some(student => student.id === record.studentId)
+    );
+  };
+
   // Filter functions
   const filteredStudents = students.filter(student => {
     // Apply text search filter
