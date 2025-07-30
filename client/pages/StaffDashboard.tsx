@@ -7,10 +7,13 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  Users, 
-  UserCheck, 
+import {
+  Users,
+  UserCheck,
   TrendingUp,
   FileText,
   Home,
@@ -18,8 +21,13 @@ import {
   Trash2,
   Search,
   Plus,
-  CalendarDays
+  CalendarDays,
+  Calendar as CalendarIcon,
+  Check,
+  X,
+  Clock
 } from 'lucide-react';
+import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
 interface Student {
@@ -66,6 +74,13 @@ export default function StaffDashboard() {
   // Student filter states
   const [selectedGrade, setSelectedGrade] = useState('all');
   const [selectedClass, setSelectedClass] = useState('all');
+
+  // Attendance interface states
+  const [attendanceDate, setAttendanceDate] = useState<Date>(new Date());
+  const [attendanceGrade, setAttendanceGrade] = useState('all');
+  const [attendanceClass, setAttendanceClass] = useState('all');
+  const [attendanceRecords, setAttendanceRecords] = useState<{[studentId: number]: {status: 'Present' | 'Absent' | 'Late', notes: string}}>({});
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   // Modal states
   const [studentModal, setStudentModal] = useState({ open: false, mode: 'add', data: null as Student | null });
@@ -118,7 +133,8 @@ export default function StaffDashboard() {
   const staffMenuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
     { id: 'students', label: 'Students', icon: Users },
-    { id: 'attendance', label: 'Attendance', icon: UserCheck },
+    { id: 'attendance', label: 'Take Attendance', icon: UserCheck },
+    { id: 'attendance-records', label: 'Attendance Records', icon: CalendarDays },
     { id: 'grades', label: 'Grades', icon: TrendingUp },
     { id: 'reports', label: 'Reports', icon: FileText },
   ];
