@@ -230,11 +230,10 @@ export default function StaffDashboard() {
       toast({ title: 'Warning', description: 'Students should have at least 7 subjects' });
     }
 
-    setMyStudents(prev => prev.map(student =>
-      student.id === studentId
-        ? { ...student, subjects: newSubjects }
-        : student
-    ));
+    const student = myStudents.find(s => s.id === studentId);
+    if (student) {
+      dataStore.updateStudent({ ...student, subjects: newSubjects });
+    }
 
     toast({
       title: 'Success',
