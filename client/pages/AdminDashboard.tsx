@@ -2191,6 +2191,31 @@ function AdminStudentForm({
         />
       </div>
 
+      {/* Guardian Contact Information */}
+      <div className="border-t pt-4 mt-4">
+        <h4 className="text-sm font-medium text-gray-700 mb-3">Parent/Guardian Contact Information</h4>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="guardianName">Guardian Name</Label>
+            <Input
+              id="guardianName"
+              value={formData.guardianName || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, guardianName: e.target.value }))}
+              placeholder="Parent or guardian name"
+            />
+          </div>
+          <div>
+            <Label htmlFor="guardianPhone">Guardian Phone</Label>
+            <Input
+              id="guardianPhone"
+              value={formData.guardianPhone || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, guardianPhone: e.target.value }))}
+              placeholder="Guardian phone number"
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="flex justify-end gap-2 pt-4">
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
