@@ -284,20 +284,26 @@ export default function StaffDashboard() {
 
   const handleSubmitAttendance = () => {
     const dateStr = format(attendanceDate, 'yyyy-MM-dd');
-    const newAttendanceRecords = Object.entries(attendanceRecords).map(([studentId, record]) => {
+
+    // First, remove existing attendance records for this date
+    const existingRecords = myAttendance.filter(a => a.date === dateStr);
+    existingRecords.forEach(record => dataStore.deleteAttendance(record.id));
+
+    // Then add new attendance records
+    Object.entries(attendanceRecords).forEach(([studentId, record]) => {
       const student = myStudents.find(s => s.id === parseInt(studentId));
-      return {
-        id: Math.max(...myAttendance.map(a => a.id), 0) + Math.random(),
-        date: dateStr,
-        studentId: parseInt(studentId),
-        studentName: student?.name || '',
-        status: record.status,
-        subject: 'Mathematics', // Default subject for staff
-        notes: record.notes
-      };
+      if (student) {
+        dataStore.addAttendance({
+          date: dateStr,
+          studentId: parseInt(studentId),
+          studentName: student.name,
+          status: record.status,
+          subject: 'Mathematics', // Default subject for staff
+          notes: record.notes
+        });
+      }
     });
 
-    setMyAttendance(prev => [...prev.filter(a => a.date !== dateStr), ...newAttendanceRecords]);
     setAttendanceRecords({});
     toast({
       title: 'Success',
