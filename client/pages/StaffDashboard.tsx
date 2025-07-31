@@ -109,15 +109,57 @@ export default function StaffDashboard() {
   const [attendanceModal, setAttendanceModal] = useState({ open: false, mode: 'add', data: null as Attendance | null });
   const [gradeModal, setGradeModal] = useState({ open: false, mode: 'add', data: null as Grade | null });
 
+  // Subject definitions by grade level
+  const lowerSecondarySubjects = [
+    'English',
+    'Mathematics',
+    'Science',
+    'Social Science',
+    'Business Studies',
+    'Personal Development',
+    'Arts',
+    'Information Technology',
+    'Technology & Industrial Arts',
+    'Family and Consumer Studies'
+  ];
+
+  const upperSecondarySubjects = [
+    'Language and Literature',
+    'General Mathematics',
+    'Personal Development',
+    'Religious Education',
+    'Biology',
+    'Chemistry',
+    'Physics',
+    'Geology',
+    'Applied Science',
+    'Advanced Mathematics',
+    'Economics',
+    'Geography',
+    'History',
+    'Environment',
+    'Political Science',
+    'Legal Studies',
+    'Business Studies',
+    'Accounting',
+    'Tourism Studies',
+    'Information and Communication Technology (ICT)',
+    'Computer Studies',
+    'Design and Technology',
+    'Construction',
+    'Food Technology',
+    'Textile Technology'
+  ];
+
   // Sample data for staff dashboard (limited access - only their assigned students)
   const [myStudents, setMyStudents] = useState<Student[]>([
-    { id: 1, name: 'John Doe', grade: 'Grade 9', class: '9A', subject: 'Mathematics', email: 'john.doe@example.com', phone: '123-456-7890' },
-    { id: 2, name: 'Jane Smith', grade: 'Grade 9', class: '9A', subject: 'Mathematics', email: 'jane.smith@example.com', phone: '123-456-7891' },
-    { id: 3, name: 'Peter Wilson', grade: 'Grade 9', class: '9B', subject: 'Mathematics', email: 'peter.wilson@example.com', phone: '123-456-7899' },
-    { id: 4, name: 'Emily Williams', grade: 'Grade 10', class: '10A', subject: 'Mathematics', email: 'emily.williams@example.com', phone: '123-456-7892' },
-    { id: 5, name: 'Michael Brown', grade: 'Grade 10', class: '10A', subject: 'Mathematics', email: 'michael.brown@example.com', phone: '123-456-7893' },
-    { id: 6, name: 'Sarah Johnson', grade: 'Grade 11', class: '11A', subject: 'Mathematics', email: 'sarah.johnson@example.com', phone: '123-456-7894' },
-    { id: 7, name: 'David Lee', grade: 'Grade 12', class: '12B', subject: 'Mathematics', email: 'david.lee@example.com', phone: '123-456-7895' },
+    { id: 1, name: 'John Doe', grade: 'Grade 9', class: '9A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Business Studies', 'Personal Development', 'Arts'], email: 'john.doe@example.com', phone: '123-456-7890' },
+    { id: 2, name: 'Jane Smith', grade: 'Grade 9', class: '9A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Information Technology', 'Personal Development', 'Arts', 'Family and Consumer Studies'], email: 'jane.smith@example.com', phone: '123-456-7891' },
+    { id: 3, name: 'Peter Wilson', grade: 'Grade 9', class: '9B', subjects: ['Mathematics', 'English', 'Science', 'Business Studies', 'Technology & Industrial Arts', 'Personal Development', 'Arts'], email: 'peter.wilson@example.com', phone: '123-456-7899' },
+    { id: 4, name: 'Emily Williams', grade: 'Grade 10', class: '10A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Business Studies', 'Information Technology', 'Arts', 'Personal Development'], email: 'emily.williams@example.com', phone: '123-456-7892' },
+    { id: 5, name: 'Michael Brown', grade: 'Grade 10', class: '10A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Technology & Industrial Arts', 'Personal Development', 'Family and Consumer Studies'], email: 'michael.brown@example.com', phone: '123-456-7893' },
+    { id: 6, name: 'Sarah Johnson', grade: 'Grade 11', class: '11A', subjects: ['Language and Literature', 'General Mathematics', 'Biology', 'Chemistry', 'Physics', 'Economics', 'Geography', 'Personal Development'], email: 'sarah.johnson@example.com', phone: '123-456-7894' },
+    { id: 7, name: 'David Lee', grade: 'Grade 12', class: '12B', subjects: ['Language and Literature', 'Advanced Mathematics', 'Physics', 'Chemistry', 'Economics', 'Business Studies', 'Accounting', 'Computer Studies'], email: 'david.lee@example.com', phone: '123-456-7895' },
   ]);
 
   const [myAttendance, setMyAttendance] = useState<Attendance[]>([
