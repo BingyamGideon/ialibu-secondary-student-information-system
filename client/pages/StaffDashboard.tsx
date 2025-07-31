@@ -2272,13 +2272,22 @@ function GradeForm({
     grade || {
       studentId: preselectedStudent?.id || 0,
       studentName: preselectedStudent?.name || '',
-      subject: 'Mathematics',
+      subject: '',
       score: '',
       percentage: 0,
       term: 'Term 1',
       assignment: '',
     }
   );
+
+  // Get the selected student's enrolled subjects
+  const getStudentSubjects = () => {
+    const selectedStudent = formData.studentId
+      ? students.find(s => s.id === formData.studentId)
+      : preselectedStudent;
+
+    return selectedStudent?.subjects || [];
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
