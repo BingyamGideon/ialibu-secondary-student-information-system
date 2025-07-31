@@ -189,13 +189,16 @@ export default function StaffDashboard() {
   ]);
 
   const [myGrades, setMyGrades] = useState<Grade[]>([
-    { id: 1, studentId: 1, studentName: 'John Doe', subject: 'Mathematics', score: 'A', percentage: 92, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 2, studentId: 2, studentName: 'Jane Smith', subject: 'Mathematics', score: 'B', percentage: 85, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 3, studentId: 3, studentName: 'Peter Wilson', subject: 'Mathematics', score: 'B+', percentage: 87, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 4, studentId: 4, studentName: 'Emily Williams', subject: 'Mathematics', score: 'A-', percentage: 90, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 5, studentId: 5, studentName: 'Michael Brown', subject: 'Mathematics', score: 'B+', percentage: 88, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 6, studentId: 6, studentName: 'Sarah Johnson', subject: 'Mathematics', score: 'A', percentage: 94, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 7, studentId: 7, studentName: 'David Lee', subject: 'Mathematics', score: 'A-', percentage: 91, term: 'Term 1', assignment: 'Midterm Exam' },
+    { id: 1, studentId: 1, studentName: 'John Doe', subject: 'Mathematics', score: 'D', percentage: 92, term: 'Term 1', assignment: 'Midterm Exam' },
+    { id: 2, studentId: 2, studentName: 'Jane Smith', subject: 'Mathematics', score: 'C', percentage: 85, term: 'Term 1', assignment: 'Midterm Exam' },
+    { id: 3, studentId: 3, studentName: 'Peter Wilson', subject: 'Mathematics', score: 'UP', percentage: 87, term: 'Term 1', assignment: 'Midterm Exam' },
+    { id: 4, studentId: 4, studentName: 'Emily Williams', subject: 'Mathematics', score: 'P', percentage: 90, term: 'Term 1', assignment: 'Midterm Exam' },
+    { id: 5, studentId: 5, studentName: 'Michael Brown', subject: 'Mathematics', score: 'UP', percentage: 88, term: 'Term 1', assignment: 'Midterm Exam' },
+    { id: 6, studentId: 6, studentName: 'Sarah Johnson', subject: 'Mathematics', score: 'D', percentage: 94, term: 'Term 1', assignment: 'Midterm Exam' },
+    { id: 7, studentId: 7, studentName: 'David Lee', subject: 'Mathematics', score: 'P', percentage: 91, term: 'Term 1', assignment: 'Midterm Exam' },
+    { id: 8, studentId: 1, studentName: 'John Doe', subject: 'English', score: 'C', percentage: 78, term: 'Term 4', assignment: 'Final Exam' },
+    { id: 9, studentId: 2, studentName: 'Jane Smith', subject: 'Science', score: 'UP', percentage: 82, term: 'Term 4', assignment: 'Final Project' },
+    { id: 10, studentId: 3, studentName: 'Peter Wilson', subject: 'Mathematics', score: 'D', percentage: 89, term: 'Term 4', assignment: 'Final Exam' },
   ]);
 
   // Calculate stats dynamically
