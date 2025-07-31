@@ -97,6 +97,21 @@ export default function StaffDashboard() {
   const [gradeFilterClass, setGradeFilterClass] = useState('all');
   const [selectedStudentForGrade, setSelectedStudentForGrade] = useState<number | null>(null);
 
+  // Subject management states
+  const [subjectModal, setSubjectModal] = useState({ open: false, student: null as Student | null });
+  const [selectedStudentSubjects, setSelectedStudentSubjects] = useState<string[]>([]);
+
+  // Get available subjects based on grade
+  const getAvailableSubjects = (grade: string) => {
+    const gradeNumber = parseInt(grade.replace('Grade ', ''));
+    if (gradeNumber >= 9 && gradeNumber <= 10) {
+      return lowerSecondarySubjects;
+    } else if (gradeNumber >= 11 && gradeNumber <= 12) {
+      return upperSecondarySubjects;
+    }
+    return [];
+  };
+
   // Report states
   const [selectedReportType, setSelectedReportType] = useState<string | null>(null);
   const [reportGrade, setReportGrade] = useState('all');
