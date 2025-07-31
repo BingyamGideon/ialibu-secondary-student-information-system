@@ -197,26 +197,25 @@ export default function StaffDashboard() {
   };
 
   const handleDeleteAttendance = (attendanceId: number) => {
-    setMyAttendance(prev => prev.filter(a => a.id !== attendanceId));
+    dataStore.deleteAttendance(attendanceId);
     toast({ title: 'Success', description: 'Attendance record deleted successfully' });
   };
 
   // CRUD Functions for Grades
   const handleAddGrade = (grade: Omit<Grade, 'id'>) => {
-    const newGrade = { ...grade, id: Math.max(...myGrades.map(g => g.id)) + 1 };
-    setMyGrades(prev => [...prev, newGrade]);
+    dataStore.addGrade(grade);
     toast({ title: 'Success', description: 'Grade added successfully' });
     setGradeModal({ open: false, mode: 'add', data: null });
   };
 
   const handleUpdateGrade = (grade: Grade) => {
-    setMyGrades(prev => prev.map(g => g.id === grade.id ? grade : g));
+    dataStore.updateGrade(grade);
     toast({ title: 'Success', description: 'Grade updated successfully' });
     setGradeModal({ open: false, mode: 'add', data: null });
   };
 
   const handleDeleteGrade = (gradeId: number) => {
-    setMyGrades(prev => prev.filter(g => g.id !== gradeId));
+    dataStore.deleteGrade(gradeId);
     toast({ title: 'Success', description: 'Grade deleted successfully' });
   };
 
