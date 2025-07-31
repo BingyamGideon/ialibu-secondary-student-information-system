@@ -2144,10 +2144,19 @@ function AttendanceForm({
       studentId: 0,
       studentName: '',
       status: 'Present',
-      subject: 'Mathematics',
+      subject: '',
       notes: '',
     }
   );
+
+  // Get the selected student's enrolled subjects
+  const getStudentSubjects = () => {
+    const selectedStudent = formData.studentId
+      ? students.find(s => s.id === formData.studentId)
+      : null;
+
+    return selectedStudent?.subjects || [];
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
