@@ -2085,24 +2085,11 @@ function StudentForm({
         </div>
       </div>
 
-      <div>
-        <Label htmlFor="subject">Subject</Label>
-        <Select
-          value={formData.subject || ''}
-          onValueChange={(value) => setFormData(prev => ({ ...prev, subject: value }))}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select Subject" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Mathematics">Mathematics</SelectItem>
-            <SelectItem value="Physics">Physics</SelectItem>
-            <SelectItem value="Chemistry">Chemistry</SelectItem>
-            <SelectItem value="Biology">Biology</SelectItem>
-            <SelectItem value="English">English</SelectItem>
-            <SelectItem value="History">History</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="bg-blue-50 p-3 rounded-lg">
+        <Label className="text-sm font-medium text-blue-800">Subject Management</Label>
+        <p className="text-sm text-blue-700 mt-1">
+          Default subjects will be assigned based on grade level. You can manage subjects after creating the student using the "Manage" button in the students list.
+        </p>
       </div>
 
       <div>
