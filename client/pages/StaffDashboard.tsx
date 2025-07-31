@@ -1999,7 +1999,7 @@ function StudentForm({
       name: '',
       grade: selectedGrade || '',
       class: selectedClass || '',
-      subject: 'Mathematics',
+      subjects: [],
       email: '',
       phone: '',
     }
