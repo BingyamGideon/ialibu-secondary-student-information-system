@@ -10,6 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
+import { useDataStore } from '@/hooks/useDataStore';
+import { type Student, type Attendance, type Grade, type Finance, type Staff } from '@/lib/dataStore';
 import {
   Users,
   UserCheck,
@@ -34,7 +36,8 @@ import {
   Printer,
   BarChart3,
   PieChart,
-  FileBarChart
+  FileBarChart,
+  Sync
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
