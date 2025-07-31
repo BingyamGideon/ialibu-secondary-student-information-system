@@ -2014,8 +2014,18 @@ function StudentForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.name && formData.grade && formData.class && formData.subject) {
-      onSave(mode === 'edit' ? formData as Student : formData as Omit<Student, 'id'>);
+    if (formData.name && formData.grade && formData.class) {
+      // If no subjects are set, initialize with default subjects for the grade
+      if (!formData.subjects || formData.subjects.length === 0) {
+        const defaultSubjects = formData.grade === 'Grade 9' || formData.grade === 'Grade 10'
+          ? ['Mathematics', 'English', 'Science', 'Social Science', 'Personal Development', 'Arts', 'Business Studies']
+          : ['Language and Literature', 'General Mathematics', 'Biology', 'Chemistry', 'Physics', 'Economics', 'Personal Development'];
+
+        setFormData(prev => ({ ...prev, subjects: defaultSubjects }));
+        onSave(mode === 'edit' ? { ...formData, subjects: defaultSubjects } as Student : { ...formData, subjects: defaultSubjects } as Omit<Student, 'id'>);
+      } else {
+        onSave(mode === 'edit' ? formData as Student : formData as Omit<Student, 'id'>);
+      }
     }
   };
 
