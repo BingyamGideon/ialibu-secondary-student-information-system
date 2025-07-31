@@ -119,39 +119,37 @@ export default function AdminDashboard() {
 
   // CRUD Functions for Students
   const handleAddStudent = (student: Omit<Student, 'id'>) => {
-    const newStudent = { ...student, id: Math.max(...students.map(s => s.id)) + 1 };
-    setStudents(prev => [...prev, newStudent]);
+    dataStore.addStudent(student);
     toast({ title: 'Success', description: 'Student added successfully' });
     setStudentModal({ open: false, mode: 'add', data: null });
   };
 
   const handleUpdateStudent = (student: Student) => {
-    setStudents(prev => prev.map(s => s.id === student.id ? student : s));
+    dataStore.updateStudent(student);
     toast({ title: 'Success', description: 'Student updated successfully' });
     setStudentModal({ open: false, mode: 'add', data: null });
   };
 
   const handleDeleteStudent = (studentId: number) => {
-    setStudents(prev => prev.filter(s => s.id !== studentId));
+    dataStore.deleteStudent(studentId);
     toast({ title: 'Success', description: 'Student deleted successfully' });
   };
 
   // CRUD Functions for Attendance
   const handleAddAttendance = (attendanceData: Omit<Attendance, 'id'>) => {
-    const newAttendance = { ...attendanceData, id: Math.max(...attendance.map(a => a.id)) + 1 };
-    setAttendance(prev => [...prev, newAttendance]);
+    dataStore.addAttendance(attendanceData);
     toast({ title: 'Success', description: 'Attendance recorded successfully' });
     setAttendanceModal({ open: false, mode: 'add', data: null });
   };
 
   const handleUpdateAttendance = (attendance: Attendance) => {
-    setAttendance(prev => prev.map(a => a.id === attendance.id ? attendance : a));
+    dataStore.updateAttendance(attendance);
     toast({ title: 'Success', description: 'Attendance updated successfully' });
     setAttendanceModal({ open: false, mode: 'add', data: null });
   };
 
   const handleDeleteAttendance = (attendanceId: number) => {
-    setAttendance(prev => prev.filter(a => a.id !== attendanceId));
+    dataStore.deleteAttendance(attendanceId);
     toast({ title: 'Success', description: 'Attendance record deleted successfully' });
   };
 
