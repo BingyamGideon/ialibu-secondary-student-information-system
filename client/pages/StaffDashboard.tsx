@@ -274,6 +274,49 @@ export default function StaffDashboard() {
     toast({ title: 'Success', description: 'Grade deleted successfully' });
   };
 
+  // Subject management functions
+  const handleUpdateStudentSubjects = (studentId: number, newSubjects: string[]) => {
+    if (newSubjects.length > 10) {
+      toast({ title: 'Error', description: 'Maximum 10 subjects allowed per student' });
+      return;
+    }
+
+    if (newSubjects.length < 7) {
+      toast({ title: 'Warning', description: 'Students should have at least 7 subjects' });
+    }
+
+    setMyStudents(prev => prev.map(student =>
+      student.id === studentId
+        ? { ...student, subjects: newSubjects }
+        : student
+    ));
+
+    toast({
+      title: 'Success',
+      description: `Student subjects updated. Total: ${newSubjects.length} subjects`
+    });
+    setSubjectModal({ open: false, student: null });
+  };
+
+  const openSubjectModal = (student: Student) => {
+    setSelectedStudentSubjects([...student.subjects]);
+    setSubjectModal({ open: true, student });
+  };
+
+  const toggleSubject = (subject: string) => {
+    setSelectedStudentSubjects(prev => {
+      if (prev.includes(subject)) {
+        return prev.filter(s => s !== subject);
+      } else {
+        if (prev.length >= 10) {
+          toast({ title: 'Limit Reached', description: 'Maximum 10 subjects allowed' });
+          return prev;
+        }
+        return [...prev, subject];
+      }
+    });
+  };
+
   // New attendance functions
   const handleAttendanceStatusChange = (studentId: number, status: 'Present' | 'Absent' | 'Late') => {
     setAttendanceRecords(prev => ({
