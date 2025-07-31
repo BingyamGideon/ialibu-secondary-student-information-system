@@ -924,6 +924,104 @@ export default function StaffDashboard() {
                   </Table>
                 </CardContent>
               </Card>
+
+              {/* Subject Management Modal */}
+              <Dialog open={subjectModal.open} onOpenChange={(open) => setSubjectModal(prev => ({ ...prev, open }))}>
+                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <GraduationCap className="h-5 w-5" />
+                      Manage Subjects for {subjectModal.student?.name}
+                    </DialogTitle>
+                  </DialogHeader>
+
+                  {subjectModal.student && (
+                    <div className="space-y-6">
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-medium">Student Information</h4>
+                          <Badge variant="outline">
+                            {subjectModal.student.grade} {subjectModal.student.class}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                          Currently enrolled in {selectedStudentSubjects.length} subjects
+                          (Recommended: 7-9 subjects, Maximum: 10 subjects)
+                        </p>
+                      </div>
+
+                      <div>
+                        <h4 className="font-medium mb-3">
+                          Available Subjects for {subjectModal.student.grade}
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {getAvailableSubjects(subjectModal.student.grade).map((subject) => (
+                            <div
+                              key={subject}
+                              className={`p-3 border rounded-lg cursor-pointer transition-all ${
+                                selectedStudentSubjects.includes(subject)
+                                  ? 'border-blue-500 bg-blue-50'
+                                  : 'border-gray-200 hover:border-gray-300'
+                              }`}
+                              onClick={() => toggleSubject(subject)}
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium">{subject}</span>
+                                {selectedStudentSubjects.includes(subject) && (
+                                  <Check className="h-4 w-4 text-blue-600" />
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <h4 className="font-medium mb-2">Selected Subjects ({selectedStudentSubjects.length})</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedStudentSubjects.map((subject, idx) => (
+                            <Badge key={idx} variant="default" className="flex items-center gap-1">
+                              {subject}
+                              <X
+                                className="h-3 w-3 cursor-pointer hover:bg-white/20 rounded"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleSubject(subject);
+                                }}
+                              />
+                            </Badge>
+                          ))}
+                        </div>
+                        {selectedStudentSubjects.length < 7 && (
+                          <p className="text-sm text-yellow-600 mt-2">
+                            ⚠️ Students should have at least 7 subjects
+                          </p>
+                        )}
+                        {selectedStudentSubjects.length === 10 && (
+                          <p className="text-sm text-red-600 mt-2">
+                            ⚠️ Maximum subject limit reached (10 subjects)
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="flex justify-end gap-2 pt-4">
+                        <Button
+                          variant="outline"
+                          onClick={() => setSubjectModal({ open: false, student: null })}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={() => subjectModal.student && handleUpdateStudentSubjects(subjectModal.student.id, selectedStudentSubjects)}
+                          disabled={selectedStudentSubjects.length === 0}
+                        >
+                          Update Subjects ({selectedStudentSubjects.length})
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </DialogContent>
+              </Dialog>
             </div>
           )}
 
