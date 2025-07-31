@@ -31,7 +31,9 @@ import {
   Printer,
   BarChart3,
   PieChart,
-  FileBarChart
+  FileBarChart,
+  BookOpen,
+  GraduationCap
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
