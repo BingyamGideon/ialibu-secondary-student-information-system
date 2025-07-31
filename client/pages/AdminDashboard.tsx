@@ -155,39 +155,37 @@ export default function AdminDashboard() {
 
   // CRUD Functions for Grades
   const handleAddGrade = (grade: Omit<Grade, 'id'>) => {
-    const newGrade = { ...grade, id: Math.max(...grades.map(g => g.id)) + 1 };
-    setGrades(prev => [...prev, newGrade]);
+    dataStore.addGrade(grade);
     toast({ title: 'Success', description: 'Grade added successfully' });
     setGradeModal({ open: false, mode: 'add', data: null });
   };
 
   const handleUpdateGrade = (grade: Grade) => {
-    setGrades(prev => prev.map(g => g.id === grade.id ? grade : g));
+    dataStore.updateGrade(grade);
     toast({ title: 'Success', description: 'Grade updated successfully' });
     setGradeModal({ open: false, mode: 'add', data: null });
   };
 
   const handleDeleteGrade = (gradeId: number) => {
-    setGrades(prev => prev.filter(g => g.id !== gradeId));
+    dataStore.deleteGrade(gradeId);
     toast({ title: 'Success', description: 'Grade deleted successfully' });
   };
 
   // CRUD Functions for Finance
   const handleAddFinance = (finance: Omit<Finance, 'id'>) => {
-    const newFinance = { ...finance, id: Math.max(...finance.map(f => f.id)) + 1 };
-    setFinance(prev => [...prev, newFinance]);
+    dataStore.addFinance(finance);
     toast({ title: 'Success', description: 'Payment record added successfully' });
     setFinanceModal({ open: false, mode: 'add', data: null });
   };
 
   const handleUpdateFinance = (finance: Finance) => {
-    setFinance(prev => prev.map(f => f.id === finance.id ? finance : f));
+    dataStore.updateFinance(finance);
     toast({ title: 'Success', description: 'Payment record updated successfully' });
     setFinanceModal({ open: false, mode: 'add', data: null });
   };
 
   const handleDeleteFinance = (financeId: number) => {
-    setFinance(prev => prev.filter(f => f.id !== financeId));
+    dataStore.deleteFinance(financeId);
     toast({ title: 'Success', description: 'Payment record deleted successfully' });
   };
 
