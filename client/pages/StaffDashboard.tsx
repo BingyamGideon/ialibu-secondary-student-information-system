@@ -167,33 +167,31 @@ export default function StaffDashboard() {
 
   // CRUD Functions for Students
   const handleAddStudent = (student: Omit<Student, 'id'>) => {
-    const newStudent = { ...student, id: Math.max(...myStudents.map(s => s.id)) + 1 };
-    setMyStudents(prev => [...prev, newStudent]);
+    dataStore.addStudent(student);
     toast({ title: 'Success', description: 'Student added successfully' });
     setStudentModal({ open: false, mode: 'add', data: null });
   };
 
   const handleUpdateStudent = (student: Student) => {
-    setMyStudents(prev => prev.map(s => s.id === student.id ? student : s));
+    dataStore.updateStudent(student);
     toast({ title: 'Success', description: 'Student updated successfully' });
     setStudentModal({ open: false, mode: 'add', data: null });
   };
 
   const handleDeleteStudent = (studentId: number) => {
-    setMyStudents(prev => prev.filter(s => s.id !== studentId));
+    dataStore.deleteStudent(studentId);
     toast({ title: 'Success', description: 'Student removed from your classes' });
   };
 
   // CRUD Functions for Attendance
   const handleAddAttendance = (attendance: Omit<Attendance, 'id'>) => {
-    const newAttendance = { ...attendance, id: Math.max(...myAttendance.map(a => a.id)) + 1 };
-    setMyAttendance(prev => [...prev, newAttendance]);
+    dataStore.addAttendance(attendance);
     toast({ title: 'Success', description: 'Attendance recorded successfully' });
     setAttendanceModal({ open: false, mode: 'add', data: null });
   };
 
   const handleUpdateAttendance = (attendance: Attendance) => {
-    setMyAttendance(prev => prev.map(a => a.id === attendance.id ? attendance : a));
+    dataStore.updateAttendance(attendance);
     toast({ title: 'Success', description: 'Attendance updated successfully' });
     setAttendanceModal({ open: false, mode: 'add', data: null });
   };
