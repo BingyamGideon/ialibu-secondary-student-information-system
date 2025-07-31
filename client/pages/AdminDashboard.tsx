@@ -191,20 +191,19 @@ export default function AdminDashboard() {
 
   // CRUD Functions for Staff
   const handleAddStaff = (newStaffData: Omit<Staff, 'id'>) => {
-    const newStaff = { ...newStaffData, id: Math.max(...staff.map(s => s.id)) + 1 };
-    setStaff(prev => [...prev, newStaff]);
+    dataStore.addStaff(newStaffData);
     toast({ title: 'Success', description: 'Staff member added successfully' });
     setStaffModal({ open: false, mode: 'add', data: null });
   };
 
-  const handleUpdateStaff = (staff: Staff) => {
-    setStaff(prev => prev.map(s => s.id === staff.id ? staff : s));
+  const handleUpdateStaff = (staffData: Staff) => {
+    dataStore.updateStaff(staffData);
     toast({ title: 'Success', description: 'Staff member updated successfully' });
     setStaffModal({ open: false, mode: 'add', data: null });
   };
 
   const handleDeleteStaff = (staffId: number) => {
-    setStaff(prev => prev.filter(s => s.id !== staffId));
+    dataStore.deleteStaff(staffId);
     toast({ title: 'Success', description: 'Staff member deleted successfully' });
   };
 
