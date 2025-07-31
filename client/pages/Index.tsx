@@ -52,6 +52,22 @@ export default function Index() {
         toast({ title: 'Registration failed', description: 'Passwords do not match', variant: 'destructive' });
         return;
       }
+
+      // Check if username already exists
+      const existingUser = users.find(u => u.username === loginForm.username);
+      if (existingUser) {
+        toast({ title: 'Registration failed', description: 'Username already exists. Please choose a different username.', variant: 'destructive' });
+        return;
+      }
+
+      // Add new user to the users array
+      const newUser: User = {
+        username: loginForm.username,
+        password: loginForm.password,
+        type: loginForm.userType
+      };
+      setUsers(prev => [...prev, newUser]);
+
       toast({ title: 'Registration successful', description: 'You can now login with your credentials!' });
       setIsLogin(true);
       setLoginForm({ username: '', password: '', confirmPassword: '', userType: 'admin' });
