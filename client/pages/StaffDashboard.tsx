@@ -2335,15 +2335,20 @@ function GradeForm({
           onValueChange={(value) => setFormData(prev => ({ ...prev, subject: value }))}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select Subject" />
+            <SelectValue placeholder={formData.studentId || preselectedStudent ? "Select Subject" : "Select Student First"} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Mathematics">Mathematics</SelectItem>
-            <SelectItem value="Physics">Physics</SelectItem>
-            <SelectItem value="Chemistry">Chemistry</SelectItem>
-            <SelectItem value="Biology">Biology</SelectItem>
-            <SelectItem value="English">English</SelectItem>
-            <SelectItem value="History">History</SelectItem>
+            {getStudentSubjects().length > 0 ? (
+              getStudentSubjects().map((subject) => (
+                <SelectItem key={subject} value={subject}>
+                  {subject}
+                </SelectItem>
+              ))
+            ) : (
+              <SelectItem value="no-student" disabled>
+                {formData.studentId || preselectedStudent ? "No subjects enrolled" : "Select a student first"}
+              </SelectItem>
+            )}
           </SelectContent>
         </Select>
       </div>
