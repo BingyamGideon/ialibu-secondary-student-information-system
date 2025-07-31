@@ -91,49 +91,7 @@ export default function AdminDashboard() {
   const finance = dataStore.finance;
   const staff = dataStore.staff;
 
-  const [attendance, setAttendance] = useState<Attendance[]>([
-    { id: 1, date: '2024-01-15', studentId: 1, studentName: 'John Doe', status: 'Present', subject: 'Mathematics', notes: '' },
-    { id: 2, date: '2024-01-15', studentId: 2, studentName: 'Jane Smith', status: 'Absent', subject: 'Mathematics', notes: 'Sick leave' },
-    { id: 3, date: '2024-01-15', studentId: 3, studentName: 'Michael Johnson', status: 'Late', subject: 'Mathematics', notes: '15 minutes late' },
-    { id: 4, date: '2024-01-15', studentId: 4, studentName: 'Emily Williams', status: 'Present', subject: 'Mathematics', notes: '' },
-    { id: 5, date: '2024-01-15', studentId: 5, studentName: 'David Brown', status: 'Present', subject: 'English', notes: '' },
-    { id: 6, date: '2024-01-15', studentId: 6, studentName: 'Sarah Davis', status: 'Present', subject: 'Physics', notes: '' },
-    { id: 7, date: '2024-01-15', studentId: 7, studentName: 'Chris Wilson', status: 'Absent', subject: 'Chemistry', notes: 'Medical appointment' },
-    { id: 8, date: '2024-01-15', studentId: 8, studentName: 'Lisa Anderson', status: 'Present', subject: 'Biology', notes: '' },
-  ]);
 
-  const [grades, setGrades] = useState<Grade[]>([
-    { id: 1, studentId: 1, studentName: 'John Doe', subject: 'Mathematics', score: 'D', percentage: 92, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 2, studentId: 2, studentName: 'Jane Smith', subject: 'English', score: 'C', percentage: 85, term: 'Term 1', assignment: 'Essay Assignment' },
-    { id: 3, studentId: 3, studentName: 'Michael Johnson', subject: 'Mathematics', score: 'P', percentage: 90, term: 'Term 1', assignment: 'Lab Report' },
-    { id: 4, studentId: 4, studentName: 'Emily Williams', subject: 'History', score: 'UP', percentage: 87, term: 'Term 1', assignment: 'Research Project' },
-    { id: 5, studentId: 5, studentName: 'David Brown', subject: 'English', score: 'UP', percentage: 88, term: 'Term 1', assignment: 'Literature Analysis' },
-    { id: 6, studentId: 6, studentName: 'Sarah Davis', subject: 'Physics', score: 'P', percentage: 91, term: 'Term 1', assignment: 'Physics Lab' },
-    { id: 7, studentId: 7, studentName: 'Chris Wilson', subject: 'Chemistry', score: 'C', percentage: 84, term: 'Term 1', assignment: 'Chemical Reactions' },
-    { id: 8, studentId: 8, studentName: 'Lisa Anderson', subject: 'Biology', score: 'D', percentage: 96, term: 'Term 1', assignment: 'Cell Biology Project' },
-    { id: 9, studentId: 1, studentName: 'John Doe', subject: 'English', score: 'C', percentage: 78, term: 'Term 4', assignment: 'Final Exam' },
-    { id: 10, studentId: 2, studentName: 'Jane Smith', subject: 'Science', score: 'UP', percentage: 82, term: 'Term 4', assignment: 'Final Project' },
-    { id: 11, studentId: 3, studentName: 'Michael Johnson', subject: 'Mathematics', score: 'D', percentage: 89, term: 'Term 4', assignment: 'Final Exam' },
-    { id: 12, studentId: 4, studentName: 'Emily Williams', subject: 'History', score: 'P', percentage: 85, term: 'Term 4', assignment: 'Year-end Assessment' },
-  ]);
-
-  const [finance, setFinance] = useState<Finance[]>([
-    { id: 1, studentId: 1, studentName: 'John Doe', amount: 500, date: '2023-09-15', status: 'Paid', description: 'School Fees - Term 1' },
-    { id: 2, studentId: 2, studentName: 'Jane Smith', amount: 300, date: '2023-09-20', status: 'Pending', description: 'Book Fees' },
-    { id: 3, studentId: 3, studentName: 'Michael Johnson', amount: 500, date: '2023-09-10', status: 'Paid', description: 'School Fees - Term 1' },
-    { id: 4, studentId: 4, studentName: 'Emily Williams', amount: 450, date: '2023-09-25', status: 'Paid', description: 'Uniform & Books' },
-    { id: 5, studentId: 5, studentName: 'David Brown', amount: 520, date: '2023-09-12', status: 'Paid', description: 'School Fees - Term 1' },
-    { id: 6, studentId: 6, studentName: 'Sarah Davis', amount: 380, date: '2023-09-18', status: 'Pending', description: 'Lab Equipment Fee' },
-    { id: 7, studentId: 7, studentName: 'Chris Wilson', amount: 500, date: '2023-09-14', status: 'Paid', description: 'School Fees - Term 1' },
-    { id: 8, studentId: 8, studentName: 'Lisa Anderson', amount: 600, date: '2023-09-08', status: 'Paid', description: 'Final Year Fee' },
-  ]);
-
-  const [staff, setStaff] = useState<Staff[]>([
-    { id: 1, name: 'James Anderson', position: 'Principal', department: 'Administration', email: 'j.anderson@ialibu.edu', phone: '123-456-7890', salary: 80000 },
-    { id: 2, name: 'Mary Taylor', position: 'Vice Principal', department: 'Administration', email: 'm.taylor@ialibu.edu', phone: '123-456-7891', salary: 70000 },
-    { id: 3, name: 'Robert Thomas', position: 'Math Teacher', department: 'Academics', email: 'r.thomas@ialibu.edu', phone: '123-456-7892', salary: 50000 },
-    { id: 4, name: 'Sarah Davis', position: 'English Teacher', department: 'Academics', email: 's.davis@ialibu.edu', phone: '123-456-7893', salary: 48000 },
-  ]);
 
   // Calculate stats dynamically
   const stats = {
