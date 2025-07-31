@@ -11,6 +11,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { useDataStore } from '@/hooks/useDataStore';
+import { type Student, type Attendance, type Grade } from '@/lib/dataStore';
 import {
   Users,
   UserCheck,
@@ -33,41 +35,11 @@ import {
   PieChart,
   FileBarChart,
   BookOpen,
-  GraduationCap
+  GraduationCap,
+  Sync
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-
-interface Student {
-  id: number;
-  name: string;
-  grade: string;
-  class: string;
-  subjects: string[];
-  email?: string;
-  phone?: string;
-}
-
-interface Attendance {
-  id: number;
-  date: string;
-  studentId: number;
-  studentName: string;
-  status: 'Present' | 'Absent' | 'Late';
-  subject: string;
-  notes?: string;
-}
-
-interface Grade {
-  id: number;
-  studentId: number;
-  studentName: string;
-  subject: string;
-  score: string;
-  percentage: number;
-  term: string;
-  assignment: string;
-}
 
 export default function StaffDashboard() {
   const navigate = useNavigate();
