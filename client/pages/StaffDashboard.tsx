@@ -862,7 +862,7 @@ export default function StaffDashboard() {
                         <TableHead>Name</TableHead>
                         <TableHead>Grade</TableHead>
                         <TableHead>Class</TableHead>
-                        <TableHead>Subject</TableHead>
+                        <TableHead>Subjects</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
@@ -874,7 +874,31 @@ export default function StaffDashboard() {
                           <TableCell>{student.name}</TableCell>
                           <TableCell>{student.grade}</TableCell>
                           <TableCell>{student.class}</TableCell>
-                          <TableCell>{student.subject}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <div className="flex flex-wrap gap-1 max-w-xs">
+                                {student.subjects.slice(0, 3).map((subject, idx) => (
+                                  <Badge key={idx} variant="outline" className="text-xs">
+                                    {subject.length > 12 ? subject.substring(0, 12) + '...' : subject}
+                                  </Badge>
+                                ))}
+                                {student.subjects.length > 3 && (
+                                  <Badge variant="secondary" className="text-xs">
+                                    +{student.subjects.length - 3} more
+                                  </Badge>
+                                )}
+                              </div>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => openSubjectModal(student)}
+                                className="ml-2"
+                              >
+                                <BookOpen className="h-3 w-3 mr-1" />
+                                Manage
+                              </Button>
+                            </div>
+                          </TableCell>
                           <TableCell>{student.email}</TableCell>
                           <TableCell>
                             <div className="flex gap-2">
