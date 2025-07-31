@@ -42,65 +42,10 @@ import {
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
-interface Student {
-  id: number;
-  name: string;
-  grade: string;
-  class: string;
-  subjects: string[];
-  dob: string;
-  gender: string;
-  address: string;
-  email?: string;
-  phone?: string;
-  guardianName?: string;
-  guardianPhone?: string;
-}
-
-interface Attendance {
-  id: number;
-  date: string;
-  studentId: number;
-  studentName: string;
-  status: 'Present' | 'Absent' | 'Late';
-  subject: string;
-  notes?: string;
-}
-
-interface Grade {
-  id: number;
-  studentId: number;
-  studentName: string;
-  subject: string;
-  score: string;
-  percentage: number;
-  term: string;
-  assignment: string;
-}
-
-interface Finance {
-  id: number;
-  studentId: number;
-  studentName: string;
-  amount: number;
-  date: string;
-  status: 'Paid' | 'Pending';
-  description: string;
-}
-
-interface Staff {
-  id: number;
-  name: string;
-  position: string;
-  department: string;
-  email: string;
-  phone: string;
-  salary?: number;
-}
-
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const dataStore = useDataStore();
   const [activeSection, setActiveSection] = useState('dashboard');
 
   // Search states
