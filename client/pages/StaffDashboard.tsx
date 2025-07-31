@@ -132,6 +132,7 @@ export default function StaffDashboard() {
     'Social Science',
     'Business Studies',
     'Personal Development',
+    'Religious Education',
     'Arts',
     'Information Technology',
     'Technology & Industrial Arts',
