@@ -291,8 +291,8 @@ export default function AdminDashboard() {
   };
 
   // CRUD Functions for Staff
-  const handleAddStaff = (staff: Omit<Staff, 'id'>) => {
-    const newStaff = { ...staff, id: Math.max(...staff.map(s => s.id)) + 1 };
+  const handleAddStaff = (newStaffData: Omit<Staff, 'id'>) => {
+    const newStaff = { ...newStaffData, id: Math.max(...staff.map(s => s.id)) + 1 };
     setStaff(prev => [...prev, newStaff]);
     toast({ title: 'Success', description: 'Staff member added successfully' });
     setStaffModal({ open: false, mode: 'add', data: null });
