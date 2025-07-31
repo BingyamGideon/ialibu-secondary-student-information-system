@@ -44,6 +44,7 @@ interface Student {
   name: string;
   grade: string;
   class: string;
+  subjects: string[];
   dob: string;
   gender: string;
   address: string;
