@@ -2058,6 +2058,8 @@ function AdminStudentForm({
       address: '',
       email: '',
       phone: '',
+      guardianName: '',
+      guardianPhone: '',
     }
   );
 
