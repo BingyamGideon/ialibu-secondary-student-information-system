@@ -84,19 +84,12 @@ export default function AdminDashboard() {
   const [financeModal, setFinanceModal] = useState({ open: false, mode: 'add', data: null as Finance | null });
   const [staffModal, setStaffModal] = useState({ open: false, mode: 'add', data: null as Staff | null });
 
-  // Sample data
-  const [students, setStudents] = useState<Student[]>([
-    { id: 1, name: 'John Doe', grade: 'Grade 9', class: '9A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Business Studies', 'Personal Development', 'Religious Education', 'Arts'], dob: '2007-05-15', gender: 'Male', address: '123 Main St, Ialibu', email: 'john.doe@example.com', phone: '123-456-7890', guardianName: 'Robert Doe', guardianPhone: '+675-234-5678' },
-    { id: 2, name: 'Jane Smith', grade: 'Grade 9', class: '9A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Information Technology', 'Personal Development', 'Arts', 'Family and Consumer Studies'], dob: '2008-03-22', gender: 'Female', address: '456 Oak Ave, Ialibu', email: 'jane.smith@example.com', phone: '123-456-7891', guardianName: 'Mary Smith', guardianPhone: '+675-345-6789' },
-    { id: 3, name: 'Michael Johnson', grade: 'Grade 9', class: '9B', subjects: ['Mathematics', 'English', 'Science', 'Business Studies', 'Technology & Industrial Arts', 'Personal Development', 'Arts'], dob: '2006-11-08', gender: 'Male', address: '789 Pine Rd, Ialibu', email: 'michael.johnson@example.com', phone: '123-456-7892', guardianName: 'James Johnson', guardianPhone: '+675-456-7890' },
-    { id: 4, name: 'Emily Williams', grade: 'Grade 10', class: '10A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Business Studies', 'Information Technology', 'Arts', 'Personal Development'], dob: '2007-07-12', gender: 'Female', address: '101 Maple St, Ialibu', email: 'emily.williams@example.com', phone: '123-456-7893', guardianName: 'Patricia Williams', guardianPhone: '+675-567-8901' },
-    { id: 5, name: 'David Brown', grade: 'Grade 10', class: '10B', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Technology & Industrial Arts', 'Personal Development', 'Family and Consumer Studies'], dob: '2006-09-20', gender: 'Male', address: '202 Cedar Ln, Ialibu', email: 'david.brown@example.com', phone: '123-456-7894', guardianName: 'Susan Brown', guardianPhone: '+675-678-9012' },
-    { id: 6, name: 'Sarah Davis', grade: 'Grade 11', class: '11A', subjects: ['Language and Literature', 'General Mathematics', 'Biology', 'Chemistry', 'Physics', 'Economics', 'Geography', 'Personal Development'], dob: '2005-12-03', gender: 'Female', address: '303 Birch St, Ialibu', email: 'sarah.davis@example.com', phone: '123-456-7895', guardianName: 'Mark Davis', guardianPhone: '+675-789-0123' },
-    { id: 7, name: 'Chris Wilson', grade: 'Grade 11', class: '11C', subjects: ['Language and Literature', 'General Mathematics', 'Chemistry', 'Biology', 'Economics', 'History', 'Legal Studies', 'Personal Development'], dob: '2005-08-17', gender: 'Male', address: '404 Elm Ave, Ialibu', email: 'chris.wilson@example.com', phone: '123-456-7896', guardianName: 'Linda Wilson', guardianPhone: '+675-890-1234' },
-    { id: 8, name: 'Lisa Anderson', grade: 'Grade 12', class: '12A', subjects: ['Language and Literature', 'Advanced Mathematics', 'Biology', 'Chemistry', 'Physics', 'Economics', 'Business Studies', 'Accounting'], dob: '2004-04-25', gender: 'Female', address: '505 Spruce Rd, Ialibu', email: 'lisa.anderson@example.com', phone: '123-456-7897', guardianName: 'Karen Anderson', guardianPhone: '+675-901-2345' },
-    { id: 9, name: 'Kevin Taylor', grade: 'Grade 12', class: '12B', subjects: ['Language and Literature', 'Advanced Mathematics', 'Physics', 'Chemistry', 'Economics', 'Business Studies', 'Computer Studies', 'Tourism Studies'], dob: '2004-07-10', gender: 'Male', address: '606 Willow St, Ialibu', email: 'kevin.taylor@example.com', phone: '123-456-7898', guardianName: 'Michelle Taylor', guardianPhone: '+675-012-3456' },
-    { id: 10, name: 'Amy Martinez', grade: 'Grade 9', class: '9C', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Arts', 'Personal Development', 'Religious Education', 'Information Technology'], dob: '2007-02-14', gender: 'Female', address: '707 Oak Hill, Ialibu', email: 'amy.martinez@example.com', phone: '123-456-7899', guardianName: 'Carlos Martinez', guardianPhone: '+675-123-4567' },
-  ]);
+  // Use shared data store
+  const students = dataStore.students;
+  const attendance = dataStore.attendance;
+  const grades = dataStore.grades;
+  const finance = dataStore.finance;
+  const staff = dataStore.staff;
 
   const [attendance, setAttendance] = useState<Attendance[]>([
     { id: 1, date: '2024-01-15', studentId: 1, studentName: 'John Doe', status: 'Present', subject: 'Mathematics', notes: '' },
