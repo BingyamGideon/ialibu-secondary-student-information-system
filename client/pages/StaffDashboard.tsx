@@ -459,16 +459,10 @@ export default function StaffDashboard() {
     );
 
     const distribution = {
-      'A+': allGrades.filter(g => g.score === 'A+').length,
-      'A': allGrades.filter(g => g.score === 'A').length,
-      'A-': allGrades.filter(g => g.score === 'A-').length,
-      'B+': allGrades.filter(g => g.score === 'B+').length,
-      'B': allGrades.filter(g => g.score === 'B').length,
-      'B-': allGrades.filter(g => g.score === 'B-').length,
-      'C+': allGrades.filter(g => g.score === 'C+').length,
-      'C': allGrades.filter(g => g.score === 'C').length,
-      'C-': allGrades.filter(g => g.score === 'C-').length,
       'D': allGrades.filter(g => g.score === 'D').length,
+      'C': allGrades.filter(g => g.score === 'C').length,
+      'UP': allGrades.filter(g => g.score === 'UP').length,
+      'P': allGrades.filter(g => g.score === 'P').length,
       'F': allGrades.filter(g => g.score === 'F').length,
     };
 
