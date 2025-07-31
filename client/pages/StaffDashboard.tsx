@@ -2418,6 +2418,7 @@ function GradeForm({
             <SelectItem value="Term 1">Term 1</SelectItem>
             <SelectItem value="Term 2">Term 2</SelectItem>
             <SelectItem value="Term 3">Term 3</SelectItem>
+            <SelectItem value="Term 4">Term 4</SelectItem>
           </SelectContent>
         </Select>
       </div>
