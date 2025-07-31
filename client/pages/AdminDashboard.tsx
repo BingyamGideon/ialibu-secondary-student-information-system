@@ -162,14 +162,18 @@ export default function AdminDashboard() {
   ]);
 
   const [grades, setGrades] = useState<Grade[]>([
-    { id: 1, studentId: 1, studentName: 'John Doe', subject: 'Mathematics', score: 'A', percentage: 92, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 2, studentId: 2, studentName: 'Jane Smith', subject: 'English', score: 'B', percentage: 85, term: 'Term 1', assignment: 'Essay Assignment' },
-    { id: 3, studentId: 3, studentName: 'Michael Johnson', subject: 'Mathematics', score: 'A-', percentage: 90, term: 'Term 1', assignment: 'Lab Report' },
-    { id: 4, studentId: 4, studentName: 'Emily Williams', subject: 'History', score: 'B+', percentage: 87, term: 'Term 1', assignment: 'Research Project' },
-    { id: 5, studentId: 5, studentName: 'David Brown', subject: 'English', score: 'B+', percentage: 88, term: 'Term 1', assignment: 'Literature Analysis' },
-    { id: 6, studentId: 6, studentName: 'Sarah Davis', subject: 'Physics', score: 'A-', percentage: 91, term: 'Term 1', assignment: 'Physics Lab' },
-    { id: 7, studentId: 7, studentName: 'Chris Wilson', subject: 'Chemistry', score: 'B', percentage: 84, term: 'Term 1', assignment: 'Chemical Reactions' },
-    { id: 8, studentId: 8, studentName: 'Lisa Anderson', subject: 'Biology', score: 'A+', percentage: 96, term: 'Term 1', assignment: 'Cell Biology Project' },
+    { id: 1, studentId: 1, studentName: 'John Doe', subject: 'Mathematics', score: 'D', percentage: 92, term: 'Term 1', assignment: 'Midterm Exam' },
+    { id: 2, studentId: 2, studentName: 'Jane Smith', subject: 'English', score: 'C', percentage: 85, term: 'Term 1', assignment: 'Essay Assignment' },
+    { id: 3, studentId: 3, studentName: 'Michael Johnson', subject: 'Mathematics', score: 'P', percentage: 90, term: 'Term 1', assignment: 'Lab Report' },
+    { id: 4, studentId: 4, studentName: 'Emily Williams', subject: 'History', score: 'UP', percentage: 87, term: 'Term 1', assignment: 'Research Project' },
+    { id: 5, studentId: 5, studentName: 'David Brown', subject: 'English', score: 'UP', percentage: 88, term: 'Term 1', assignment: 'Literature Analysis' },
+    { id: 6, studentId: 6, studentName: 'Sarah Davis', subject: 'Physics', score: 'P', percentage: 91, term: 'Term 1', assignment: 'Physics Lab' },
+    { id: 7, studentId: 7, studentName: 'Chris Wilson', subject: 'Chemistry', score: 'C', percentage: 84, term: 'Term 1', assignment: 'Chemical Reactions' },
+    { id: 8, studentId: 8, studentName: 'Lisa Anderson', subject: 'Biology', score: 'D', percentage: 96, term: 'Term 1', assignment: 'Cell Biology Project' },
+    { id: 9, studentId: 1, studentName: 'John Doe', subject: 'English', score: 'C', percentage: 78, term: 'Term 4', assignment: 'Final Exam' },
+    { id: 10, studentId: 2, studentName: 'Jane Smith', subject: 'Science', score: 'UP', percentage: 82, term: 'Term 4', assignment: 'Final Project' },
+    { id: 11, studentId: 3, studentName: 'Michael Johnson', subject: 'Mathematics', score: 'D', percentage: 89, term: 'Term 4', assignment: 'Final Exam' },
+    { id: 12, studentId: 4, studentName: 'Emily Williams', subject: 'History', score: 'P', percentage: 85, term: 'Term 4', assignment: 'Year-end Assessment' },
   ]);
 
   const [finance, setFinance] = useState<Finance[]>([
