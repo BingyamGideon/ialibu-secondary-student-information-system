@@ -25,7 +25,7 @@ export default function Index() {
     userType: 'admin' as 'admin' | 'staff' 
   });
   
-  const [users] = useState<User[]>([
+  const [users, setUsers] = useState<User[]>([
     { username: 'admin', password: 'admin123', type: 'admin' },
     { username: 'staff', password: 'staff123', type: 'staff' },
   ]);
