@@ -50,6 +50,8 @@ interface Student {
   address: string;
   email?: string;
   phone?: string;
+  guardianName?: string;
+  guardianPhone?: string;
 }
 
 interface Attendance {
@@ -858,6 +860,7 @@ export default function AdminDashboard() {
                         <TableHead>Class</TableHead>
                         <TableHead>Date of Birth</TableHead>
                         <TableHead>Gender</TableHead>
+                        <TableHead>Parent/Guardian Contact</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -870,6 +873,19 @@ export default function AdminDashboard() {
                           <TableCell>{student.class}</TableCell>
                           <TableCell>{student.dob}</TableCell>
                           <TableCell>{student.gender}</TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              {student.guardianName && (
+                                <div className="font-medium">{student.guardianName}</div>
+                              )}
+                              {student.guardianPhone && (
+                                <div className="text-gray-600">{student.guardianPhone}</div>
+                              )}
+                              {!student.guardianName && !student.guardianPhone && (
+                                <span className="text-gray-400">Not provided</span>
+                              )}
+                            </div>
+                          </TableCell>
                           <TableCell>
                             <div className="flex gap-2">
                               <Button 
