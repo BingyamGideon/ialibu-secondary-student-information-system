@@ -140,39 +140,10 @@ export default function StaffDashboard() {
     'Textile Technology'
   ];
 
-  // Sample data for staff dashboard (limited access - only their assigned students)
-  const [myStudents, setMyStudents] = useState<Student[]>([
-    { id: 1, name: 'John Doe', grade: 'Grade 9', class: '9A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Business Studies', 'Personal Development', 'Arts'], email: 'john.doe@example.com', phone: '123-456-7890' },
-    { id: 2, name: 'Jane Smith', grade: 'Grade 9', class: '9A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Information Technology', 'Personal Development', 'Arts', 'Family and Consumer Studies'], email: 'jane.smith@example.com', phone: '123-456-7891' },
-    { id: 3, name: 'Peter Wilson', grade: 'Grade 9', class: '9B', subjects: ['Mathematics', 'English', 'Science', 'Business Studies', 'Technology & Industrial Arts', 'Personal Development', 'Arts'], email: 'peter.wilson@example.com', phone: '123-456-7899' },
-    { id: 4, name: 'Emily Williams', grade: 'Grade 10', class: '10A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Business Studies', 'Information Technology', 'Arts', 'Personal Development'], email: 'emily.williams@example.com', phone: '123-456-7892' },
-    { id: 5, name: 'Michael Brown', grade: 'Grade 10', class: '10A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Technology & Industrial Arts', 'Personal Development', 'Family and Consumer Studies'], email: 'michael.brown@example.com', phone: '123-456-7893' },
-    { id: 6, name: 'Sarah Johnson', grade: 'Grade 11', class: '11A', subjects: ['Language and Literature', 'General Mathematics', 'Biology', 'Chemistry', 'Physics', 'Economics', 'Geography', 'Personal Development'], email: 'sarah.johnson@example.com', phone: '123-456-7894' },
-    { id: 7, name: 'David Lee', grade: 'Grade 12', class: '12B', subjects: ['Language and Literature', 'Advanced Mathematics', 'Physics', 'Chemistry', 'Economics', 'Business Studies', 'Accounting', 'Computer Studies'], email: 'david.lee@example.com', phone: '123-456-7895' },
-  ]);
-
-  const [myAttendance, setMyAttendance] = useState<Attendance[]>([
-    { id: 1, date: '2024-01-15', studentId: 1, studentName: 'John Doe', status: 'Present', subject: 'Mathematics', notes: '' },
-    { id: 2, date: '2024-01-15', studentId: 2, studentName: 'Jane Smith', status: 'Absent', subject: 'Mathematics', notes: 'Sick leave' },
-    { id: 3, date: '2024-01-15', studentId: 3, studentName: 'Peter Wilson', status: 'Late', subject: 'Mathematics', notes: '10 minutes late' },
-    { id: 4, date: '2024-01-15', studentId: 4, studentName: 'Emily Williams', status: 'Present', subject: 'Mathematics', notes: '' },
-    { id: 5, date: '2024-01-15', studentId: 5, studentName: 'Michael Brown', status: 'Present', subject: 'Mathematics', notes: '' },
-    { id: 6, date: '2024-01-15', studentId: 6, studentName: 'Sarah Johnson', status: 'Present', subject: 'Mathematics', notes: '' },
-    { id: 7, date: '2024-01-15', studentId: 7, studentName: 'David Lee', status: 'Absent', subject: 'Mathematics', notes: 'Medical appointment' },
-  ]);
-
-  const [myGrades, setMyGrades] = useState<Grade[]>([
-    { id: 1, studentId: 1, studentName: 'John Doe', subject: 'Mathematics', score: 'D', percentage: 92, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 2, studentId: 2, studentName: 'Jane Smith', subject: 'Mathematics', score: 'C', percentage: 85, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 3, studentId: 3, studentName: 'Peter Wilson', subject: 'Mathematics', score: 'UP', percentage: 87, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 4, studentId: 4, studentName: 'Emily Williams', subject: 'Mathematics', score: 'P', percentage: 90, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 5, studentId: 5, studentName: 'Michael Brown', subject: 'Mathematics', score: 'UP', percentage: 88, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 6, studentId: 6, studentName: 'Sarah Johnson', subject: 'Mathematics', score: 'D', percentage: 94, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 7, studentId: 7, studentName: 'David Lee', subject: 'Mathematics', score: 'P', percentage: 91, term: 'Term 1', assignment: 'Midterm Exam' },
-    { id: 8, studentId: 1, studentName: 'John Doe', subject: 'English', score: 'C', percentage: 78, term: 'Term 4', assignment: 'Final Exam' },
-    { id: 9, studentId: 2, studentName: 'Jane Smith', subject: 'Science', score: 'UP', percentage: 82, term: 'Term 4', assignment: 'Final Project' },
-    { id: 10, studentId: 3, studentName: 'Peter Wilson', subject: 'Mathematics', score: 'D', percentage: 89, term: 'Term 4', assignment: 'Final Exam' },
-  ]);
+  // For staff dashboard, show all students (in real implementation, this would be filtered by assigned classes)
+  const myStudents = dataStore.students;
+  const myAttendance = dataStore.attendance;
+  const myGrades = dataStore.grades;
 
   // Calculate stats dynamically
   const stats = {
