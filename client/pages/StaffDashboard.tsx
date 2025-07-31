@@ -44,6 +44,7 @@ import { useNavigate } from 'react-router-dom';
 export default function StaffDashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const dataStore = useDataStore();
   const [activeSection, setActiveSection] = useState('dashboard');
 
   // Search states
