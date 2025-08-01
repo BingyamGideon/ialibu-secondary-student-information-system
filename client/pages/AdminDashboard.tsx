@@ -2596,11 +2596,10 @@ function StaffForm({
             <SelectValue placeholder="Select Department" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Administration">Administration</SelectItem>
-            <SelectItem value="Academics">Academics</SelectItem>
-            <SelectItem value="Sports">Sports</SelectItem>
-            <SelectItem value="Library">Library</SelectItem>
-            <SelectItem value="Maintenance">Maintenance</SelectItem>
+            <SelectItem value="Admin">Admin</SelectItem>
+            <SelectItem value="Science">Science</SelectItem>
+            <SelectItem value="Social Science">Social Science</SelectItem>
+            <SelectItem value="Business">Business</SelectItem>
           </SelectContent>
         </Select>
       </div>
