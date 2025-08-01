@@ -70,6 +70,9 @@ export default function AdminDashboard() {
   const [gradeFilterClass, setGradeFilterClass] = useState('all');
   const [selectedStudentForGrade, setSelectedStudentForGrade] = useState<number | null>(null);
 
+  // Staff department filter state
+  const [selectedDepartment, setSelectedDepartment] = useState<string>('all');
+
   // Report states
   const [selectedReportType, setSelectedReportType] = useState<string | null>(null);
   const [reportGrade, setReportGrade] = useState('all');
