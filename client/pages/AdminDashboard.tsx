@@ -1459,9 +1459,10 @@ export default function AdminDashboard() {
                     <DialogHeader>
                       <DialogTitle>{staffModal.mode === 'add' ? 'Add Staff Member' : 'Edit Staff Member'}</DialogTitle>
                     </DialogHeader>
-                    <StaffForm 
+                    <StaffForm
                       mode={staffModal.mode}
                       staff={staffModal.data}
+                      preselectedDepartment={selectedDepartment}
                       onSave={(staff) => {
                         if (staffModal.mode === 'add') {
                           handleAddStaff(staff);
