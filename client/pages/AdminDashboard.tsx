@@ -1469,6 +1469,60 @@ export default function AdminDashboard() {
                 </Dialog>
               </div>
 
+              {/* Department Filter Buttons */}
+              <div className="mb-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-sm font-medium text-gray-700">Filter by Department:</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={selectedDepartment === 'all' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setSelectedDepartment('all')}
+                    className="flex items-center gap-2"
+                  >
+                    <Users className="h-4 w-4" />
+                    All Departments
+                  </Button>
+                  <Button
+                    variant={selectedDepartment === 'Admin' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setSelectedDepartment('Admin')}
+                    className="flex items-center gap-2"
+                  >
+                    <UserCog className="h-4 w-4" />
+                    Admin
+                  </Button>
+                  <Button
+                    variant={selectedDepartment === 'Science' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setSelectedDepartment('Science')}
+                    className="flex items-center gap-2"
+                  >
+                    <FileText className="h-4 w-4" />
+                    Science
+                  </Button>
+                  <Button
+                    variant={selectedDepartment === 'Social Science' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setSelectedDepartment('Social Science')}
+                    className="flex items-center gap-2"
+                  >
+                    <Users className="h-4 w-4" />
+                    Social Science
+                  </Button>
+                  <Button
+                    variant={selectedDepartment === 'Business' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setSelectedDepartment('Business')}
+                    className="flex items-center gap-2"
+                  >
+                    <TrendingUp className="h-4 w-4" />
+                    Business
+                  </Button>
+                </div>
+              </div>
+
               <div className="mb-4">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
