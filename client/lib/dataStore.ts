@@ -146,10 +146,14 @@ class DataStore {
         { id: 8, studentId: 8, studentName: 'Lisa Anderson', amount: 600, date: '2023-09-08', status: 'Paid', description: 'Final Year Fee' },
       ],
       staff: [
-        { id: 1, name: 'James Anderson', position: 'Principal', department: 'Administration', email: 'j.anderson@ialibu.edu', phone: '123-456-7890', salary: 80000 },
-        { id: 2, name: 'Mary Taylor', position: 'Vice Principal', department: 'Administration', email: 'm.taylor@ialibu.edu', phone: '123-456-7891', salary: 70000 },
-        { id: 3, name: 'Robert Thomas', position: 'Math Teacher', department: 'Academics', email: 'r.thomas@ialibu.edu', phone: '123-456-7892', salary: 50000 },
-        { id: 4, name: 'Sarah Davis', position: 'English Teacher', department: 'Academics', email: 's.davis@ialibu.edu', phone: '123-456-7893', salary: 48000 },
+        { id: 1, name: 'James Anderson', position: 'Principal', department: 'Admin', email: 'j.anderson@ialibu.edu', phone: '123-456-7890', salary: 80000 },
+        { id: 2, name: 'Mary Taylor', position: 'Vice Principal', department: 'Admin', email: 'm.taylor@ialibu.edu', phone: '123-456-7891', salary: 70000 },
+        { id: 3, name: 'Robert Thomas', position: 'Math Teacher', department: 'Science', email: 'r.thomas@ialibu.edu', phone: '123-456-7892', salary: 50000 },
+        { id: 4, name: 'Sarah Davis', position: 'Chemistry Teacher', department: 'Science', email: 's.davis@ialibu.edu', phone: '123-456-7893', salary: 48000 },
+        { id: 5, name: 'Michael Johnson', position: 'History Teacher', department: 'Social Science', email: 'm.johnson@ialibu.edu', phone: '123-456-7894', salary: 47000 },
+        { id: 6, name: 'Lisa Wilson', position: 'Geography Teacher', department: 'Social Science', email: 'l.wilson@ialibu.edu', phone: '123-456-7895', salary: 46000 },
+        { id: 7, name: 'David Martinez', position: 'Business Studies Teacher', department: 'Business', email: 'd.martinez@ialibu.edu', phone: '123-456-7896', salary: 49000 },
+        { id: 8, name: 'Emma Thompson', position: 'Economics Teacher', department: 'Business', email: 'e.thompson@ialibu.edu', phone: '123-456-7897', salary: 48500 },
       ],
       lastUpdated: new Date().toISOString(),
       version: 1
