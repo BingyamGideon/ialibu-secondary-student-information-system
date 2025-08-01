@@ -1452,7 +1452,7 @@ export default function AdminDashboard() {
                   <DialogTrigger asChild>
                     <Button onClick={() => setStaffModal({ open: true, mode: 'add', data: null })}>
                       <Plus className="mr-2 h-4 w-4" />
-                      Add Staff
+                      Add Staff {selectedDepartment !== 'all' && `to ${selectedDepartment}`}
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-md">
