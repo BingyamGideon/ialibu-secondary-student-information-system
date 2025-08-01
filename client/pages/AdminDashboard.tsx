@@ -2597,22 +2597,24 @@ function FinanceForm({
 }
 
 // Staff Form Component
-function StaffForm({ 
-  mode, 
-  staff, 
-  onSave, 
-  onCancel 
-}: { 
-  mode: 'add' | 'edit'; 
-  staff: Staff | null; 
-  onSave: (staff: Omit<Staff, 'id'> | Staff) => void; 
-  onCancel: () => void; 
+function StaffForm({
+  mode,
+  staff,
+  preselectedDepartment,
+  onSave,
+  onCancel
+}: {
+  mode: 'add' | 'edit';
+  staff: Staff | null;
+  preselectedDepartment?: string;
+  onSave: (staff: Omit<Staff, 'id'> | Staff) => void;
+  onCancel: () => void;
 }) {
   const [formData, setFormData] = useState<Partial<Staff>>(
     staff || {
       name: '',
       position: '',
-      department: '',
+      department: preselectedDepartment && preselectedDepartment !== 'all' ? preselectedDepartment : '',
       email: '',
       phone: '',
       salary: 0,
