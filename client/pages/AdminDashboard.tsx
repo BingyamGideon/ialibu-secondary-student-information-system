@@ -37,7 +37,7 @@ import {
   BarChart3,
   PieChart,
   FileBarChart,
-  Sync
+  RefreshCw
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
