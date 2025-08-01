@@ -413,11 +413,17 @@ export default function AdminDashboard() {
     payment.status.toLowerCase().includes(financeSearch.toLowerCase())
   );
 
-  const filteredStaff = staff.filter(member => 
-    member.name.toLowerCase().includes(staffSearch.toLowerCase()) ||
-    member.position.toLowerCase().includes(staffSearch.toLowerCase()) ||
-    member.department.toLowerCase().includes(staffSearch.toLowerCase())
-  );
+  const filteredStaff = staff.filter(member => {
+    // Apply search filter
+    const matchesSearch = member.name.toLowerCase().includes(staffSearch.toLowerCase()) ||
+      member.position.toLowerCase().includes(staffSearch.toLowerCase()) ||
+      member.department.toLowerCase().includes(staffSearch.toLowerCase());
+
+    // Apply department filter
+    const matchesDepartment = selectedDepartment === 'all' || member.department === selectedDepartment;
+
+    return matchesSearch && matchesDepartment;
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
