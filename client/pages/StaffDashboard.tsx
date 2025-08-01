@@ -36,7 +36,7 @@ import {
   FileBarChart,
   BookOpen,
   GraduationCap,
-  Sync
+  RefreshCw
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
