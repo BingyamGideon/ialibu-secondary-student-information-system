@@ -2174,3 +2174,295 @@ function GradeForm({
     </form>
   );
 }
+
+// Student Report Form Component
+function StudentReportForm({
+  mode,
+  student,
+  report,
+  onSave,
+  onCancel
+}: {
+  mode: 'add' | 'edit';
+  student: Student;
+  report: StudentReport | null;
+  onSave: (report: Omit<StudentReport, 'id'>) => void;
+  onCancel: () => void;
+}) {
+  const [formData, setFormData] = useState<Partial<StudentReport>>(
+    report || {
+      studentId: student.id,
+      studentName: student.name,
+      grade: student.grade,
+      class: student.class,
+      term: 'Term 1',
+      academicYear: new Date().getFullYear().toString(),
+      attendance: '',
+      academicPerformance: '',
+      behaviorConduct: '',
+      extracurricularActivities: '',
+      areasOfStrength: '',
+      areasForImprovement: '',
+      teacherComments: '',
+      recommendations: '',
+      parentMeetingNotes: '',
+      createdBy: 'Staff Dashboard',
+      createdDate: new Date().toISOString(),
+      lastModified: new Date().toISOString()
+    }
+  );
+
+  const [emailAddress, setEmailAddress] = useState('');
+  const { toast } = useToast();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formData.term && formData.academicYear) {
+      onSave(formData as Omit<StudentReport, 'id'>);
+    }
+  };
+
+  const handleEmailReport = async () => {
+    if (!emailAddress) {
+      toast({ title: 'Error', description: 'Please enter an email address' });
+      return;
+    }
+    // Simulate email sending
+    toast({
+      title: 'Success',
+      description: `Student report has been sent to ${emailAddress}`
+    });
+  };
+
+  const handleDownloadReport = () => {
+    toast({
+      title: 'Download Started',
+      description: 'Student report is being downloaded as PDF'
+    });
+    // In real implementation, this would generate and download a PDF
+  };
+
+  const handlePrintReport = () => {
+    toast({
+      title: 'Printing',
+      description: 'Student report is being prepared for printing'
+    });
+    window.print();
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Student Info Header */}
+      <div className="bg-blue-50 p-4 rounded-lg">
+        <h3 className="font-semibold text-blue-900">Student Information</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2 text-sm">
+          <div>
+            <span className="text-blue-700">Name:</span>
+            <div className="font-medium">{student.name}</div>
+          </div>
+          <div>
+            <span className="text-blue-700">Grade:</span>
+            <div className="font-medium">{student.grade}</div>
+          </div>
+          <div>
+            <span className="text-blue-700">Class:</span>
+            <div className="font-medium">{student.class}</div>
+          </div>
+          <div>
+            <span className="text-blue-700">Subjects:</span>
+            <div className="font-medium">{student.subjects.length} enrolled</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Report Details */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="term">Term</Label>
+          <Select
+            value={formData.term || ''}
+            onValueChange={(value) => setFormData(prev => ({ ...prev, term: value }))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select Term" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Term 1">Term 1</SelectItem>
+              <SelectItem value="Term 2">Term 2</SelectItem>
+              <SelectItem value="Term 3">Term 3</SelectItem>
+              <SelectItem value="Term 4">Term 4</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label htmlFor="academicYear">Academic Year</Label>
+          <Input
+            id="academicYear"
+            value={formData.academicYear || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, academicYear: e.target.value }))}
+            placeholder="e.g., 2024"
+          />
+        </div>
+      </div>
+
+      {/* Report Sections */}
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="attendance">Attendance Record</Label>
+          <Textarea
+            id="attendance"
+            value={formData.attendance || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, attendance: e.target.value }))}
+            placeholder="Describe student's attendance pattern, rate, and any concerns..."
+            rows={3}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="academicPerformance">Academic Performance</Label>
+          <Textarea
+            id="academicPerformance"
+            value={formData.academicPerformance || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, academicPerformance: e.target.value }))}
+            placeholder="Assess student's academic achievements, progress in subjects, test scores..."
+            rows={4}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="behaviorConduct">Behavior and Conduct</Label>
+          <Textarea
+            id="behaviorConduct"
+            value={formData.behaviorConduct || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, behaviorConduct: e.target.value }))}
+            placeholder="Describe student's behavior, discipline, interaction with peers and teachers..."
+            rows={3}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="extracurricularActivities">Extracurricular Activities</Label>
+          <Textarea
+            id="extracurricularActivities"
+            value={formData.extracurricularActivities || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, extracurricularActivities: e.target.value }))}
+            placeholder="List student's participation in sports, clubs, competitions, leadership roles..."
+            rows={3}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="areasOfStrength">Areas of Strength</Label>
+            <Textarea
+              id="areasOfStrength"
+              value={formData.areasOfStrength || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, areasOfStrength: e.target.value }))}
+              placeholder="Identify student's key strengths and talents..."
+              rows={3}
+            />
+          </div>
+          <div>
+            <Label htmlFor="areasForImprovement">Areas for Improvement</Label>
+            <Textarea
+              id="areasForImprovement"
+              value={formData.areasForImprovement || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, areasForImprovement: e.target.value }))}
+              placeholder="Areas where student needs support or improvement..."
+              rows={3}
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="teacherComments">Teacher Comments</Label>
+          <Textarea
+            id="teacherComments"
+            value={formData.teacherComments || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, teacherComments: e.target.value }))}
+            placeholder="General comments about student's progress, work ethic, potential..."
+            rows={4}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="recommendations">Recommendations</Label>
+          <Textarea
+            id="recommendations"
+            value={formData.recommendations || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, recommendations: e.target.value }))}
+            placeholder="Suggestions for future learning, career guidance, support needed..."
+            rows={3}
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="parentMeetingNotes">Parent/Guardian Meeting Notes</Label>
+          <Textarea
+            id="parentMeetingNotes"
+            value={formData.parentMeetingNotes || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, parentMeetingNotes: e.target.value }))}
+            placeholder="Notes from parent-teacher meetings, concerns discussed, action plans..."
+            rows={3}
+          />
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="border-t pt-6">
+        <div className="flex flex-col gap-4">
+          {/* Email, Download, Print Actions */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="font-medium mb-3">Report Actions</h4>
+            <div className="flex gap-2 items-center mb-3">
+              <Input
+                placeholder="Enter email address to send report"
+                value={emailAddress}
+                onChange={(e) => setEmailAddress(e.target.value)}
+                className="flex-1"
+              />
+              <Button
+                type="button"
+                onClick={handleEmailReport}
+                className="flex items-center gap-1"
+              >
+                <Mail className="h-4 w-4" />
+                Email
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleDownloadReport}
+                className="flex items-center gap-1"
+              >
+                <Download className="h-4 w-4" />
+                Download PDF
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handlePrintReport}
+                className="flex items-center gap-1"
+              >
+                <Printer className="h-4 w-4" />
+                Print
+              </Button>
+            </div>
+          </div>
+
+          {/* Save/Cancel Buttons */}
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={onCancel}>
+              Cancel
+            </Button>
+            <Button type="submit">
+              {mode === 'add' ? 'Create Report' : 'Update Report'}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </form>
+  );
+}
