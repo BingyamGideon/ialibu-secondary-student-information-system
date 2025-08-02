@@ -19,6 +19,7 @@ export function useDataStore() {
     grades: data.grades,
     finance: data.finance,
     staff: data.staff,
+    reports: data.reports,
     lastUpdated: data.lastUpdated,
     version: data.version,
 
