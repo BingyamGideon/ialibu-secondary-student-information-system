@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { dataStore, type DataState, type Student, type Attendance, type Grade, type Finance, type Staff } from '@/lib/dataStore';
+import { dataStore, type DataState, type Student, type Attendance, type Grade, type Finance, type Staff, type StudentReport } from '@/lib/dataStore';
 
 export function useDataStore() {
   const [data, setData] = useState<DataState>(dataStore.getData());
