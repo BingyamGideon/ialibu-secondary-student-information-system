@@ -59,19 +59,27 @@ interface StudentReport {
   id: number;
   studentId: number;
   studentName: string;
+  gender: string;
   grade: string;
   class: string;
+  studentID: string;
   term: string;
   academicYear: string;
-  attendance: string;
-  academicPerformance: string;
-  behaviorConduct: string;
-  extracurricularActivities: string;
-  areasOfStrength: string;
-  areasForImprovement: string;
+  // Financial Status
+  financialStatus: 'Clear' | 'Not Cleared';
+  outstandingAmount: number;
+  // Academic Performance
+  gpa: number;
+  // Attendance Record
+  totalSchoolDays: number;
+  daysAbsent: number;
+  daysPresent: number;
+  attendancePercentage: number;
+  // Comments and Signatures
   teacherComments: string;
-  recommendations: string;
-  parentMeetingNotes: string;
+  classTeacherSignature: string;
+  principalSignature: string;
+  schoolStamp: boolean;
   createdBy: string;
   createdDate: string;
   lastModified: string;
