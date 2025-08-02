@@ -93,6 +93,7 @@ export default function AdminDashboard() {
   const grades = dataStore.grades;
   const finance = dataStore.finance;
   const staff = dataStore.staff;
+  const reports = dataStore.reports;
 
 
 
