@@ -12,7 +12,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useDataStore } from '@/hooks/useDataStore';
-import { type Student, type Attendance, type Grade } from '@/lib/dataStore';
+import { type Student, type Attendance, type Grade, type StudentReport } from '@/lib/dataStore';
 import {
   Users,
   UserCheck,
