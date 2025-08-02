@@ -225,6 +225,24 @@ export default function StaffDashboard() {
     toast({ title: 'Success', description: 'Grade deleted successfully' });
   };
 
+  // Report CRUD Functions
+  const handleAddReport = (report: Omit<StudentReport, 'id'>) => {
+    dataStore.addReport(report);
+    toast({ title: 'Success', description: 'Student report created successfully' });
+    setReportModal({ open: false, mode: 'add', data: null, student: null });
+  };
+
+  const handleUpdateReport = (report: StudentReport) => {
+    dataStore.updateReport(report);
+    toast({ title: 'Success', description: 'Student report updated successfully' });
+    setReportModal({ open: false, mode: 'add', data: null, student: null });
+  };
+
+  const handleDeleteReport = (reportId: number) => {
+    dataStore.deleteReport(reportId);
+    toast({ title: 'Success', description: 'Student report deleted successfully' });
+  };
+
   // Subject management functions
   const handleUpdateStudentSubjects = (studentId: number, newSubjects: string[]) => {
     if (newSubjects.length > 10) {
