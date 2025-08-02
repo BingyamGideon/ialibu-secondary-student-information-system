@@ -154,7 +154,7 @@ export default function StaffDashboard() {
   // Calculate stats dynamically
   const stats = {
     myStudents: myStudents.length,
-    avgGrade: myGrades.reduce((sum, grade) => sum + grade.percentage, 0) / myGrades.length || 0,
+    avgGrade: myGrades.length > 0 ? myGrades.reduce((sum, grade) => sum + grade.percentage, 0) / myGrades.length : 0,
     attendanceRate: myAttendance.length > 0 ? (myAttendance.filter(a => a.status === 'Present').length / myAttendance.length) * 100 : 0,
     assignedClasses: 3
   };
