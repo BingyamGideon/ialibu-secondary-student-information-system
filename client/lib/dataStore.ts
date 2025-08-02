@@ -443,6 +443,9 @@ class DataStore {
   }
 
   deleteReport(id: number): void {
+    if (!this.data.reports) {
+      this.data.reports = [];
+    }
     this.data.reports = this.data.reports.filter(r => r.id !== id);
     this.updateVersion();
     this.saveToStorage();
@@ -450,6 +453,9 @@ class DataStore {
   }
 
   getStudentReports(studentId: number): StudentReport[] {
+    if (!this.data.reports) {
+      this.data.reports = [];
+    }
     return this.data.reports.filter(r => r.studentId === studentId);
   }
 }
