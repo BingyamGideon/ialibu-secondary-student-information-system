@@ -149,6 +149,7 @@ export default function StaffDashboard() {
   const myStudents = dataStore.students;
   const myAttendance = dataStore.attendance;
   const myGrades = dataStore.grades;
+  const myReports = dataStore.reports;
 
   // Calculate stats dynamically
   const stats = {
