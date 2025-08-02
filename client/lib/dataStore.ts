@@ -430,6 +430,9 @@ class DataStore {
   }
 
   updateReport(report: StudentReport): void {
+    if (!this.data.reports) {
+      this.data.reports = [];
+    }
     const index = this.data.reports.findIndex(r => r.id === report.id);
     if (index !== -1) {
       this.data.reports[index] = { ...report, lastModified: new Date().toISOString() };
