@@ -1534,15 +1534,15 @@ export default function StaffDashboard() {
 
           {activeSection === 'reports' && (
             <div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">Student Reports</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Student Report Management</h2>
 
-              {/* Report Filters */}
+              {/* Class and Student Selection */}
               <Card className="mb-6">
                 <CardHeader>
-                  <CardTitle>Report Filters</CardTitle>
+                  <CardTitle>Select Class and Student</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-wrap gap-4 items-center">
+                  <div className="flex flex-wrap gap-4 items-center mb-4">
                     <div className="flex items-center gap-2">
                       <Label className="text-sm font-medium whitespace-nowrap">Filter by:</Label>
                     </div>
@@ -1556,10 +1556,10 @@ export default function StaffDashboard() {
                         }}
                       >
                         <SelectTrigger className="w-[160px]">
-                          <SelectValue placeholder="All Students" />
+                          <SelectValue placeholder="Select Grade" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">All Students</SelectItem>
+                          <SelectItem value="all">All Grades</SelectItem>
                           <SelectItem value="Grade 9">Grade 9</SelectItem>
                           <SelectItem value="Grade 10">Grade 10</SelectItem>
                           <SelectItem value="Grade 11">Grade 11</SelectItem>
@@ -1575,7 +1575,7 @@ export default function StaffDashboard() {
                           onValueChange={setReportClass}
                         >
                           <SelectTrigger className="w-[120px]">
-                            <SelectValue placeholder="All Classes" />
+                            <SelectValue placeholder="Select Class" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">All Classes</SelectItem>
@@ -1589,359 +1589,122 @@ export default function StaffDashboard() {
                       </div>
                     )}
                   </div>
+
+                  {/* Search Bar */}
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      placeholder="Search students by name..."
+                      value={reportSearch}
+                      onChange={(e) => setReportSearch(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
                 </CardContent>
               </Card>
 
-              {/* Report Types */}
-              <div className="grid gap-6">
-                {/* Student Performance Report */}
+              {/* Student List with Manage Report Buttons */}
+              {(reportGrade !== 'all' && reportClass !== 'all') && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <BarChart3 className="h-5 w-5" />
-                      Student Performance Report
-                    </CardTitle>
+                    <CardTitle>Students in {reportGrade} {reportClass}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="mb-4">
-                      <p className="text-gray-600 mb-4">
-                        Comprehensive performance analysis for {reportGrade !== 'all' && reportClass !== 'all' ? `${reportGrade} ${reportClass}` : 'all assigned students'}.
-                      </p>
-
-                      {selectedReportType === 'performance' ? (
-                        <div className="space-y-4">
-                          <div className="bg-gray-50 p-4 rounded-lg">
-                            <h4 className="font-semibold mb-3">Performance Summary</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                              {generateStudentPerformanceReport().map((student) => (
-                                <div key={student.id} className="bg-white p-3 rounded border">
-                                  <h5 className="font-medium">{student.name}</h5>
-                                  <p className="text-sm text-gray-600">{student.grade} {student.class}</p>
-                                  <div className="mt-2 space-y-1">
-                                    <div className="flex justify-between text-sm">
-                                      <span>Average Grade:</span>
-                                      <span className="font-medium">{student.averageGrade}%</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                      <span>Total Assessments:</span>
-                                      <span>{student.totalGrades}</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                      <span>Attendance Rate:</span>
-                                      <span>{student.attendanceRate}%</span>
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
+                    <div className="space-y-3">
+                      {myStudents
+                        .filter(student =>
+                          student.grade === reportGrade &&
+                          student.class === reportClass &&
+                          student.name.toLowerCase().includes(reportSearch.toLowerCase())
+                        )
+                        .map((student) => (
+                          <div key={student.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+                            <div className="flex items-center gap-4">
+                              <div>
+                                <h4 className="font-medium">{student.name}</h4>
+                                <p className="text-sm text-gray-600">{student.grade} {student.class}</p>
+                              </div>
+                              <div className="flex flex-wrap gap-1">
+                                <Badge variant="outline" className="text-xs">
+                                  {student.subjects.length} subjects
+                                </Badge>
+                                {myReports.filter(r => r.studentId === student.id).length > 0 && (
+                                  <Badge variant="secondary" className="text-xs">
+                                    {myReports.filter(r => r.studentId === student.id).length} reports
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                onClick={() => setReportModal({
+                                  open: true,
+                                  mode: 'add',
+                                  data: null,
+                                  student
+                                })}
+                                className="flex items-center gap-1"
+                              >
+                                <FileText className="h-4 w-4" />
+                                Manage Report
+                              </Button>
+                              {myReports.filter(r => r.studentId === student.id).length > 0 && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    const studentReports = myReports.filter(r => r.studentId === student.id);
+                                    if (studentReports.length > 0) {
+                                      setReportModal({
+                                        open: true,
+                                        mode: 'edit',
+                                        data: studentReports[0],
+                                        student
+                                      });
+                                    }
+                                  }}
+                                  className="flex items-center gap-1"
+                                >
+                                  <Edit className="h-4 w-4" />
+                                  View Reports
+                                </Button>
+                              )}
                             </div>
                           </div>
-
-                          <div className="flex gap-2 items-center">
-                            <Input
-                              placeholder="Enter email address"
-                              value={emailAddress}
-                              onChange={(e) => setEmailAddress(e.target.value)}
-                              className="flex-1"
-                            />
-                            <Button
-                              onClick={() => handleEmailReport('Student Performance')}
-                              disabled={isGeneratingReport}
-                            >
-                              <Mail className="mr-1 h-4 w-4" />
-                              Email
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handleDownloadReport('Student Performance')}
-                            >
-                              <Download className="mr-1 h-4 w-4" />
-                              Download PDF
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handlePrintReport('Student Performance')}
-                            >
-                              <Printer className="mr-1 h-4 w-4" />
-                              Print
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <Button
-                          onClick={() => setSelectedReportType('performance')}
-                          className="w-full"
-                        >
-                          Generate Performance Report
-                        </Button>
-                      )}
+                        ))}
                     </div>
                   </CardContent>
                 </Card>
+              )}
 
-                {/* Grade Distribution Report */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <PieChart className="h-5 w-5" />
-                      Grade Distribution Report
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="mb-4">
-                      <p className="text-gray-600 mb-4">
-                        Distribution of grades across {reportGrade !== 'all' ? reportGrade : 'all grades'}.
-                      </p>
+              {/* Report Management Modal */}
+              <Dialog open={reportModal.open} onOpenChange={(open) => setReportModal(prev => ({ ...prev, open }))}>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <FileText className="h-5 w-5" />
+                      {reportModal.mode === 'add' ? 'Create Student Report' : 'Edit Student Report'} - {reportModal.student?.name}
+                    </DialogTitle>
+                  </DialogHeader>
 
-                      {selectedReportType === 'distribution' ? (
-                        <div className="space-y-4">
-                          <div className="bg-gray-50 p-4 rounded-lg">
-                            <h4 className="font-semibold mb-3">Grade Distribution</h4>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                              {Object.entries(generateGradeDistribution().distribution).map(([grade, count]) => (
-                                <div key={grade} className="bg-white p-3 rounded border text-center">
-                                  <div className="font-semibold text-lg">{count}</div>
-                                  <div className="text-sm text-gray-600">Grade {grade}</div>
-                                  <div className="text-xs text-gray-500">
-                                    {generateGradeDistribution().total > 0
-                                      ? Math.round((count / generateGradeDistribution().total) * 100)
-                                      : 0}%
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                            <div className="mt-4 text-center">
-                              <span className="text-sm text-gray-600">
-                                Total Assessments: {generateGradeDistribution().total}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="flex gap-2 items-center">
-                            <Input
-                              placeholder="Enter email address"
-                              value={emailAddress}
-                              onChange={(e) => setEmailAddress(e.target.value)}
-                              className="flex-1"
-                            />
-                            <Button
-                              onClick={() => handleEmailReport('Grade Distribution')}
-                              disabled={isGeneratingReport}
-                            >
-                              <Mail className="mr-1 h-4 w-4" />
-                              Email
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handleDownloadReport('Grade Distribution')}
-                            >
-                              <Download className="mr-1 h-4 w-4" />
-                              Download PDF
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handlePrintReport('Grade Distribution')}
-                            >
-                              <Printer className="mr-1 h-4 w-4" />
-                              Print
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <Button
-                          onClick={() => setSelectedReportType('distribution')}
-                          className="w-full"
-                        >
-                          Generate Distribution Report
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Attendance Summary Report */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <UserCheck className="h-5 w-5" />
-                      Attendance Summary Report
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="mb-4">
-                      <p className="text-gray-600 mb-4">
-                        Detailed attendance analysis for {reportGrade !== 'all' && reportClass !== 'all' ? `${reportGrade} ${reportClass}` : 'all students'}.
-                      </p>
-
-                      {selectedReportType === 'attendance' ? (
-                        <div className="space-y-4">
-                          <div className="bg-gray-50 p-4 rounded-lg">
-                            <h4 className="font-semibold mb-3">Attendance Overview</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              {generateStudentPerformanceReport().map((student) => (
-                                <div key={student.id} className="bg-white p-3 rounded border">
-                                  <h5 className="font-medium">{student.name}</h5>
-                                  <p className="text-sm text-gray-600">{student.grade} {student.class}</p>
-                                  <div className="mt-2 space-y-1">
-                                    <div className="flex justify-between text-sm">
-                                      <span>Attendance Rate:</span>
-                                      <span className={`font-medium ${
-                                        student.attendanceRate >= 90 ? 'text-green-600' :
-                                        student.attendanceRate >= 80 ? 'text-yellow-600' : 'text-red-600'
-                                      }`}>{student.attendanceRate}%</span>
-                                    </div>
-                                    <div className="flex justify-between text-sm">
-                                      <span>Present Days:</span>
-                                      <span>{student.presentDays}/{student.totalDays}</span>
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="flex gap-2 items-center">
-                            <Input
-                              placeholder="Enter email address"
-                              value={emailAddress}
-                              onChange={(e) => setEmailAddress(e.target.value)}
-                              className="flex-1"
-                            />
-                            <Button
-                              onClick={() => handleEmailReport('Attendance Summary')}
-                              disabled={isGeneratingReport}
-                            >
-                              <Mail className="mr-1 h-4 w-4" />
-                              Email
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handleDownloadReport('Attendance Summary')}
-                            >
-                              <Download className="mr-1 h-4 w-4" />
-                              Download PDF
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handlePrintReport('Attendance Summary')}
-                            >
-                              <Printer className="mr-1 h-4 w-4" />
-                              Print
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <Button
-                          onClick={() => setSelectedReportType('attendance')}
-                          className="w-full"
-                        >
-                          Generate Attendance Report
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Student Progress Report */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <FileBarChart className="h-5 w-5" />
-                      Student Progress Report
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="mb-4">
-                      <p className="text-gray-600 mb-4">
-                        Individual progress tracking with trends and recommendations.
-                      </p>
-
-                      {selectedReportType === 'progress' ? (
-                        <div className="space-y-4">
-                          <div className="bg-gray-50 p-4 rounded-lg">
-                            <h4 className="font-semibold mb-3">Progress Analysis</h4>
-                            <div className="space-y-4">
-                              {generateStudentPerformanceReport().map((student) => (
-                                <div key={student.id} className="bg-white p-4 rounded border">
-                                  <div className="flex justify-between items-start mb-3">
-                                    <div>
-                                      <h5 className="font-medium">{student.name}</h5>
-                                      <p className="text-sm text-gray-600">{student.grade} {student.class}</p>
-                                    </div>
-                                    <Badge variant={
-                                      student.averageGrade >= 85 ? 'default' :
-                                      student.averageGrade >= 70 ? 'secondary' : 'destructive'
-                                    }>
-                                      {student.averageGrade >= 85 ? 'Excellent' :
-                                       student.averageGrade >= 70 ? 'Good' : 'Needs Improvement'}
-                                    </Badge>
-                                  </div>
-                                  <div className="grid grid-cols-2 gap-4 text-sm">
-                                    <div>
-                                      <span className="text-gray-600">Academic Performance:</span>
-                                      <div className="font-medium">{student.averageGrade}% average</div>
-                                    </div>
-                                    <div>
-                                      <span className="text-gray-600">Attendance:</span>
-                                      <div className="font-medium">{student.attendanceRate}%</div>
-                                    </div>
-                                  </div>
-                                  <div className="mt-3 text-sm">
-                                    <span className="text-gray-600">Recent Assessments:</span>
-                                    <div className="mt-1">
-                                      {student.grades.slice(0, 3).map((grade, idx) => (
-                                        <span key={idx} className="inline-block mr-2 mb-1">
-                                          {grade.subject}: {grade.score} ({grade.percentage}%)
-                                        </span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="flex gap-2 items-center">
-                            <Input
-                              placeholder="Enter email address"
-                              value={emailAddress}
-                              onChange={(e) => setEmailAddress(e.target.value)}
-                              className="flex-1"
-                            />
-                            <Button
-                              onClick={() => handleEmailReport('Student Progress')}
-                              disabled={isGeneratingReport}
-                            >
-                              <Mail className="mr-1 h-4 w-4" />
-                              Email
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handleDownloadReport('Student Progress')}
-                            >
-                              <Download className="mr-1 h-4 w-4" />
-                              Download PDF
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handlePrintReport('Student Progress')}
-                            >
-                              <Printer className="mr-1 h-4 w-4" />
-                              Print
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <Button
-                          onClick={() => setSelectedReportType('progress')}
-                          className="w-full"
-                        >
-                          Generate Progress Report
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+                  {reportModal.student && (
+                    <StudentReportForm
+                      mode={reportModal.mode}
+                      student={reportModal.student}
+                      report={reportModal.data}
+                      onSave={(reportData) => {
+                        if (reportModal.mode === 'add') {
+                          handleAddReport(reportData);
+                        } else if (reportModal.data) {
+                          handleUpdateReport({ ...reportModal.data, ...reportData });
+                        }
+                      }}
+                      onCancel={() => setReportModal({ open: false, mode: 'add', data: null, student: null })}
+                    />
+                  )}
+                </DialogContent>
+              </Dialog>
             </div>
           )}
         </main>
