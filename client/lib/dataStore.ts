@@ -390,8 +390,13 @@ class DataStore {
   addReport(report: Omit<StudentReport, 'id'>): StudentReport {
     const newReport = {
       ...report,
-      id: Math.max(...this.data.reports.map(r => r.id), 0) + 1
+      id: this.data.reports && this.data.reports.length > 0
+        ? Math.max(...this.data.reports.map(r => r.id), 0) + 1
+        : 1
     };
+    if (!this.data.reports) {
+      this.data.reports = [];
+    }
     this.data.reports.push(newReport);
     this.updateVersion();
     this.saveToStorage();
