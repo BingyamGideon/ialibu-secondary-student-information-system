@@ -345,8 +345,13 @@ class DataStore {
   addFinance(finance: Omit<Finance, 'id'>): Finance {
     const newFinance = {
       ...finance,
-      id: Math.max(...this.data.finance.map(f => f.id), 0) + 1
+      id: this.data.finance && this.data.finance.length > 0
+        ? Math.max(...this.data.finance.map(f => f.id), 0) + 1
+        : 1
     };
+    if (!this.data.finance) {
+      this.data.finance = [];
+    }
     this.data.finance.push(newFinance);
     this.updateVersion();
     this.saveToStorage();
