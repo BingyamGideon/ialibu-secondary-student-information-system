@@ -74,6 +74,11 @@ export default function StaffDashboard() {
   const [subjectModal, setSubjectModal] = useState({ open: false, student: null as Student | null });
   const [selectedStudentSubjects, setSelectedStudentSubjects] = useState<string[]>([]);
 
+  // Report management states
+  const [reportSearch, setReportSearch] = useState('');
+  const [reportModal, setReportModal] = useState({ open: false, mode: 'add', data: null as StudentReport | null, student: null as Student | null });
+  const [selectedStudentForReport, setSelectedStudentForReport] = useState<Student | null>(null);
+
   // Get available subjects based on grade
   const getAvailableSubjects = (grade: string) => {
     const gradeNumber = parseInt(grade.replace('Grade ', ''));
