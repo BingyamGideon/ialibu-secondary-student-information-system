@@ -2175,7 +2175,7 @@ function GradeForm({
   );
 }
 
-// Student Report Form Component
+// Student Permanent Report Form Component
 function StudentReportForm({
   mode,
   student,
@@ -2189,23 +2189,28 @@ function StudentReportForm({
   onSave: (report: Omit<StudentReport, 'id'>) => void;
   onCancel: () => void;
 }) {
+  const dataStore = useDataStore();
   const [formData, setFormData] = useState<Partial<StudentReport>>(
     report || {
       studentId: student.id,
       studentName: student.name,
+      gender: student.gender || 'Male',
       grade: student.grade,
       class: student.class,
+      studentID: `ISS${new Date().getFullYear()}${String(student.id).padStart(3, '0')}`,
       term: 'Term 1',
       academicYear: new Date().getFullYear().toString(),
-      attendance: '',
-      academicPerformance: '',
-      behaviorConduct: '',
-      extracurricularActivities: '',
-      areasOfStrength: '',
-      areasForImprovement: '',
+      financialStatus: 'Clear' as const,
+      outstandingAmount: 0,
+      gpa: 0,
+      totalSchoolDays: 80,
+      daysAbsent: 0,
+      daysPresent: 80,
+      attendancePercentage: 100,
       teacherComments: '',
-      recommendations: '',
-      parentMeetingNotes: '',
+      classTeacherSignature: '',
+      principalSignature: '',
+      schoolStamp: false,
       createdBy: 'Staff Dashboard',
       createdDate: new Date().toISOString(),
       lastModified: new Date().toISOString()
@@ -2214,6 +2219,51 @@ function StudentReportForm({
 
   const [emailAddress, setEmailAddress] = useState('');
   const { toast } = useToast();
+
+  // Get student's grades for this term to calculate GPA and populate subjects table
+  const studentGrades = dataStore.grades.filter(g =>
+    g.studentId === student.id &&
+    g.term === formData.term
+  );
+
+  // Calculate GPA based on grades
+  const calculateGPA = () => {
+    if (studentGrades.length === 0) return 0;
+    const gradePoints = {
+      'D': 4.0,
+      'C': 3.0,
+      'UP': 2.0,
+      'P': 1.0,
+      'F': 0.0
+    };
+    const totalPoints = studentGrades.reduce((sum, grade) => {
+      return sum + (gradePoints[grade.score as keyof typeof gradePoints] || 0);
+    }, 0);
+    return Number((totalPoints / studentGrades.length).toFixed(2));
+  };
+
+  // Update GPA when grades data or term changes
+  useState(() => {
+    const gpa = calculateGPA();
+    setFormData(prev => ({ ...prev, gpa }));
+  });
+
+  // Calculate attendance based on attendance records
+  const calculateAttendance = () => {
+    const attendanceRecords = dataStore.attendance.filter(a => a.studentId === student.id);
+    const totalDays = attendanceRecords.length;
+    const presentDays = attendanceRecords.filter(a => a.status === 'Present').length;
+    const absentDays = attendanceRecords.filter(a => a.status === 'Absent').length;
+    const percentage = totalDays > 0 ? Number(((presentDays / totalDays) * 100).toFixed(1)) : 100;
+
+    setFormData(prev => ({
+      ...prev,
+      totalSchoolDays: totalDays || 80,
+      daysPresent: presentDays || 80,
+      daysAbsent: absentDays || 0,
+      attendancePercentage: percentage
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -2227,242 +2277,364 @@ function StudentReportForm({
       toast({ title: 'Error', description: 'Please enter an email address' });
       return;
     }
-    // Simulate email sending
     toast({
       title: 'Success',
-      description: `Student report has been sent to ${emailAddress}`
+      description: `Student permanent report has been sent to ${emailAddress}`
     });
   };
 
   const handleDownloadReport = () => {
     toast({
       title: 'Download Started',
-      description: 'Student report is being downloaded as PDF'
+      description: 'Student permanent report is being downloaded as PDF'
     });
-    // In real implementation, this would generate and download a PDF
   };
 
   const handlePrintReport = () => {
     toast({
       title: 'Printing',
-      description: 'Student report is being prepared for printing'
+      description: 'Student permanent report is being prepared for printing'
     });
     window.print();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Student Info Header */}
-      <div className="bg-blue-50 p-4 rounded-lg">
-        <h3 className="font-semibold text-blue-900">Student Information</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2 text-sm">
-          <div>
-            <span className="text-blue-700">Name:</span>
-            <div className="font-medium">{student.name}</div>
-          </div>
-          <div>
-            <span className="text-blue-700">Grade:</span>
-            <div className="font-medium">{student.grade}</div>
-          </div>
-          <div>
-            <span className="text-blue-700">Class:</span>
-            <div className="font-medium">{student.class}</div>
-          </div>
-          <div>
-            <span className="text-blue-700">Subjects:</span>
-            <div className="font-medium">{student.subjects.length} enrolled</div>
-          </div>
-        </div>
+    <div className="space-y-6">
+      {/* Official Report Header */}
+      <div className="text-center border-b-2 border-blue-900 pb-4">
+        <h2 className="text-2xl font-bold text-blue-900">IALIBU SECONDARY SCHOOL</h2>
+        <h3 className="text-lg font-semibold text-blue-800">STUDENT PERMANENT REPORT</h3>
       </div>
 
-      {/* Report Details */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="term">Term</Label>
-          <Select
-            value={formData.term || ''}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, term: value }))}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Student Information Section */}
+        <div className="bg-blue-50 p-6 rounded-lg border">
+          <h3 className="font-bold text-blue-900 mb-4">Student Information</h3>
+          <div className="grid grid-cols-2 gap-6">
+            <div className="flex items-center gap-2">
+              <Label className="font-medium min-w-[80px]">Name:</Label>
+              <div className="flex-1 border-b border-gray-400 pb-1 font-medium">
+                {student.name}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Label className="font-medium min-w-[80px]">Gender:</Label>
+              <div className="flex-1 border-b border-gray-400 pb-1">
+                <Select
+                  value={formData.gender || ''}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, gender: value }))}
+                >
+                  <SelectTrigger className="border-0 p-0 h-auto">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Label className="font-medium min-w-[80px]">Class:</Label>
+              <div className="flex-1 border-b border-gray-400 pb-1 font-medium">
+                {student.grade} {student.class}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Label className="font-medium min-w-[100px]">Student ID:</Label>
+              <div className="flex-1 border-b border-gray-400 pb-1">
+                <Input
+                  value={formData.studentID || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, studentID: e.target.value }))}
+                  className="border-0 p-0 h-auto"
+                  placeholder="ISS2024001"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Subjects Grade Table */}
+        <div className="border rounded-lg">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-blue-100">
+                <TableHead className="font-bold text-blue-900">Subjects</TableHead>
+                <TableHead className="font-bold text-blue-900">Percentage</TableHead>
+                <TableHead className="font-bold text-blue-900">Score</TableHead>
+                <TableHead className="font-bold text-blue-900">Rank/Position</TableHead>
+                <TableHead className="font-bold text-blue-900">Comments</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {student.subjects.map((subject, index) => {
+                const gradeRecord = studentGrades.find(g => g.subject === subject);
+                const getCommentFromPercentage = (percentage: number) => {
+                  if (percentage >= 85) return 'Excellent';
+                  if (percentage >= 75) return 'Competent';
+                  if (percentage >= 65) return 'Satisfactory';
+                  if (percentage >= 50) return 'Developing';
+                  return 'Needs Improvement';
+                };
+
+                return (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">{subject}</TableCell>
+                    <TableCell>{gradeRecord ? `${gradeRecord.percentage}%` : '0%'}</TableCell>
+                    <TableCell>
+                      <Badge variant={gradeRecord?.score === 'D' ? 'default' : 'secondary'}>
+                        {gradeRecord?.score || 'F'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{gradeRecord ? '23' : '-'}</TableCell>
+                    <TableCell>{gradeRecord ? getCommentFromPercentage(gradeRecord.percentage) : 'Not Assessed'}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
+
+        {/* Academic Year and Term */}
+        <div className="grid grid-cols-2 gap-6">
+          <div className="flex items-center gap-2">
+            <Label className="font-medium min-w-[120px]">Academic Year:</Label>
+            <div className="flex-1 border-b border-gray-400 pb-1">
+              <Input
+                value={formData.academicYear || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, academicYear: e.target.value }))}
+                className="border-0 p-0 h-auto"
+                placeholder="2024"
+              />
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Label className="font-medium min-w-[80px]">Term:</Label>
+            <div className="flex-1 border-b border-gray-400 pb-1">
+              <Select
+                value={formData.term || ''}
+                onValueChange={(value) => {
+                  setFormData(prev => ({ ...prev, term: value }));
+                  calculateAttendance();
+                }}
+              >
+                <SelectTrigger className="border-0 p-0 h-auto">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Term 1">Term 1</SelectItem>
+                  <SelectItem value="Term 2">Term 2</SelectItem>
+                  <SelectItem value="Term 3">Term 3</SelectItem>
+                  <SelectItem value="Term 4">Term 4</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+
+        {/* Financial Status */}
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h4 className="font-bold mb-3">Financial Status</h4>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <input
+                type="radio"
+                id="clear"
+                name="financialStatus"
+                checked={formData.financialStatus === 'Clear'}
+                onChange={() => setFormData(prev => ({ ...prev, financialStatus: 'Clear', outstandingAmount: 0 }))}
+              />
+              <Label htmlFor="clear">Clear ☐</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="radio"
+                id="notCleared"
+                name="financialStatus"
+                checked={formData.financialStatus === 'Not Cleared'}
+                onChange={() => setFormData(prev => ({ ...prev, financialStatus: 'Not Cleared' }))}
+              />
+              <Label htmlFor="notCleared">Not Cleared K</Label>
+              <Input
+                type="number"
+                value={formData.outstandingAmount || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, outstandingAmount: Number(e.target.value) }))}
+                className="w-24"
+                placeholder="0"
+                disabled={formData.financialStatus === 'Clear'}
+              />
+              <span>(outstanding amount)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Academic Performance */}
+        <div className="bg-blue-50 p-4 rounded-lg">
+          <h4 className="font-bold text-blue-900 mb-3">Academic Performance</h4>
+          <div className="flex items-center gap-2">
+            <Label className="font-medium">GPA:</Label>
+            <div className="border-b border-gray-400 pb-1 px-2 font-bold text-lg">
+              {calculateGPA()}
+            </div>
+          </div>
+        </div>
+
+        {/* Attendance Record */}
+        <div className="bg-green-50 p-4 rounded-lg">
+          <h4 className="font-bold text-green-900 mb-3">Attendance Record</h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="flex items-center gap-2">
+              <Label className="font-medium">Total school days:</Label>
+              <Input
+                type="number"
+                value={formData.totalSchoolDays || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, totalSchoolDays: Number(e.target.value) }))}
+                className="w-20"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Label className="font-medium">Days Absent:</Label>
+              <Input
+                type="number"
+                value={formData.daysAbsent || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, daysAbsent: Number(e.target.value) }))}
+                className="w-20"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Label className="font-medium">Days Present:</Label>
+              <Input
+                type="number"
+                value={formData.daysPresent || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, daysPresent: Number(e.target.value) }))}
+                className="w-20"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Label className="font-medium">Percentage Attendance:</Label>
+              <div className="font-bold">{formData.attendancePercentage}%</div>
+            </div>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={calculateAttendance}
+            className="mt-2"
           >
-            <SelectTrigger>
-              <SelectValue placeholder="Select Term" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Term 1">Term 1</SelectItem>
-              <SelectItem value="Term 2">Term 2</SelectItem>
-              <SelectItem value="Term 3">Term 3</SelectItem>
-              <SelectItem value="Term 4">Term 4</SelectItem>
-            </SelectContent>
-          </Select>
+            Calculate from Records
+          </Button>
         </div>
-        <div>
-          <Label htmlFor="academicYear">Academic Year</Label>
-          <Input
-            id="academicYear"
-            value={formData.academicYear || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, academicYear: e.target.value }))}
-            placeholder="e.g., 2024"
-          />
-        </div>
-      </div>
 
-      {/* Report Sections */}
-      <div className="space-y-4">
-        <div>
-          <Label htmlFor="attendance">Attendance Record</Label>
+        {/* Teachers Comments Section */}
+        <div className="border-2 border-gray-300 p-6 rounded-lg">
+          <h4 className="font-bold mb-4">Teachers Comments Section</h4>
           <Textarea
-            id="attendance"
-            value={formData.attendance || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, attendance: e.target.value }))}
-            placeholder="Describe student's attendance pattern, rate, and any concerns..."
-            rows={3}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="academicPerformance">Academic Performance</Label>
-          <Textarea
-            id="academicPerformance"
-            value={formData.academicPerformance || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, academicPerformance: e.target.value }))}
-            placeholder="Assess student's academic achievements, progress in subjects, test scores..."
-            rows={4}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="behaviorConduct">Behavior and Conduct</Label>
-          <Textarea
-            id="behaviorConduct"
-            value={formData.behaviorConduct || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, behaviorConduct: e.target.value }))}
-            placeholder="Describe student's behavior, discipline, interaction with peers and teachers..."
-            rows={3}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="extracurricularActivities">Extracurricular Activities</Label>
-          <Textarea
-            id="extracurricularActivities"
-            value={formData.extracurricularActivities || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, extracurricularActivities: e.target.value }))}
-            placeholder="List student's participation in sports, clubs, competitions, leadership roles..."
-            rows={3}
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="areasOfStrength">Areas of Strength</Label>
-            <Textarea
-              id="areasOfStrength"
-              value={formData.areasOfStrength || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, areasOfStrength: e.target.value }))}
-              placeholder="Identify student's key strengths and talents..."
-              rows={3}
-            />
-          </div>
-          <div>
-            <Label htmlFor="areasForImprovement">Areas for Improvement</Label>
-            <Textarea
-              id="areasForImprovement"
-              value={formData.areasForImprovement || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, areasForImprovement: e.target.value }))}
-              placeholder="Areas where student needs support or improvement..."
-              rows={3}
-            />
-          </div>
-        </div>
-
-        <div>
-          <Label htmlFor="teacherComments">Teacher Comments</Label>
-          <Textarea
-            id="teacherComments"
             value={formData.teacherComments || ''}
             onChange={(e) => setFormData(prev => ({ ...prev, teacherComments: e.target.value }))}
-            placeholder="General comments about student's progress, work ethic, potential..."
-            rows={4}
+            placeholder="Enter teacher comments about student's overall performance, behavior, and recommendations..."
+            rows={6}
+            className="mb-6"
           />
-        </div>
 
-        <div>
-          <Label htmlFor="recommendations">Recommendations</Label>
-          <Textarea
-            id="recommendations"
-            value={formData.recommendations || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, recommendations: e.target.value }))}
-            placeholder="Suggestions for future learning, career guidance, support needed..."
-            rows={3}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="parentMeetingNotes">Parent/Guardian Meeting Notes</Label>
-          <Textarea
-            id="parentMeetingNotes"
-            value={formData.parentMeetingNotes || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, parentMeetingNotes: e.target.value }))}
-            placeholder="Notes from parent-teacher meetings, concerns discussed, action plans..."
-            rows={3}
-          />
-        </div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="border-t pt-6">
-        <div className="flex flex-col gap-4">
-          {/* Email, Download, Print Actions */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="font-medium mb-3">Report Actions</h4>
-            <div className="flex gap-2 items-center mb-3">
+          {/* Signature Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 border-t pt-6">
+            <div className="text-center">
               <Input
-                placeholder="Enter email address to send report"
-                value={emailAddress}
-                onChange={(e) => setEmailAddress(e.target.value)}
-                className="flex-1"
+                placeholder="Class Teacher Signature"
+                value={formData.classTeacherSignature || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, classTeacherSignature: e.target.value }))}
+                className="mb-2"
               />
-              <Button
-                type="button"
-                onClick={handleEmailReport}
-                className="flex items-center gap-1"
-              >
-                <Mail className="h-4 w-4" />
-                Email
-              </Button>
+              <div className="border-t border-gray-400 pt-2">
+                <Label className="text-sm font-medium">Class Teacher Signature</Label>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleDownloadReport}
-                className="flex items-center gap-1"
-              >
-                <Download className="h-4 w-4" />
-                Download PDF
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handlePrintReport}
-                className="flex items-center gap-1"
-              >
-                <Printer className="h-4 w-4" />
-                Print
-              </Button>
+            <div className="text-center">
+              <Input
+                placeholder="Principal Signature"
+                value={formData.principalSignature || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, principalSignature: e.target.value }))}
+                className="mb-2"
+              />
+              <div className="border-t border-gray-400 pt-2">
+                <Label className="text-sm font-medium">Principal Signature</Label>
+              </div>
             </div>
-          </div>
-
-          {/* Save/Cancel Buttons */}
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={onCancel}>
-              Cancel
-            </Button>
-            <Button type="submit">
-              {mode === 'add' ? 'Create Report' : 'Update Report'}
-            </Button>
+            <div className="text-center">
+              <div className="flex items-center justify-center mb-2">
+                <input
+                  type="checkbox"
+                  id="schoolStamp"
+                  checked={formData.schoolStamp || false}
+                  onChange={(e) => setFormData(prev => ({ ...prev, schoolStamp: e.target.checked }))}
+                  className="mr-2"
+                />
+                <Label htmlFor="schoolStamp">School Stamp Applied</Label>
+              </div>
+              <div className="border-t border-gray-400 pt-2">
+                <Label className="text-sm font-medium">School Stamp Section</Label>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </form>
+
+        {/* Action Buttons */}
+        <div className="border-t pt-6">
+          <div className="flex flex-col gap-4">
+            {/* Email, Download, Print Actions */}
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-medium mb-3">Report Actions</h4>
+              <div className="flex gap-2 items-center mb-3">
+                <Input
+                  placeholder="Enter email address to send report"
+                  value={emailAddress}
+                  onChange={(e) => setEmailAddress(e.target.value)}
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  onClick={handleEmailReport}
+                  className="flex items-center gap-1"
+                >
+                  <Mail className="h-4 w-4" />
+                  Email
+                </Button>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleDownloadReport}
+                  className="flex items-center gap-1"
+                >
+                  <Download className="h-4 w-4" />
+                  Download PDF
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handlePrintReport}
+                  className="flex items-center gap-1"
+                >
+                  <Printer className="h-4 w-4" />
+                  Print
+                </Button>
+              </div>
+            </div>
+
+            {/* Save/Cancel Buttons */}
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={onCancel}>
+                Cancel
+              </Button>
+              <Button type="submit">
+                {mode === 'add' ? 'Create Permanent Report' : 'Update Permanent Report'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
   );
 }
