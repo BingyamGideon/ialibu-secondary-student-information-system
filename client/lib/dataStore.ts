@@ -423,4 +423,4 @@ class DataStore {
 
 // Create a singleton instance
 export const dataStore = new DataStore();
-export type { Student, Attendance, Grade, Finance, Staff, DataState };
+export type { Student, Attendance, Grade, Finance, Staff, StudentReport, DataState };
