@@ -178,6 +178,29 @@ class DataStore {
         { id: 7, name: 'David Martinez', position: 'Business Studies Teacher', department: 'Business', email: 'd.martinez@ialibu.edu', phone: '123-456-7896', salary: 49000 },
         { id: 8, name: 'Emma Thompson', position: 'Economics Teacher', department: 'Business', email: 'e.thompson@ialibu.edu', phone: '123-456-7897', salary: 48500 },
       ],
+      reports: [
+        {
+          id: 1,
+          studentId: 1,
+          studentName: 'John Doe',
+          grade: 'Grade 9',
+          class: '9A',
+          term: 'Term 1',
+          academicYear: '2024',
+          attendance: 'Good - 95% attendance rate',
+          academicPerformance: 'Above average performance in Mathematics and Science. Shows strong analytical skills.',
+          behaviorConduct: 'Excellent behavior. Respectful to teachers and peers. Shows leadership qualities.',
+          extracurricularActivities: 'Active member of the Science Club and Soccer team.',
+          areasOfStrength: 'Mathematics, Science, Problem-solving, Leadership',
+          areasForImprovement: 'English writing skills, Time management during examinations',
+          teacherComments: 'John is a dedicated student who consistently performs well. He demonstrates good understanding of concepts and helps other students.',
+          recommendations: 'Continue current study habits. Consider additional English writing practice. Encourage participation in academic competitions.',
+          parentMeetingNotes: 'Parents are supportive. Discussed study schedule and career guidance.',
+          createdBy: 'Staff Dashboard',
+          createdDate: new Date().toISOString(),
+          lastModified: new Date().toISOString()
+        }
+      ],
       lastUpdated: new Date().toISOString(),
       version: 1
     };
