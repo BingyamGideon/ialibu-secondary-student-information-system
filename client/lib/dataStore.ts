@@ -55,6 +55,28 @@ interface Staff {
   salary?: number;
 }
 
+interface StudentReport {
+  id: number;
+  studentId: number;
+  studentName: string;
+  grade: string;
+  class: string;
+  term: string;
+  academicYear: string;
+  attendance: string;
+  academicPerformance: string;
+  behaviorConduct: string;
+  extracurricularActivities: string;
+  areasOfStrength: string;
+  areasForImprovement: string;
+  teacherComments: string;
+  recommendations: string;
+  parentMeetingNotes: string;
+  createdBy: string;
+  createdDate: string;
+  lastModified: string;
+}
+
 interface DataState {
   students: Student[];
   attendance: Attendance[];
