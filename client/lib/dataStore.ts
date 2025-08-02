@@ -275,8 +275,13 @@ class DataStore {
   addAttendance(attendance: Omit<Attendance, 'id'>): Attendance {
     const newAttendance = {
       ...attendance,
-      id: Math.max(...this.data.attendance.map(a => a.id), 0) + 1
+      id: this.data.attendance && this.data.attendance.length > 0
+        ? Math.max(...this.data.attendance.map(a => a.id), 0) + 1
+        : 1
     };
+    if (!this.data.attendance) {
+      this.data.attendance = [];
+    }
     this.data.attendance.push(newAttendance);
     this.updateVersion();
     this.saveToStorage();
