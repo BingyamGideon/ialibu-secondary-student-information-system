@@ -310,8 +310,13 @@ class DataStore {
   addGrade(grade: Omit<Grade, 'id'>): Grade {
     const newGrade = {
       ...grade,
-      id: Math.max(...this.data.grades.map(g => g.id), 0) + 1
+      id: this.data.grades && this.data.grades.length > 0
+        ? Math.max(...this.data.grades.map(g => g.id), 0) + 1
+        : 1
     };
+    if (!this.data.grades) {
+      this.data.grades = [];
+    }
     this.data.grades.push(newGrade);
     this.updateVersion();
     this.saveToStorage();
