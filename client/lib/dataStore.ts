@@ -240,8 +240,13 @@ class DataStore {
   addStudent(student: Omit<Student, 'id'>): Student {
     const newStudent = {
       ...student,
-      id: Math.max(...this.data.students.map(s => s.id), 0) + 1
+      id: this.data.students && this.data.students.length > 0
+        ? Math.max(...this.data.students.map(s => s.id), 0) + 1
+        : 1
     };
+    if (!this.data.students) {
+      this.data.students = [];
+    }
     this.data.students.push(newStudent);
     this.updateVersion();
     this.saveToStorage();
