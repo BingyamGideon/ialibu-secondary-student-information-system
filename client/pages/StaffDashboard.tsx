@@ -146,10 +146,10 @@ export default function StaffDashboard() {
   ];
 
   // For staff dashboard, show all students (in real implementation, this would be filtered by assigned classes)
-  const myStudents = dataStore.students;
-  const myAttendance = dataStore.attendance;
-  const myGrades = dataStore.grades;
-  const myReports = dataStore.reports;
+  const myStudents = dataStore.students || [];
+  const myAttendance = dataStore.attendance || [];
+  const myGrades = dataStore.grades || [];
+  const myReports = dataStore.reports || [];
 
   // Calculate stats dynamically
   const stats = {
