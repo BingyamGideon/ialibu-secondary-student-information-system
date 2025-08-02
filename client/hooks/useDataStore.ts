@@ -47,5 +47,11 @@ export function useDataStore() {
     addStaff: (staff: Omit<Staff, 'id'>) => dataStore.addStaff(staff),
     updateStaff: (staff: Staff) => dataStore.updateStaff(staff),
     deleteStaff: (id: number) => dataStore.deleteStaff(id),
+
+    // Report operations
+    addReport: (report: Omit<StudentReport, 'id'>) => dataStore.addReport(report),
+    updateReport: (report: StudentReport) => dataStore.updateReport(report),
+    deleteReport: (id: number) => dataStore.deleteReport(id),
+    getStudentReports: (studentId: number) => dataStore.getStudentReports(studentId),
   };
 }
