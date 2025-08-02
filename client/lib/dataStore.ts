@@ -83,6 +83,7 @@ interface DataState {
   grades: Grade[];
   finance: Finance[];
   staff: Staff[];
+  reports: StudentReport[];
   lastUpdated: string;
   version: number;
 }
