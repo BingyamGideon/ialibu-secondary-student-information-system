@@ -380,8 +380,13 @@ class DataStore {
   addStaff(staff: Omit<Staff, 'id'>): Staff {
     const newStaff = {
       ...staff,
-      id: Math.max(...this.data.staff.map(s => s.id), 0) + 1
+      id: this.data.staff && this.data.staff.length > 0
+        ? Math.max(...this.data.staff.map(s => s.id), 0) + 1
+        : 1
     };
+    if (!this.data.staff) {
+      this.data.staff = [];
+    }
     this.data.staff.push(newStaff);
     this.updateVersion();
     this.saveToStorage();
