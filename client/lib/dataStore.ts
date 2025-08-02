@@ -385,6 +385,40 @@ class DataStore {
     this.saveToStorage();
     this.notifyListeners();
   }
+
+  // Report operations
+  addReport(report: Omit<StudentReport, 'id'>): StudentReport {
+    const newReport = {
+      ...report,
+      id: Math.max(...this.data.reports.map(r => r.id), 0) + 1
+    };
+    this.data.reports.push(newReport);
+    this.updateVersion();
+    this.saveToStorage();
+    this.notifyListeners();
+    return newReport;
+  }
+
+  updateReport(report: StudentReport): void {
+    const index = this.data.reports.findIndex(r => r.id === report.id);
+    if (index !== -1) {
+      this.data.reports[index] = { ...report, lastModified: new Date().toISOString() };
+      this.updateVersion();
+      this.saveToStorage();
+      this.notifyListeners();
+    }
+  }
+
+  deleteReport(id: number): void {
+    this.data.reports = this.data.reports.filter(r => r.id !== id);
+    this.updateVersion();
+    this.saveToStorage();
+    this.notifyListeners();
+  }
+
+  getStudentReports(studentId: number): StudentReport[] {
+    return this.data.reports.filter(r => r.studentId === studentId);
+  }
 }
 
 // Create a singleton instance
