@@ -2635,6 +2635,112 @@ function StudentReportForm({
           </div>
         </div>
       </form>
+
+      {/* PNG Grading Scale and Weighing Categories - Separate Page */}
+      <div className="mt-12 border-t-4 border-blue-900 pt-8 print:page-break-before-always">
+        <div className="text-center border-b-2 border-blue-900 pb-4 mb-8">
+          <h2 className="text-2xl font-bold text-blue-900">IALIBU SECONDARY SCHOOL</h2>
+          <h3 className="text-lg font-semibold text-blue-800">GRADING SCALE & ASSESSMENT CRITERIA</h3>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* PNG Standard Grading Scale */}
+          <div className="bg-blue-50 p-6 rounded-lg border">
+            <h4 className="text-xl font-bold text-blue-900 mb-4">PNG Standard Grading Scale</h4>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center p-3 bg-green-100 rounded border-l-4 border-green-500">
+                <span className="font-semibold text-green-800">Distinction (D)</span>
+                <span className="font-bold text-green-700">85 - 100</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-blue-100 rounded border-l-4 border-blue-500">
+                <span className="font-semibold text-blue-800">Credit (C)</span>
+                <span className="font-bold text-blue-700">70 - 84</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-yellow-100 rounded border-l-4 border-yellow-500">
+                <span className="font-semibold text-yellow-800">Upper Pass (UP)</span>
+                <span className="font-bold text-yellow-700">55 - 69</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-orange-100 rounded border-l-4 border-orange-500">
+                <span className="font-semibold text-orange-800">Pass (P)</span>
+                <span className="font-bold text-orange-700">40 - 54</span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-red-100 rounded border-l-4 border-red-500">
+                <span className="font-semibold text-red-800">Fail (F)</span>
+                <span className="font-bold text-red-700">Below 40</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Assessment Weighing Categories */}
+          <div className="bg-gray-50 p-6 rounded-lg border">
+            <h4 className="text-xl font-bold text-gray-900 mb-4">Assessment Weighing Categories</h4>
+            <div className="space-y-4">
+              <div className="bg-white p-4 rounded border">
+                <h5 className="font-semibold text-gray-800 mb-2">Common Assessment Components:</h5>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex justify-between">
+                    <span>• Class Tests & Quizzes</span>
+                    <span className="font-medium">20%</span>
+                  </li>
+                  <li className="flex justify-between">
+                    <span>• Assignments & Projects</span>
+                    <span className="font-medium">25%</span>
+                  </li>
+                  <li className="flex justify-between">
+                    <span>• Mid-term Examination</span>
+                    <span className="font-medium">25%</span>
+                  </li>
+                  <li className="flex justify-between">
+                    <span>• Final Examination</span>
+                    <span className="font-medium">30%</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-yellow-50 p-4 rounded border border-yellow-200">
+                <h5 className="font-semibold text-yellow-800 mb-2">Important Notes:</h5>
+                <ul className="text-sm text-yellow-700 space-y-1">
+                  <li>• Weighings are customizable by subject</li>
+                  <li>• Scores shown are raw marks</li>
+                  <li>• Total marks = weighted sum of components</li>
+                  <li>• Final grades assigned using PNG scale</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Information */}
+        <div className="mt-8 bg-blue-50 p-6 rounded-lg border border-blue-200">
+          <h4 className="text-xl font-bold text-blue-900 mb-4">Grade Point Average (GPA) Calculation</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h5 className="font-semibold text-blue-800 mb-2">Grade Point Values:</h5>
+              <ul className="space-y-1 text-sm">
+                <li>• Distinction (D) = 4.0 points</li>
+                <li>• Credit (C) = 3.0 points</li>
+                <li>• Upper Pass (UP) = 2.0 points</li>
+                <li>• Pass (P) = 1.0 point</li>
+                <li>• Fail (F) = 0.0 points</li>
+              </ul>
+            </div>
+            <div>
+              <h5 className="font-semibold text-blue-800 mb-2">GPA Formula:</h5>
+              <div className="bg-white p-3 rounded border text-center">
+                <span className="font-mono text-sm">
+                  GPA = Sum of (Grade Points) ÷ Number of Subjects
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-8 text-center text-sm text-gray-600 border-t pt-4">
+          <p>This grading scale is in accordance with the Papua New Guinea Department of Education standards.</p>
+          <p className="mt-1">For queries regarding grades, please contact the subject teacher or school administration.</p>
+        </div>
+      </div>
     </div>
   );
 }
