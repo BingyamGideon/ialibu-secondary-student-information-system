@@ -2282,46 +2282,46 @@ function GradeForm({
                     </TableCell>
                     <TableCell>
                       <Input
-                        type="number"
-                        min="0"
-                        max="25"
-                        value={studentGrade.project || ''}
-                        onChange={(e) => updateAssessment(index, 'project', Number(e.target.value))}
-                        className="w-20"
-                        placeholder="0"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="20"
-                        value={studentGrade.assignment || ''}
-                        onChange={(e) => updateAssessment(index, 'assignment', Number(e.target.value))}
-                        className="w-20"
-                        placeholder="0"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="15"
-                        value={studentGrade.takeHomeTest || ''}
-                        onChange={(e) => updateAssessment(index, 'takeHomeTest', Number(e.target.value))}
-                        className="w-20"
-                        placeholder="0"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="20"
-                        value={studentGrade.endOfTermTest || ''}
-                        onChange={(e) => updateAssessment(index, 'endOfTermTest', Number(e.target.value))}
-                        className="w-20"
-                        placeholder="0"
+                      type="number"
+                      min="0"
+                      max="25"
+                      value={studentGrade.project || ''}
+                      onChange={(e) => updateAssessment(index, 'project', Number(e.target.value))}
+                      className="w-16 text-center"
+                      placeholder="0"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      type="number"
+                      min="0"
+                      max="20"
+                      value={studentGrade.assignment || ''}
+                      onChange={(e) => updateAssessment(index, 'assignment', Number(e.target.value))}
+                      className="w-16 text-center"
+                      placeholder="0"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      type="number"
+                      min="0"
+                      max="15"
+                      value={studentGrade.takeHomeTest || ''}
+                      onChange={(e) => updateAssessment(index, 'takeHomeTest', Number(e.target.value))}
+                      className="w-16 text-center"
+                      placeholder="0"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      type="number"
+                      min="0"
+                      max="20"
+                      value={studentGrade.endOfTermTest || ''}
+                      onChange={(e) => updateAssessment(index, 'endOfTermTest', Number(e.target.value))}
+                      className="w-16 text-center"
+                      placeholder="0"
                       />
                     </TableCell>
                     <TableCell>
