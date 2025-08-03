@@ -1391,20 +1391,22 @@ export default function StaffDashboard() {
                                       Add Grade
                                     </Button>
                                   </DialogTrigger>
-                                  <DialogContent className="max-w-md">
+                                  <DialogContent className="max-w-[95vw] max-h-[95vh] w-full">
                                     <DialogHeader>
                                       <DialogTitle>Add Grade for {student.name}</DialogTitle>
                                     </DialogHeader>
-                                    <GradeForm
-                                      mode="add"
-                                      grade={null}
-                                      preselectedStudent={student}
-                                      students={myStudents}
-                                      onSave={(grade) => {
-                                        handleAddGrade(grade);
-                                      }}
-                                      onCancel={() => setGradeModal({ open: false, mode: 'add', data: null })}
-                                    />
+                                    <div className="max-h-[80vh] overflow-y-auto">
+                                      <GradeForm
+                                        mode="add"
+                                        grade={null}
+                                        preselectedStudent={student}
+                                        students={myStudents}
+                                        onSave={(grade) => {
+                                          handleAddGrade(grade);
+                                        }}
+                                        onCancel={() => setGradeModal({ open: false, mode: 'add', data: null })}
+                                      />
+                                    </div>
                                   </DialogContent>
                                 </Dialog>
 
