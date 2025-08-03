@@ -2159,7 +2159,279 @@ function AttendanceForm({
   );
 }
 
-// Grade Form Component
+// Individual Student Grade Form Component (Simplified)
+function IndividualGradeForm({
+  student,
+  onSave,
+  onCancel
+}: {
+  student: Student;
+  onSave: (grade: Omit<Grade, 'id'>) => void;
+  onCancel: () => void;
+}) {
+  const { toast } = useToast();
+  const [selectedSubject, setSelectedSubject] = useState('');
+  const [selectedTerm, setSelectedTerm] = useState('Term 1');
+
+  // Individual assessment scores
+  const [assessmentScores, setAssessmentScores] = useState({
+    weeklyTests: [0, 0, 0, 0, 0, 0],
+    projects: [0, 0, 0, 0, 0, 0],
+    assignments: [0, 0, 0, 0, 0, 0],
+    takeHomeTests: [0, 0, 0, 0, 0, 0],
+    openBookTests: [0, 0, 0, 0, 0, 0],
+    endOfTermTests: [0, 0, 0, 0, 0, 0],
+  });
+
+  // Calculate total marks and letter grade
+  const calculateTotalAndGrade = () => {
+    const weeklyAvg = assessmentScores.weeklyTests.length > 0 ? assessmentScores.weeklyTests.reduce((sum, score) => sum + score, 0) / assessmentScores.weeklyTests.length : 0;
+    const projectAvg = assessmentScores.projects.length > 0 ? assessmentScores.projects.reduce((sum, score) => sum + score, 0) / assessmentScores.projects.length : 0;
+    const assignmentAvg = assessmentScores.assignments.length > 0 ? assessmentScores.assignments.reduce((sum, score) => sum + score, 0) / assessmentScores.assignments.length : 0;
+    const takeHomeAvg = assessmentScores.takeHomeTests.length > 0 ? assessmentScores.takeHomeTests.reduce((sum, score) => sum + score, 0) / assessmentScores.takeHomeTests.length : 0;
+    const openBookAvg = assessmentScores.openBookTests.length > 0 ? assessmentScores.openBookTests.reduce((sum, score) => sum + score, 0) / assessmentScores.openBookTests.length : 0;
+    const endOfTermAvg = assessmentScores.endOfTermTests.length > 0 ? assessmentScores.endOfTermTests.reduce((sum, score) => sum + score, 0) / assessmentScores.endOfTermTests.length : 0;
+
+    const total = Math.round((weeklyAvg * 0.20) + (projectAvg * 0.25) + (assignmentAvg * 0.20) + (takeHomeAvg * 0.15) + (openBookAvg * 0.10) + (endOfTermAvg * 0.10));
+
+    let letterGrade = 'F';
+    if (total >= 85) letterGrade = 'D';
+    else if (total >= 70) letterGrade = 'C';
+    else if (total >= 55) letterGrade = 'UP';
+    else if (total >= 40) letterGrade = 'P';
+
+    return { total, letterGrade };
+  };
+
+  // Update individual assessment score
+  const updateScore = (component: keyof typeof assessmentScores, index: number, value: number) => {
+    setAssessmentScores(prev => ({
+      ...prev,
+      [component]: prev[component].map((score, i) => i === index ? value : score)
+    }));
+  };
+
+  // Get available subjects for the student
+  const getStudentSubjects = () => {
+    return student.subjects || [];
+  };
+
+  const handleSave = () => {
+    if (!selectedSubject) {
+      toast({ title: 'Error', description: 'Please select a subject' });
+      return;
+    }
+
+    const { total, letterGrade } = calculateTotalAndGrade();
+
+    const gradeData = {
+      studentId: student.id,
+      studentName: student.name,
+      class: `${student.grade} ${student.class}`,
+      subject: selectedSubject,
+      weeklyTests: assessmentScores.weeklyTests,
+      projects: assessmentScores.projects,
+      assignments: assessmentScores.assignments,
+      takeHomeTests: assessmentScores.takeHomeTests,
+      openBookTests: assessmentScores.openBookTests,
+      endOfTermTests: assessmentScores.endOfTermTests,
+      totalMarks: total,
+      letterGrade: letterGrade,
+      term: selectedTerm
+    };
+
+    onSave(gradeData);
+  };
+
+  const { total, letterGrade } = calculateTotalAndGrade();
+
+  return (
+    <div className="space-y-6">
+      {/* Student Info */}
+      <div className="bg-blue-50 p-4 rounded-lg">
+        <h4 className="font-bold text-blue-900">{student.name}</h4>
+        <p className="text-sm text-blue-700">Class: {student.grade} {student.class}</p>
+      </div>
+
+      {/* Subject and Term Selection */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label>Subject</Label>
+          <Select value={selectedSubject} onValueChange={setSelectedSubject}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Subject" />
+            </SelectTrigger>
+            <SelectContent>
+              {getStudentSubjects().map((subject) => (
+                <SelectItem key={subject} value={subject}>
+                  {subject}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <Label>Term</Label>
+          <Select value={selectedTerm} onValueChange={setSelectedTerm}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Term" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Term 1">Term 1</SelectItem>
+              <SelectItem value="Term 2">Term 2</SelectItem>
+              <SelectItem value="Term 3">Term 3</SelectItem>
+              <SelectItem value="Term 4">Term 4</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Results Summary */}
+      <div className="bg-yellow-50 p-4 rounded-lg flex justify-between items-center">
+        <div>
+          <p className="text-sm text-gray-600">Total Marks</p>
+          <p className="text-2xl font-bold">{total}</p>
+        </div>
+        <div>
+          <p className="text-sm text-gray-600">Letter Grade</p>
+          <Badge variant={letterGrade === 'D' ? 'default' : letterGrade === 'C' ? 'secondary' : letterGrade === 'UP' ? 'outline' : 'destructive'} className="text-lg font-bold px-3 py-1">
+            {letterGrade}
+          </Badge>
+        </div>
+      </div>
+
+      {/* Assessment Components */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Weekly Tests */}
+        <div className="space-y-2">
+          <h5 className="font-semibold text-blue-900 text-sm">Weekly Tests (20%)</h5>
+          <div className="grid grid-cols-3 gap-2">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <Input
+                key={i}
+                type="number"
+                min="0"
+                max="20"
+                value={assessmentScores.weeklyTests[i] || ''}
+                onChange={(e) => updateScore('weeklyTests', i, Number(e.target.value))}
+                className="w-14 h-14 text-center text-sm font-medium"
+                placeholder={`T${i+1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Projects */}
+        <div className="space-y-2">
+          <h5 className="font-semibold text-green-900 text-sm">Projects (25%)</h5>
+          <div className="grid grid-cols-3 gap-2">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <Input
+                key={i}
+                type="number"
+                min="0"
+                max="25"
+                value={assessmentScores.projects[i] || ''}
+                onChange={(e) => updateScore('projects', i, Number(e.target.value))}
+                className="w-14 h-14 text-center text-sm font-medium"
+                placeholder={`P${i+1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Assignments */}
+        <div className="space-y-2">
+          <h5 className="font-semibold text-purple-900 text-sm">Assignments (20%)</h5>
+          <div className="grid grid-cols-3 gap-2">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <Input
+                key={i}
+                type="number"
+                min="0"
+                max="20"
+                value={assessmentScores.assignments[i] || ''}
+                onChange={(e) => updateScore('assignments', i, Number(e.target.value))}
+                className="w-14 h-14 text-center text-sm font-medium"
+                placeholder={`A${i+1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Take-Home Tests */}
+        <div className="space-y-2">
+          <h5 className="font-semibold text-orange-900 text-sm">Take-Home Tests (15%)</h5>
+          <div className="grid grid-cols-3 gap-2">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <Input
+                key={i}
+                type="number"
+                min="0"
+                max="15"
+                value={assessmentScores.takeHomeTests[i] || ''}
+                onChange={(e) => updateScore('takeHomeTests', i, Number(e.target.value))}
+                className="w-14 h-14 text-center text-sm font-medium"
+                placeholder={`H${i+1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Open-Book Tests */}
+        <div className="space-y-2">
+          <h5 className="font-semibold text-teal-900 text-sm">Open-Book Tests (10%)</h5>
+          <div className="grid grid-cols-3 gap-2">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <Input
+                key={i}
+                type="number"
+                min="0"
+                max="10"
+                value={assessmentScores.openBookTests[i] || ''}
+                onChange={(e) => updateScore('openBookTests', i, Number(e.target.value))}
+                className="w-14 h-14 text-center text-sm font-medium"
+                placeholder={`O${i+1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* End-of-Term Tests */}
+        <div className="space-y-2">
+          <h5 className="font-semibold text-red-900 text-sm">End-of-Term Tests (10%)</h5>
+          <div className="grid grid-cols-3 gap-2">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <Input
+                key={i}
+                type="number"
+                min="0"
+                max="10"
+                value={assessmentScores.endOfTermTests[i] || ''}
+                onChange={(e) => updateScore('endOfTermTests', i, Number(e.target.value))}
+                className="w-14 h-14 text-center text-sm font-medium"
+                placeholder={`E${i+1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex justify-end gap-3 pt-4">
+        <Button variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button onClick={handleSave} disabled={!selectedSubject}>
+          Save Grade
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// Batch Grade Form Component
 function GradeForm({
   mode,
   grade,
