@@ -2244,6 +2244,13 @@ function GradeForm({
     })));
   };
 
+  // Handle grade level selection
+  const handleGradeLevelChange = (gradeLevel: string) => {
+    setSelectedGradeLevel(gradeLevel);
+    setSelectedClass(''); // Reset class selection
+    setStudentGrades([]); // Clear student grades
+  };
+
   // Update individual assessment component
   const updateAssessment = (studentIndex: number, field: string, arrayIndex: number, value: number) => {
     const newGrades = [...studentGrades];
