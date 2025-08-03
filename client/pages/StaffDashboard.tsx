@@ -2348,11 +2348,10 @@ function GradeForm({
             </Table>
           </div>
 
-          <div className="p-4 bg-gray-50 border-t">
-            <div className="text-sm text-gray-600 mb-4">
-              <p><strong>Assessment Weight Distribution:</strong> Weekly Test (20%), Project (25%), Assignment (20%), Take-Home Test (15%), End-of-Term Test (20%)</p>
-              <p><strong>Grading Scale:</strong> D (85-100), C (70-84), UP (55-69), P (40-54), F (below 40)</p>
-              <p><strong>Maximum 6 students per entry session</strong></p>
+          <div className="p-3 bg-gray-50 border-t">
+            <div className="text-xs text-gray-600 mb-3 space-y-1">
+              <p><strong>Assessment Weight:</strong> Weekly Test (20%), Project (25%), Assignment (20%), Take-Home Test (15%), End-of-Term Test (20%)</p>
+              <p><strong>Grading Scale:</strong> D (85-100), C (70-84), UP (55-69), P (40-54), F (below 40) | <strong>Max 6 students per session</strong></p>
             </div>
 
             <div className="flex justify-end gap-3">
