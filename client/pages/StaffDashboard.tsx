@@ -2263,109 +2263,162 @@ function GradeForm({
             <h4 className="text-base font-semibold">Assessment Components - {selectedClass} - {selectedSubject}</h4>
           </div>
 
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-blue-100">
-                  <TableHead className="font-bold text-blue-900 w-[140px]">Student Name</TableHead>
-                  <TableHead className="font-bold text-blue-900 w-[70px]">Class</TableHead>
-                  <TableHead className="font-bold text-blue-900 w-[100px]">Weekly Test (20%)</TableHead>
-                  <TableHead className="font-bold text-blue-900 w-[100px]">Project (25%)</TableHead>
-                  <TableHead className="font-bold text-blue-900 w-[100px]">Assignment (20%)</TableHead>
-                  <TableHead className="font-bold text-blue-900 w-[120px]">Take-Home Test (15%)</TableHead>
-                  <TableHead className="font-bold text-blue-900 w-[140px]">End-of-Term Test (Exam) (20%)</TableHead>
-                  <TableHead className="font-bold text-blue-900 w-[90px]">Total Marks</TableHead>
-                  <TableHead className="font-bold text-blue-900 w-[90px]">Letter Grade</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {studentGrades.map((studentGrade, index) => (
-                  <TableRow key={studentGrade.studentId} className="hover:bg-gray-50">
-                    <TableCell className="font-medium">{studentGrade.studentName}</TableCell>
-                    <TableCell>{studentGrade.class}</TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="20"
-                        value={studentGrade.weeklyTest || ''}
-                        onChange={(e) => updateAssessment(index, 'weeklyTest', Number(e.target.value))}
-                      className="w-16 text-center"
-                      placeholder="0"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                      type="number"
-                      min="0"
-                      max="25"
-                      value={studentGrade.project || ''}
-                      onChange={(e) => updateAssessment(index, 'project', Number(e.target.value))}
-                      className="w-16 text-center"
-                      placeholder="0"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="20"
-                      value={studentGrade.assignment || ''}
-                      onChange={(e) => updateAssessment(index, 'assignment', Number(e.target.value))}
-                      className="w-16 text-center"
-                      placeholder="0"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="15"
-                      value={studentGrade.takeHomeTest || ''}
-                      onChange={(e) => updateAssessment(index, 'takeHomeTest', Number(e.target.value))}
-                      className="w-16 text-center"
-                      placeholder="0"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="20"
-                      value={studentGrade.endOfTermTest || ''}
-                      onChange={(e) => updateAssessment(index, 'endOfTermTest', Number(e.target.value))}
-                      className="w-16 text-center"
-                      placeholder="0"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <div className="font-bold text-lg bg-yellow-100 px-3 py-1 rounded text-center min-w-[60px]">
+          <div className="space-y-4">
+            {studentGrades.map((studentGrade, index) => (
+              <div key={studentGrade.studentId} className="bg-white border rounded-lg p-4">
+                <div className="flex items-center justify-between mb-4 bg-blue-50 p-3 rounded">
+                  <div>
+                    <h4 className="font-bold text-blue-900">{studentGrade.studentName}</h4>
+                    <p className="text-sm text-blue-700">Class: {studentGrade.class}</p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="text-center">
+                      <div className="font-bold text-xl bg-yellow-100 px-4 py-2 rounded">
                         {studentGrade.totalMarks}
                       </div>
-                    </TableCell>
-                    <TableCell>
+                      <p className="text-xs text-gray-600">Total Marks</p>
+                    </div>
+                    <div className="text-center">
                       <Badge
                         variant={
                           studentGrade.letterGrade === 'D' ? 'default' :
                           studentGrade.letterGrade === 'C' ? 'secondary' :
                           studentGrade.letterGrade === 'UP' ? 'outline' :
-                          studentGrade.letterGrade === 'P' ? 'destructive' : 'destructive'
+                          'destructive'
                         }
-                        className="text-sm font-bold min-w-[40px] justify-center"
+                        className="text-lg font-bold px-3 py-1"
                       >
                         {studentGrade.letterGrade}
                       </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                      <p className="text-xs text-gray-600">Letter Grade</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {/* Weekly Tests (20%) */}
+                  <div className="space-y-2">
+                    <h5 className="font-semibold text-blue-900 text-sm">Weekly Tests (20%)</h5>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[0, 1, 2, 3, 4, 5].map((i) => (
+                        <Input
+                          key={i}
+                          type="number"
+                          min="0"
+                          max="20"
+                          value={studentGrade.weeklyTests[i] || ''}
+                          onChange={(e) => updateAssessment(index, 'weeklyTests', i, Number(e.target.value))}
+                          className="w-14 h-14 text-center text-sm font-medium"
+                          placeholder={`T${i+1}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Projects (25%) */}
+                  <div className="space-y-2">
+                    <h5 className="font-semibold text-green-900 text-sm">Projects (25%)</h5>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[0, 1, 2, 3, 4, 5].map((i) => (
+                        <Input
+                          key={i}
+                          type="number"
+                          min="0"
+                          max="25"
+                          value={studentGrade.projects[i] || ''}
+                          onChange={(e) => updateAssessment(index, 'projects', i, Number(e.target.value))}
+                          className="w-14 h-14 text-center text-sm font-medium"
+                          placeholder={`P${i+1}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Assignments (20%) */}
+                  <div className="space-y-2">
+                    <h5 className="font-semibold text-purple-900 text-sm">Assignments (20%)</h5>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[0, 1, 2, 3, 4, 5].map((i) => (
+                        <Input
+                          key={i}
+                          type="number"
+                          min="0"
+                          max="20"
+                          value={studentGrade.assignments[i] || ''}
+                          onChange={(e) => updateAssessment(index, 'assignments', i, Number(e.target.value))}
+                          className="w-14 h-14 text-center text-sm font-medium"
+                          placeholder={`A${i+1}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Take-Home Tests (15%) */}
+                  <div className="space-y-2">
+                    <h5 className="font-semibold text-orange-900 text-sm">Take-Home Tests (15%)</h5>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[0, 1, 2, 3, 4, 5].map((i) => (
+                        <Input
+                          key={i}
+                          type="number"
+                          min="0"
+                          max="15"
+                          value={studentGrade.takeHomeTests[i] || ''}
+                          onChange={(e) => updateAssessment(index, 'takeHomeTests', i, Number(e.target.value))}
+                          className="w-14 h-14 text-center text-sm font-medium"
+                          placeholder={`H${i+1}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Open-Book Tests (10%) */}
+                  <div className="space-y-2">
+                    <h5 className="font-semibold text-teal-900 text-sm">Open-Book Tests (10%)</h5>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[0, 1, 2, 3, 4, 5].map((i) => (
+                        <Input
+                          key={i}
+                          type="number"
+                          min="0"
+                          max="10"
+                          value={studentGrade.openBookTests[i] || ''}
+                          onChange={(e) => updateAssessment(index, 'openBookTests', i, Number(e.target.value))}
+                          className="w-14 h-14 text-center text-sm font-medium"
+                          placeholder={`O${i+1}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* End-of-Term Tests (10%) */}
+                  <div className="space-y-2">
+                    <h5 className="font-semibold text-red-900 text-sm">End-of-Term Tests (10%)</h5>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[0, 1, 2, 3, 4, 5].map((i) => (
+                        <Input
+                          key={i}
+                          type="number"
+                          min="0"
+                          max="10"
+                          value={studentGrade.endOfTermTests[i] || ''}
+                          onChange={(e) => updateAssessment(index, 'endOfTermTests', i, Number(e.target.value))}
+                          className="w-14 h-14 text-center text-sm font-medium"
+                          placeholder={`E${i+1}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
           <div className="p-3 bg-gray-50 border-t">
             <div className="text-xs text-gray-600 mb-3 space-y-1">
-              <p><strong>Assessment Weight:</strong> Weekly Test (20%), Project (25%), Assignment (20%), Take-Home Test (15%), End-of-Term Test (20%)</p>
+              <p><strong>Assessment Weight:</strong> Weekly Tests (20%), Projects (25%), Assignments (20%), Take-Home Tests (15%), Open-Book Tests (10%), End-of-Term Tests (10%)</p>
               <p><strong>Grading Scale:</strong> D (85-100), C (70-84), UP (55-69), P (40-54), F (below 40) | <strong>Max 6 students per session</strong></p>
+              <p><strong>Instructions:</strong> Enter raw scores in each rectangle. Up to 6 scores per component. System calculates average per component and applies weightings.</p>
             </div>
 
             <div className="flex justify-end gap-3">
