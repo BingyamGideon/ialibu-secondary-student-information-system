@@ -1584,11 +1584,66 @@ export default function StaffDashboard() {
                             <TableCell className="font-medium">{grade.studentName}</TableCell>
                             <TableCell>{grade.class}</TableCell>
                             <TableCell>{grade.subject}</TableCell>
-                            <TableCell>{grade.weeklyTest || 0}</TableCell>
-                            <TableCell>{grade.project || 0}</TableCell>
-                            <TableCell>{grade.assignment || 0}</TableCell>
-                            <TableCell>{grade.takeHomeTest || 0}</TableCell>
-                            <TableCell>{grade.endOfTermTest || 0}</TableCell>
+                            <TableCell>
+                              <div className="flex flex-wrap gap-1">
+                                {(grade.weeklyTests || []).filter(score => score > 0).map((score, idx) => (
+                                  <Badge key={idx} variant="outline" className="text-xs">
+                                    {score}
+                                  </Badge>
+                                ))}
+                                {(!grade.weeklyTests || grade.weeklyTests.every(score => score === 0)) && <span className="text-gray-400">-</span>}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex flex-wrap gap-1">
+                                {(grade.projects || []).filter(score => score > 0).map((score, idx) => (
+                                  <Badge key={idx} variant="outline" className="text-xs">
+                                    {score}
+                                  </Badge>
+                                ))}
+                                {(!grade.projects || grade.projects.every(score => score === 0)) && <span className="text-gray-400">-</span>}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex flex-wrap gap-1">
+                                {(grade.assignments || []).filter(score => score > 0).map((score, idx) => (
+                                  <Badge key={idx} variant="outline" className="text-xs">
+                                    {score}
+                                  </Badge>
+                                ))}
+                                {(!grade.assignments || grade.assignments.every(score => score === 0)) && <span className="text-gray-400">-</span>}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex flex-wrap gap-1">
+                                {(grade.takeHomeTests || []).filter(score => score > 0).map((score, idx) => (
+                                  <Badge key={idx} variant="outline" className="text-xs">
+                                    {score}
+                                  </Badge>
+                                ))}
+                                {(!grade.takeHomeTests || grade.takeHomeTests.every(score => score === 0)) && <span className="text-gray-400">-</span>}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex flex-wrap gap-1">
+                                {(grade.openBookTests || []).filter(score => score > 0).map((score, idx) => (
+                                  <Badge key={idx} variant="outline" className="text-xs">
+                                    {score}
+                                  </Badge>
+                                ))}
+                                {(!grade.openBookTests || grade.openBookTests.every(score => score === 0)) && <span className="text-gray-400">-</span>}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex flex-wrap gap-1">
+                                {(grade.endOfTermTests || []).filter(score => score > 0).map((score, idx) => (
+                                  <Badge key={idx} variant="outline" className="text-xs">
+                                    {score}
+                                  </Badge>
+                                ))}
+                                {(!grade.endOfTermTests || grade.endOfTermTests.every(score => score === 0)) && <span className="text-gray-400">-</span>}
+                              </div>
+                            </TableCell>
                             <TableCell>
                               <div className="font-bold text-lg bg-yellow-100 px-2 py-1 rounded text-center">
                                 {grade.totalMarks || 0}
