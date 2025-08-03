@@ -1678,6 +1678,46 @@ export default function StaffDashboard() {
                   </CardContent>
                 </Card>
               )}
+
+              {/* Individual Grade Modal */}
+              <Dialog open={individualGradeModal.open} onOpenChange={(open) => setIndividualGradeModal(prev => ({ ...prev, open }))}>
+                <DialogContent className="max-w-[95vw] max-h-[95vh] w-full">
+                  <DialogHeader>
+                    <DialogTitle>Add Grade for {individualGradeModal.student?.name}</DialogTitle>
+                  </DialogHeader>
+                  <div className="max-h-[80vh] overflow-y-auto">
+                    {individualGradeModal.student && (
+                      <IndividualGradeForm
+                        student={individualGradeModal.student}
+                        onSave={(grade) => {
+                          handleAddGrade(grade);
+                          setIndividualGradeModal({ open: false, student: null });
+                        }}
+                        onCancel={() => setIndividualGradeModal({ open: false, student: null })}
+                      />
+                    )}
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              {/* Batch Grade Modal */}
+              <Dialog open={showBatchGradeForm} onOpenChange={setShowBatchGradeForm}>
+                <DialogContent className="max-w-[98vw] max-h-[98vh] w-full">
+                  <DialogHeader>
+                    <DialogTitle>Batch Grade Entry - Assessment Components</DialogTitle>
+                  </DialogHeader>
+                  <div className="max-h-[90vh] overflow-y-auto">
+                    <GradeForm
+                      mode="add"
+                      grade={null}
+                      students={myStudents}
+                      preselectedStudent={undefined}
+                      onSave={() => {}}
+                      onCancel={() => setShowBatchGradeForm(false)}
+                    />
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           )}
 
