@@ -2062,6 +2062,7 @@ function GradeForm({
   onCancel: () => void;
 }) {
   const dataStore = useDataStore();
+  const { toast } = useToast();
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedTerm, setSelectedTerm] = useState('Term 1');
   const [selectedClass, setSelectedClass] = useState('');
