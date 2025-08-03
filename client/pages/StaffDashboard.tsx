@@ -2016,291 +2016,319 @@ function GradeForm({
   onSave: (grade: Omit<Grade, 'id'> | Grade) => void;
   onCancel: () => void;
 }) {
-  const [formData, setFormData] = useState<Partial<Grade>>(
-    grade || {
-      studentId: preselectedStudent?.id || 0,
-      studentName: preselectedStudent?.name || '',
-      subject: '',
-      score: '',
-      percentage: 0,
-      term: 'Term 1',
-      assignment: '',
+  const dataStore = useDataStore();
+  const [selectedSubject, setSelectedSubject] = useState('');
+  const [selectedTerm, setSelectedTerm] = useState('Term 1');
+  const [selectedClass, setSelectedClass] = useState('');
+
+  // State for student grades (up to 6 students)
+  const [studentGrades, setStudentGrades] = useState<Array<{
+    studentId: number;
+    studentName: string;
+    class: string;
+    weeklyTest: number;
+    project: number;
+    assignment: number;
+    takeHomeTest: number;
+    endOfTermTest: number;
+    totalMarks: number;
+    letterGrade: string;
+  }>>([]);
+
+  // Calculate total marks and letter grade
+  const calculateTotalAndGrade = (weeklyTest: number, project: number, assignment: number, takeHomeTest: number, endOfTermTest: number) => {
+    const total = Math.round(weeklyTest + project + assignment + takeHomeTest + endOfTermTest);
+    let letterGrade = 'F';
+    if (total >= 85) letterGrade = 'D';
+    else if (total >= 70) letterGrade = 'C';
+    else if (total >= 55) letterGrade = 'UP';
+    else if (total >= 40) letterGrade = 'P';
+
+    return { total, letterGrade };
+  };
+
+  // Get filtered students based on selected class
+  const getClassStudents = () => {
+    if (!selectedClass) return [];
+    return students.filter(student => `${student.grade} ${student.class}` === selectedClass).slice(0, 6);
+  };
+
+  // Initialize student grades when class is selected
+  const handleClassChange = (classValue: string) => {
+    setSelectedClass(classValue);
+    const classStudents = students.filter(student => `${student.grade} ${student.class}` === classValue).slice(0, 6);
+
+    setStudentGrades(classStudents.map(student => ({
+      studentId: student.id,
+      studentName: student.name,
+      class: `${student.grade} ${student.class}`,
+      weeklyTest: 0,
+      project: 0,
+      assignment: 0,
+      takeHomeTest: 0,
+      endOfTermTest: 0,
+      totalMarks: 0,
+      letterGrade: 'F'
+    })));
+  };
+
+  // Update individual assessment component
+  const updateAssessment = (studentIndex: number, field: string, value: number) => {
+    const newGrades = [...studentGrades];
+    newGrades[studentIndex] = { ...newGrades[studentIndex], [field]: value };
+
+    const { weeklyTest, project, assignment, takeHomeTest, endOfTermTest } = newGrades[studentIndex];
+    const { total, letterGrade } = calculateTotalAndGrade(weeklyTest, project, assignment, takeHomeTest, endOfTermTest);
+
+    newGrades[studentIndex].totalMarks = total;
+    newGrades[studentIndex].letterGrade = letterGrade;
+
+    setStudentGrades(newGrades);
+  };
+
+  // Save all grades
+  const handleSaveAll = () => {
+    if (!selectedSubject || !selectedTerm) {
+      toast({ title: 'Error', description: 'Please select subject and term' });
+      return;
     }
-  );
 
-  // Assessment breakdown state
-  const [assessmentData, setAssessmentData] = useState({
-    weeklyTest: 0,
-    project: 0,
-    assignment: 0,
-    takeHomeTest: 0,
-    endOfTermTest: 0
-  });
+    studentGrades.forEach(studentGrade => {
+      if (studentGrade.totalMarks > 0) {
+        const gradeData = {
+          studentId: studentGrade.studentId,
+          studentName: studentGrade.studentName,
+          class: studentGrade.class,
+          subject: selectedSubject,
+          weeklyTest: studentGrade.weeklyTest,
+          project: studentGrade.project,
+          assignment: studentGrade.assignment,
+          takeHomeTest: studentGrade.takeHomeTest,
+          endOfTermTest: studentGrade.endOfTermTest,
+          totalMarks: studentGrade.totalMarks,
+          letterGrade: studentGrade.letterGrade,
+          term: selectedTerm
+        };
 
-  // Calculate total marks based on weighted assessment components
-  const calculateTotalMarks = () => {
-    const { weeklyTest, project, assignment, takeHomeTest, endOfTermTest } = assessmentData;
-    // Weighted calculation: Weekly(20%) + Project(25%) + Assignment(20%) + Take-home(15%) + End-of-term(20%)
-    const total = (weeklyTest * 0.20) + (project * 0.25) + (assignment * 0.20) + (takeHomeTest * 0.15) + (endOfTermTest * 0.20);
-    return Math.round(total);
+        dataStore.addGrade(gradeData);
+      }
+    });
+
+    toast({ title: 'Success', description: 'Grades saved successfully' });
+    onCancel();
   };
 
-  // Auto-update percentage when assessment data changes
-  useState(() => {
-    const totalMarks = calculateTotalMarks();
-    setFormData(prev => ({ ...prev, percentage: totalMarks }));
-  });
-
-  // Get the selected student's enrolled subjects
-  const getStudentSubjects = () => {
-    const selectedStudent = formData.studentId
-      ? students.find(s => s.id === formData.studentId)
-      : preselectedStudent;
-
-    return selectedStudent?.subjects || [];
+  // Get available classes
+  const getAvailableClasses = () => {
+    const classes = new Set(students.map(student => `${student.grade} ${student.class}`));
+    return Array.from(classes).sort();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (formData.studentId && formData.subject && formData.score && formData.percentage && formData.term && formData.assignment) {
-      const selectedStudent = students.find(s => s.id === formData.studentId);
-      const gradeData = {
-        ...formData,
-        studentName: selectedStudent?.name || '',
-      };
-      onSave(mode === 'edit' ? gradeData as Grade : gradeData as Omit<Grade, 'id'>);
-    }
-  };
+  // Get available subjects for selected class
+  const getAvailableSubjects = () => {
+    if (!selectedClass) return [];
+    const classStudents = students.filter(student => `${student.grade} ${student.class}` === selectedClass);
+    if (classStudents.length === 0) return [];
 
-  const handleAssessmentChange = (field: keyof typeof assessmentData, value: number) => {
-    const newData = { ...assessmentData, [field]: value };
-    setAssessmentData(newData);
+    const allSubjects = new Set<string>();
+    classStudents.forEach(student => {
+      student.subjects.forEach(subject => allSubjects.add(subject));
+    });
 
-    // Calculate new total
-    const total = (newData.weeklyTest * 0.20) + (newData.project * 0.25) + (newData.assignment * 0.20) + (newData.takeHomeTest * 0.15) + (newData.endOfTermTest * 0.20);
-    setFormData(prev => ({ ...prev, percentage: Math.round(total) }));
+    return Array.from(allSubjects).sort();
   };
 
   return (
-    <div className="space-y-6">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Label htmlFor="student">Student</Label>
-          {preselectedStudent ? (
-            <div className="flex h-10 w-full rounded-md border border-input bg-gray-50 px-3 py-2 text-sm">
-              {preselectedStudent.name} ({preselectedStudent.grade} {preselectedStudent.class})
-            </div>
-          ) : (
-            <Select
-              value={formData.studentId?.toString() || ''}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, studentId: parseInt(value) }))}
-            >
+    <div className="w-full max-w-7xl mx-auto space-y-6">
+      {/* Form Header */}
+      <div className="bg-blue-50 p-6 rounded-lg border">
+        <h3 className="text-xl font-bold text-blue-900 mb-4">Grade Entry - Assessment Components</h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <Label>Class</Label>
+            <Select value={selectedClass} onValueChange={handleClassChange}>
               <SelectTrigger>
-                <SelectValue placeholder="Select Student" />
+                <SelectValue placeholder="Select Class" />
               </SelectTrigger>
               <SelectContent>
-                {students.map((student) => (
-                  <SelectItem key={student.id} value={student.id.toString()}>
-                    {student.name} ({student.grade} {student.class})
+                {getAvailableClasses().map((classOption) => (
+                  <SelectItem key={classOption} value={classOption}>
+                    {classOption}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          )}
-        </div>
+          </div>
 
-        <div>
-          <Label htmlFor="subject">Subject</Label>
-          <Select
-            value={formData.subject || ''}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, subject: value }))}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder={formData.studentId || preselectedStudent ? "Select Subject" : "Select Student First"} />
-            </SelectTrigger>
-            <SelectContent>
-              {getStudentSubjects().length > 0 ? (
-                getStudentSubjects().map((subject) => (
+          <div>
+            <Label>Subject</Label>
+            <Select value={selectedSubject} onValueChange={setSelectedSubject} disabled={!selectedClass}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select Subject" />
+              </SelectTrigger>
+              <SelectContent>
+                {getAvailableSubjects().map((subject) => (
                   <SelectItem key={subject} value={subject}>
                     {subject}
                   </SelectItem>
-                ))
-              ) : (
-                <SelectItem value="no-student" disabled>
-                  {formData.studentId || preselectedStudent ? "No subjects enrolled" : "Select a student first"}
-                </SelectItem>
-              )}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div>
-          <Label htmlFor="assignment">Assignment/Exam</Label>
-          <Input
-            id="assignment"
-            value={formData.assignment || ''}
-            onChange={(e) => setFormData(prev => ({ ...prev, assignment: e.target.value }))}
-            placeholder="e.g., Midterm Exam, Quiz 1, Final Project"
-            required
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="term">Term</Label>
-          <Select
-            value={formData.term || ''}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, term: value }))}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select Term" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Term 1">Term 1</SelectItem>
-              <SelectItem value="Term 2">Term 2</SelectItem>
-              <SelectItem value="Term 3">Term 3</SelectItem>
-              <SelectItem value="Term 4">Term 4</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Assessment Breakdown Table */}
-        <div className="bg-blue-50 p-4 rounded-lg border">
-          <h4 className="font-semibold text-blue-900 mb-3">Assessment Breakdown</h4>
-          <div className="overflow-x-auto">
-            <Table className="bg-white">
-              <TableHeader>
-                <TableRow className="bg-blue-100">
-                  <TableHead className="font-bold text-blue-900">Student Name</TableHead>
-                  <TableHead className="font-bold text-blue-900">Class</TableHead>
-                  <TableHead className="font-bold text-blue-900">Weekly Test (20%)</TableHead>
-                  <TableHead className="font-bold text-blue-900">Project (25%)</TableHead>
-                  <TableHead className="font-bold text-blue-900">Assignment (20%)</TableHead>
-                  <TableHead className="font-bold text-blue-900">Take-Home Test (15%)</TableHead>
-                  <TableHead className="font-bold text-blue-900">End-of-Term Test (20%)</TableHead>
-                  <TableHead className="font-bold text-blue-900">Total Marks</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell className="font-medium">
-                    {formData.studentName || preselectedStudent?.name || 'Select Student'}
-                  </TableCell>
-                  <TableCell>
-                    {preselectedStudent ? `${preselectedStudent.grade} ${preselectedStudent.class}` :
-                     formData.studentId ? students.find(s => s.id === formData.studentId)?.class : '-'}
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={assessmentData.weeklyTest || ''}
-                      onChange={(e) => handleAssessmentChange('weeklyTest', Number(e.target.value))}
-                      className="w-16"
-                      placeholder="0"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={assessmentData.project || ''}
-                      onChange={(e) => handleAssessmentChange('project', Number(e.target.value))}
-                      className="w-16"
-                      placeholder="0"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={assessmentData.assignment || ''}
-                      onChange={(e) => handleAssessmentChange('assignment', Number(e.target.value))}
-                      className="w-16"
-                      placeholder="0"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={assessmentData.takeHomeTest || ''}
-                      onChange={(e) => handleAssessmentChange('takeHomeTest', Number(e.target.value))}
-                      className="w-16"
-                      placeholder="0"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={assessmentData.endOfTermTest || ''}
-                      onChange={(e) => handleAssessmentChange('endOfTermTest', Number(e.target.value))}
-                      className="w-16"
-                      placeholder="0"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <div className="font-bold text-lg bg-yellow-100 px-2 py-1 rounded">
-                      {calculateTotalMarks()}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
-          <div className="mt-2 text-sm text-blue-700">
-            <p><strong>Note:</strong> Total marks are calculated using weighted percentages. Adjust individual assessment scores above.</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="score">Letter Grade</Label>
-            <Select
-              value={formData.score || ''}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, score: value }))}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select Grade" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="D">D</SelectItem>
-                <SelectItem value="C">C</SelectItem>
-                <SelectItem value="UP">UP</SelectItem>
-                <SelectItem value="P">P</SelectItem>
-                <SelectItem value="F">F</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
+
           <div>
-            <Label htmlFor="percentage">Total Percentage (Auto-calculated)</Label>
-            <Input
-              id="percentage"
-              type="number"
-              min="0"
-              max="100"
-              value={formData.percentage || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, percentage: parseInt(e.target.value) }))}
-              className="bg-gray-100"
-              readOnly
-            />
+            <Label>Term</Label>
+            <Select value={selectedTerm} onValueChange={setSelectedTerm}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select Term" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Term 1">Term 1</SelectItem>
+                <SelectItem value="Term 2">Term 2</SelectItem>
+                <SelectItem value="Term 3">Term 3</SelectItem>
+                <SelectItem value="Term 4">Term 4</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
+      </div>
 
-        <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button type="submit">
-            {mode === 'add' ? 'Add Grade' : 'Update Grade'}
-          </Button>
+      {/* Assessment Table */}
+      {selectedClass && studentGrades.length > 0 && (
+        <div className="bg-white border rounded-lg overflow-hidden">
+          <div className="bg-blue-600 text-white p-4">
+            <h4 className="text-lg font-semibold">Assessment Components - {selectedClass} - {selectedSubject}</h4>
+          </div>
+
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-blue-100">
+                  <TableHead className="font-bold text-blue-900 min-w-[150px]">Student Name</TableHead>
+                  <TableHead className="font-bold text-blue-900 min-w-[80px]">Class</TableHead>
+                  <TableHead className="font-bold text-blue-900 min-w-[120px]">Weekly Test (20%)</TableHead>
+                  <TableHead className="font-bold text-blue-900 min-w-[120px]">Project (25%)</TableHead>
+                  <TableHead className="font-bold text-blue-900 min-w-[120px]">Assignment (20%)</TableHead>
+                  <TableHead className="font-bold text-blue-900 min-w-[140px]">Take-Home Test (15%)</TableHead>
+                  <TableHead className="font-bold text-blue-900 min-w-[160px]">End-of-Term Test (Exam) (20%)</TableHead>
+                  <TableHead className="font-bold text-blue-900 min-w-[100px]">Total Marks</TableHead>
+                  <TableHead className="font-bold text-blue-900 min-w-[100px]">Letter Grade</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {studentGrades.map((studentGrade, index) => (
+                  <TableRow key={studentGrade.studentId} className="hover:bg-gray-50">
+                    <TableCell className="font-medium">{studentGrade.studentName}</TableCell>
+                    <TableCell>{studentGrade.class}</TableCell>
+                    <TableCell>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="20"
+                        value={studentGrade.weeklyTest || ''}
+                        onChange={(e) => updateAssessment(index, 'weeklyTest', Number(e.target.value))}
+                        className="w-20"
+                        placeholder="0"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="25"
+                        value={studentGrade.project || ''}
+                        onChange={(e) => updateAssessment(index, 'project', Number(e.target.value))}
+                        className="w-20"
+                        placeholder="0"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="20"
+                        value={studentGrade.assignment || ''}
+                        onChange={(e) => updateAssessment(index, 'assignment', Number(e.target.value))}
+                        className="w-20"
+                        placeholder="0"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="15"
+                        value={studentGrade.takeHomeTest || ''}
+                        onChange={(e) => updateAssessment(index, 'takeHomeTest', Number(e.target.value))}
+                        className="w-20"
+                        placeholder="0"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="20"
+                        value={studentGrade.endOfTermTest || ''}
+                        onChange={(e) => updateAssessment(index, 'endOfTermTest', Number(e.target.value))}
+                        className="w-20"
+                        placeholder="0"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className="font-bold text-lg bg-yellow-100 px-3 py-1 rounded text-center min-w-[60px]">
+                        {studentGrade.totalMarks}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          studentGrade.letterGrade === 'D' ? 'default' :
+                          studentGrade.letterGrade === 'C' ? 'secondary' :
+                          studentGrade.letterGrade === 'UP' ? 'outline' :
+                          studentGrade.letterGrade === 'P' ? 'destructive' : 'destructive'
+                        }
+                        className="text-sm font-bold min-w-[40px] justify-center"
+                      >
+                        {studentGrade.letterGrade}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          <div className="p-4 bg-gray-50 border-t">
+            <div className="text-sm text-gray-600 mb-4">
+              <p><strong>Assessment Weight Distribution:</strong> Weekly Test (20%), Project (25%), Assignment (20%), Take-Home Test (15%), End-of-Term Test (20%)</p>
+              <p><strong>Grading Scale:</strong> D (85-100), C (70-84), UP (55-69), P (40-54), F (below 40)</p>
+              <p><strong>Maximum 6 students per entry session</strong></p>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <Button type="button" variant="outline" onClick={onCancel}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSaveAll}
+                disabled={!selectedSubject || !selectedTerm}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                Save All Grades
+              </Button>
+            </div>
+          </div>
         </div>
-      </form>
+      )}
+
+      {/* Empty State */}
+      {!selectedClass && (
+        <div className="text-center py-12 bg-gray-50 rounded-lg">
+          <p className="text-gray-500">Select a class to begin entering grades</p>
+        </div>
+      )}
     </div>
   );
 }
