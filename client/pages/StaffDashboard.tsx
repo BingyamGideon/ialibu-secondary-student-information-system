@@ -1346,19 +1346,30 @@ export default function StaffDashboard() {
                     </div>
                   )}
 
-                  {(gradeFilterGrade !== 'all' || gradeFilterClass !== 'all') && (
+                  <div className="flex gap-2">
+                    {(gradeFilterGrade !== 'all' || gradeFilterClass !== 'all') && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setGradeFilterGrade('all');
+                          setGradeFilterClass('all');
+                        }}
+                        className="text-xs"
+                      >
+                        Clear Filters
+                      </Button>
+                    )}
+
                     <Button
-                      variant="outline"
                       size="sm"
-                      onClick={() => {
-                        setGradeFilterGrade('all');
-                        setGradeFilterClass('all');
-                      }}
-                      className="text-xs"
+                      onClick={() => setShowBatchGradeForm(true)}
+                      className="bg-green-600 hover:bg-green-700 text-xs"
                     >
-                      Clear Filters
+                      <Plus className="mr-1 h-3 w-3" />
+                      Add Grade
                     </Button>
-                  )}
+                  </div>
                 </div>
               </div>
 
