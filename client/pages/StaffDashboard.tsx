@@ -2276,8 +2276,8 @@ function GradeForm({
                         max="20"
                         value={studentGrade.weeklyTest || ''}
                         onChange={(e) => updateAssessment(index, 'weeklyTest', Number(e.target.value))}
-                        className="w-20"
-                        placeholder="0"
+                      className="w-16 text-center"
+                      placeholder="0"
                       />
                     </TableCell>
                     <TableCell>
