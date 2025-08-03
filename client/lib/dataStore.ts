@@ -30,11 +30,12 @@ interface Grade {
   studentName: string;
   class: string;
   subject: string;
-  weeklyTest: number;
-  project: number;
-  assignment: number;
-  takeHomeTest: number;
-  endOfTermTest: number;
+  weeklyTests: number[];
+  projects: number[];
+  assignments: number[];
+  takeHomeTests: number[];
+  openBookTests: number[];
+  endOfTermTests: number[];
   totalMarks: number;
   letterGrade: string;
   term: string;
