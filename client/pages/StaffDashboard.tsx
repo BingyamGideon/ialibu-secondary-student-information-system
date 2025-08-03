@@ -1426,10 +1426,13 @@ export default function StaffDashboard() {
                                     <TableHeader>
                                       <TableRow>
                                         <TableHead>Subject</TableHead>
+                                        <TableHead>Weekly Test</TableHead>
+                                        <TableHead>Project</TableHead>
                                         <TableHead>Assignment</TableHead>
-                                        <TableHead>Score</TableHead>
-                                        <TableHead>Percentage</TableHead>
-                                        <TableHead>Ranking</TableHead>
+                                        <TableHead>Take-Home Test</TableHead>
+                                        <TableHead>End-of-Term Test</TableHead>
+                                        <TableHead>Total Marks</TableHead>
+                                        <TableHead>Letter Grade</TableHead>
                                         <TableHead>Term</TableHead>
                                         <TableHead>Actions</TableHead>
                                       </TableRow>
@@ -1437,13 +1440,28 @@ export default function StaffDashboard() {
                                     <TableBody>
                                       {studentGrades.map((grade) => (
                                         <TableRow key={grade.id}>
-                                          <TableCell>{grade.subject}</TableCell>
-                                          <TableCell>{grade.assignment}</TableCell>
-                                          <TableCell>{grade.score}</TableCell>
-                                          <TableCell>{grade.percentage}%</TableCell>
+                                          <TableCell className="font-medium">{grade.subject}</TableCell>
+                                          <TableCell>{grade.weeklyTest || 0}</TableCell>
+                                          <TableCell>{grade.project || 0}</TableCell>
+                                          <TableCell>{grade.assignment || 0}</TableCell>
+                                          <TableCell>{grade.takeHomeTest || 0}</TableCell>
+                                          <TableCell>{grade.endOfTermTest || 0}</TableCell>
                                           <TableCell>
-                                            <Badge variant="outline">
-                                              {getStudentRanking(student.id, grade.subject, grade.term) || 'N/A'}
+                                            <div className="font-bold text-lg bg-yellow-100 px-2 py-1 rounded text-center">
+                                              {grade.totalMarks || 0}
+                                            </div>
+                                          </TableCell>
+                                          <TableCell>
+                                            <Badge
+                                              variant={
+                                                grade.letterGrade === 'D' ? 'default' :
+                                                grade.letterGrade === 'C' ? 'secondary' :
+                                                grade.letterGrade === 'UP' ? 'outline' :
+                                                'destructive'
+                                              }
+                                              className="text-sm font-bold"
+                                            >
+                                              {grade.letterGrade || 'F'}
                                             </Badge>
                                           </TableCell>
                                           <TableCell>{grade.term}</TableCell>
