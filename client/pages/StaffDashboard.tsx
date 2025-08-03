@@ -2187,7 +2187,7 @@ function GradeForm({
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-6">
+    <div className="w-full space-y-4">
       {/* Form Header */}
       <div className="bg-blue-50 p-6 rounded-lg border">
         <h3 className="text-xl font-bold text-blue-900 mb-4">Grade Entry - Assessment Components</h3>
