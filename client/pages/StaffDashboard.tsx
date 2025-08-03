@@ -1429,11 +1429,12 @@ export default function StaffDashboard() {
                                     <TableHeader>
                                       <TableRow>
                                         <TableHead>Subject</TableHead>
-                                        <TableHead>Weekly Test</TableHead>
-                                        <TableHead>Project</TableHead>
-                                        <TableHead>Assignment</TableHead>
-                                        <TableHead>Take-Home Test</TableHead>
-                                        <TableHead>End-of-Term Test</TableHead>
+                                        <TableHead>Weekly Tests</TableHead>
+                                        <TableHead>Projects</TableHead>
+                                        <TableHead>Assignments</TableHead>
+                                        <TableHead>Take-Home Tests</TableHead>
+                                        <TableHead>Open-Book Tests</TableHead>
+                                        <TableHead>End-of-Term Tests</TableHead>
                                         <TableHead>Total Marks</TableHead>
                                         <TableHead>Letter Grade</TableHead>
                                         <TableHead>Term</TableHead>
