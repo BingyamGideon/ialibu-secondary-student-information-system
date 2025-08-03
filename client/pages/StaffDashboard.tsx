@@ -2614,7 +2614,7 @@ function GradeForm({
     const classes = new Set(
       students
         .filter(student => student.grade === targetGrade)
-        .map(student => `${student.grade} ${student.class}`)
+        .map(student => student.class)
     );
     return Array.from(classes).sort();
   };
