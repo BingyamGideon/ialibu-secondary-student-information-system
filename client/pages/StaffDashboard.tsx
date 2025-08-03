@@ -2522,14 +2522,17 @@ function GradeForm({
 
   // Get filtered students based on selected class
   const getClassStudents = () => {
-    if (!selectedClass) return [];
-    return students.filter(student => `${student.grade} ${student.class}` === selectedClass).slice(0, 6);
+    if (!selectedClass || !selectedGradeLevel) return [];
+    const targetGrade = `Grade ${selectedGradeLevel}`;
+    return students.filter(student => student.grade === targetGrade && student.class === selectedClass).slice(0, 6);
   };
 
   // Initialize student grades when class is selected
   const handleClassChange = (classValue: string) => {
     setSelectedClass(classValue);
-    const classStudents = students.filter(student => `${student.grade} ${student.class}` === classValue).slice(0, 6);
+    if (!selectedGradeLevel) return;
+    const targetGrade = `Grade ${selectedGradeLevel}`;
+    const classStudents = students.filter(student => student.grade === targetGrade && student.class === classValue).slice(0, 6);
 
     setStudentGrades(classStudents.map(student => ({
       studentId: student.id,
