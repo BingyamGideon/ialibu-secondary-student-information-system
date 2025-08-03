@@ -2300,9 +2300,20 @@ function GradeForm({
     onCancel();
   };
 
-  // Get available classes
+  // Get available grade levels
+  const getAvailableGradeLevels = () => {
+    return ['9', '10', '11', '12'];
+  };
+
+  // Get available classes for selected grade level
   const getAvailableClasses = () => {
-    const classes = new Set(students.map(student => `${student.grade} ${student.class}`));
+    if (!selectedGradeLevel) return [];
+    const targetGrade = `Grade ${selectedGradeLevel}`;
+    const classes = new Set(
+      students
+        .filter(student => student.grade === targetGrade)
+        .map(student => `${student.grade} ${student.class}`)
+    );
     return Array.from(classes).sort();
   };
 
