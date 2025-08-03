@@ -411,7 +411,7 @@ export default function StaffDashboard() {
       const studentGrades = getStudentGrades(student.id);
       const attendanceStats = getStudentAttendanceStats(student.id);
       const avgPercentage = studentGrades.length > 0
-        ? studentGrades.reduce((sum, grade) => sum + grade.percentage, 0) / studentGrades.length
+        ? studentGrades.reduce((sum, grade) => sum + grade.totalMarks, 0) / studentGrades.length
         : 0;
 
       return {
@@ -2920,7 +2920,7 @@ function StudentReportForm({
             <div>
               <h5 className="font-semibold text-blue-800 mb-2">Grade Point Values:</h5>
               <ul className="space-y-1 text-sm">
-                <li>�� Distinction (D) = 4.0 points</li>
+                <li>• Distinction (D) = 4.0 points</li>
                 <li>• Credit (C) = 3.0 points</li>
                 <li>• Upper Pass (UP) = 2.0 points</li>
                 <li>• Pass (P) = 1.0 point</li>
