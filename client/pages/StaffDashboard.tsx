@@ -432,11 +432,11 @@ export default function StaffDashboard() {
     );
 
     const distribution = {
-      'D': allGrades.filter(g => g.score === 'D').length,
-      'C': allGrades.filter(g => g.score === 'C').length,
-      'UP': allGrades.filter(g => g.score === 'UP').length,
-      'P': allGrades.filter(g => g.score === 'P').length,
-      'F': allGrades.filter(g => g.score === 'F').length,
+      'D': allGrades.filter(g => g.letterGrade === 'D').length,
+      'C': allGrades.filter(g => g.letterGrade === 'C').length,
+      'UP': allGrades.filter(g => g.letterGrade === 'UP').length,
+      'P': allGrades.filter(g => g.letterGrade === 'P').length,
+      'F': allGrades.filter(g => g.letterGrade === 'F').length,
     };
 
     return { distribution, total: allGrades.length };
