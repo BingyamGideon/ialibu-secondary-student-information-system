@@ -2621,8 +2621,9 @@ function GradeForm({
 
   // Get available subjects for selected class
   const getAvailableSubjects = () => {
-    if (!selectedClass) return [];
-    const classStudents = students.filter(student => `${student.grade} ${student.class}` === selectedClass);
+    if (!selectedClass || !selectedGradeLevel) return [];
+    const targetGrade = `Grade ${selectedGradeLevel}`;
+    const classStudents = students.filter(student => student.grade === targetGrade && student.class === selectedClass);
     if (classStudents.length === 0) return [];
 
     const allSubjects = new Set<string>();
