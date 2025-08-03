@@ -385,8 +385,8 @@ export default function StaffDashboard() {
       classStudents.some(student => student.id === grade.studentId)
     );
 
-    // Sort by percentage descending
-    const sortedGrades = subjectGrades.sort((a, b) => b.percentage - a.percentage);
+    // Sort by totalMarks descending
+    const sortedGrades = subjectGrades.sort((a, b) => b.totalMarks - a.totalMarks);
     const position = sortedGrades.findIndex(grade => grade.studentId === studentId) + 1;
 
     if (position === 0) return null;
