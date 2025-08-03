@@ -70,6 +70,10 @@ export default function StaffDashboard() {
   const [gradeFilterClass, setGradeFilterClass] = useState('all');
   const [selectedStudentForGrade, setSelectedStudentForGrade] = useState<number | null>(null);
 
+  // Grade form states
+  const [showBatchGradeForm, setShowBatchGradeForm] = useState(false);
+  const [individualGradeModal, setIndividualGradeModal] = useState({ open: false, student: null as Student | null });
+
   // Subject management states
   const [subjectModal, setSubjectModal] = useState({ open: false, student: null as Student | null });
   const [selectedStudentSubjects, setSelectedStudentSubjects] = useState<string[]>([]);
