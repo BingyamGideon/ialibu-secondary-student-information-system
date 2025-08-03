@@ -2245,8 +2245,8 @@ function GradeForm({
       {/* Assessment Table */}
       {selectedClass && studentGrades.length > 0 && (
         <div className="bg-white border rounded-lg overflow-hidden">
-          <div className="bg-blue-600 text-white p-4">
-            <h4 className="text-lg font-semibold">Assessment Components - {selectedClass} - {selectedSubject}</h4>
+          <div className="bg-blue-600 text-white p-3">
+            <h4 className="text-base font-semibold">Assessment Components - {selectedClass} - {selectedSubject}</h4>
           </div>
 
           <div className="overflow-x-auto">
