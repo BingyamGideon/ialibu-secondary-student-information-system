@@ -505,10 +505,11 @@ export default function StaffDashboard() {
     record.status.toLowerCase().includes(attendanceSearch.toLowerCase())
   );
 
-  const filteredGrades = myGrades.filter(grade => 
+  const filteredGrades = myGrades.filter(grade =>
     grade.studentName.toLowerCase().includes(gradeSearch.toLowerCase()) ||
     grade.subject.toLowerCase().includes(gradeSearch.toLowerCase()) ||
-    grade.assignment.toLowerCase().includes(gradeSearch.toLowerCase())
+    grade.class.toLowerCase().includes(gradeSearch.toLowerCase()) ||
+    grade.letterGrade.toLowerCase().includes(gradeSearch.toLowerCase())
   );
 
   return (
@@ -2919,7 +2920,7 @@ function StudentReportForm({
             <div>
               <h5 className="font-semibold text-blue-800 mb-2">Grade Point Values:</h5>
               <ul className="space-y-1 text-sm">
-                <li>• Distinction (D) = 4.0 points</li>
+                <li>�� Distinction (D) = 4.0 points</li>
                 <li>• Credit (C) = 3.0 points</li>
                 <li>• Upper Pass (UP) = 2.0 points</li>
                 <li>• Pass (P) = 1.0 point</li>
