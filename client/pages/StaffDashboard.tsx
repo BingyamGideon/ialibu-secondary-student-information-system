@@ -2120,11 +2120,12 @@ function GradeForm({
       studentId: student.id,
       studentName: student.name,
       class: `${student.grade} ${student.class}`,
-      weeklyTest: 0,
-      project: 0,
-      assignment: 0,
-      takeHomeTest: 0,
-      endOfTermTest: 0,
+      weeklyTests: [0, 0, 0, 0, 0, 0],
+      projects: [0, 0, 0, 0, 0, 0],
+      assignments: [0, 0, 0, 0, 0, 0],
+      takeHomeTests: [0, 0, 0, 0, 0, 0],
+      openBookTests: [0, 0, 0, 0, 0, 0],
+      endOfTermTests: [0, 0, 0, 0, 0, 0],
       totalMarks: 0,
       letterGrade: 'F'
     })));
