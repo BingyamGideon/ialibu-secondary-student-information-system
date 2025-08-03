@@ -2179,6 +2179,7 @@ function GradeForm({
   const { toast } = useToast();
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedTerm, setSelectedTerm] = useState('Term 1');
+  const [selectedGradeLevel, setSelectedGradeLevel] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
 
   // State for student grades (up to 6 students)
