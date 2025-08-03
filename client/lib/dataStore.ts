@@ -28,11 +28,16 @@ interface Grade {
   id: number;
   studentId: number;
   studentName: string;
+  class: string;
   subject: string;
-  score: string;
-  percentage: number;
+  weeklyTest: number;
+  project: number;
+  assignment: number;
+  takeHomeTest: number;
+  endOfTermTest: number;
+  totalMarks: number;
+  letterGrade: string;
   term: string;
-  assignment: string;
 }
 
 interface Finance {
