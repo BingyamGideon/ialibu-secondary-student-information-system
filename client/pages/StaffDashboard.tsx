@@ -1392,38 +1392,13 @@ export default function StaffDashboard() {
                               </div>
 
                               <div className="flex gap-2">
-                                <Dialog open={gradeModal.open} onOpenChange={(open) => setGradeModal(prev => ({ ...prev, open }))}>
-                                  <DialogTrigger asChild>
-                                    <Button
-                                      size="sm"
-                                      onClick={() => setGradeModal({
-                                        open: true,
-                                        mode: 'add',
-                                        data: { studentId: student.id, studentName: student.name } as any
-                                      })}
-                                    >
-                                      <Plus className="mr-1 h-3 w-3" />
-                                      Add Grade
-                                    </Button>
-                                  </DialogTrigger>
-                                  <DialogContent className="max-w-[95vw] max-h-[95vh] w-full">
-                                    <DialogHeader>
-                                      <DialogTitle>Add Grade for {student.name}</DialogTitle>
-                                    </DialogHeader>
-                                    <div className="max-h-[80vh] overflow-y-auto">
-                                      <GradeForm
-                                        mode="add"
-                                        grade={null}
-                                        preselectedStudent={student}
-                                        students={myStudents}
-                                        onSave={(grade) => {
-                                          handleAddGrade(grade);
-                                        }}
-                                        onCancel={() => setGradeModal({ open: false, mode: 'add', data: null })}
-                                      />
-                                    </div>
-                                  </DialogContent>
-                                </Dialog>
+                                <Button
+                                  size="sm"
+                                  onClick={() => setIndividualGradeModal({ open: true, student })}
+                                >
+                                  <Plus className="mr-1 h-3 w-3" />
+                                  Add Grade
+                                </Button>
 
                                 <Button
                                   variant="outline"
