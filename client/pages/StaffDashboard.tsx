@@ -2337,12 +2337,28 @@ function GradeForm({
       <div className="bg-blue-50 p-4 rounded-lg border">
         <h3 className="text-lg font-bold text-blue-900 mb-3">Grade Entry - Assessment Components</h3>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
+          <div>
+            <Label>Grade</Label>
+            <Select value={selectedGradeLevel} onValueChange={handleGradeLevelChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select Grade" />
+              </SelectTrigger>
+              <SelectContent>
+                {getAvailableGradeLevels().map((grade) => (
+                  <SelectItem key={grade} value={grade}>
+                    Grade {grade}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div>
             <Label>Class</Label>
-            <Select value={selectedClass} onValueChange={handleClassChange}>
+            <Select value={selectedClass} onValueChange={handleClassChange} disabled={!selectedGradeLevel}>
               <SelectTrigger>
-                <SelectValue placeholder="Select Class" />
+                <SelectValue placeholder={selectedGradeLevel ? "Select Class" : "Select Grade First"} />
               </SelectTrigger>
               <SelectContent>
                 {getAvailableClasses().map((classOption) => (
@@ -2358,7 +2374,7 @@ function GradeForm({
             <Label>Subject</Label>
             <Select value={selectedSubject} onValueChange={setSelectedSubject} disabled={!selectedClass}>
               <SelectTrigger>
-                <SelectValue placeholder="Select Subject" />
+                <SelectValue placeholder={selectedClass ? "Select Subject" : "Select Class First"} />
               </SelectTrigger>
               <SelectContent>
                 {getAvailableSubjects().map((subject) => (
