@@ -167,6 +167,9 @@ class DataStore {
         { id: 4, studentId: 4, studentName: 'Emily Williams', class: '10A', subject: 'History', weeklyTest: 16, project: 21, assignment: 15, takeHomeTest: 12, endOfTermTest: 17, totalMarks: 81, letterGrade: 'C', term: 'Term 1' },
         { id: 5, studentId: 5, studentName: 'David Brown', class: '10B', subject: 'English', weeklyTest: 14, project: 18, assignment: 13, takeHomeTest: 11, endOfTermTest: 15, totalMarks: 71, letterGrade: 'C', term: 'Term 1' },
         { id: 6, studentId: 6, studentName: 'Sarah Davis', class: '11A', subject: 'Physics', weeklyTest: 19, project: 24, assignment: 18, takeHomeTest: 15, endOfTermTest: 20, totalMarks: 96, letterGrade: 'D', term: 'Term 1' },
+        { id: 7, studentId: 11, studentName: 'Lina Paul', class: '9B', subject: 'Mathematics', weeklyTest: 15, project: 20, assignment: 14, takeHomeTest: 13, endOfTermTest: 16, totalMarks: 78, letterGrade: 'C', term: 'Term 1' },
+        { id: 8, studentId: 12, studentName: 'Alex Sungi', class: '9B', subject: 'Mathematics', weeklyTest: 18, project: 23, assignment: 17, takeHomeTest: 14, endOfTermTest: 19, totalMarks: 91, letterGrade: 'D', term: 'Term 1' },
+        { id: 9, studentId: 13, studentName: 'Mary Kora', class: '9B', subject: 'Mathematics', weeklyTest: 10, project: 15, assignment: 11, takeHomeTest: 12, endOfTermTest: 10, totalMarks: 58, letterGrade: 'UP', term: 'Term 1' },
       ],
       finance: [
         { id: 1, studentId: 1, studentName: 'John Doe', amount: 500, date: '2023-09-15', status: 'Paid', description: 'School Fees - Term 1' },
