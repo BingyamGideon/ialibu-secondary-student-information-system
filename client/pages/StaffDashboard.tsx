@@ -2132,12 +2132,14 @@ function GradeForm({
   };
 
   // Update individual assessment component
-  const updateAssessment = (studentIndex: number, field: string, value: number) => {
+  const updateAssessment = (studentIndex: number, field: string, arrayIndex: number, value: number) => {
     const newGrades = [...studentGrades];
-    newGrades[studentIndex] = { ...newGrades[studentIndex], [field]: value };
+    const newArray = [...newGrades[studentIndex][field as keyof typeof newGrades[studentIndex]] as number[]];
+    newArray[arrayIndex] = value;
+    newGrades[studentIndex] = { ...newGrades[studentIndex], [field]: newArray };
 
-    const { weeklyTest, project, assignment, takeHomeTest, endOfTermTest } = newGrades[studentIndex];
-    const { total, letterGrade } = calculateTotalAndGrade(weeklyTest, project, assignment, takeHomeTest, endOfTermTest);
+    const { weeklyTests, projects, assignments, takeHomeTests, openBookTests, endOfTermTests } = newGrades[studentIndex];
+    const { total, letterGrade } = calculateTotalAndGrade(weeklyTests, projects, assignments, takeHomeTests, openBookTests, endOfTermTests);
 
     newGrades[studentIndex].totalMarks = total;
     newGrades[studentIndex].letterGrade = letterGrade;
