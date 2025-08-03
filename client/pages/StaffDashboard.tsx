@@ -2074,18 +2074,28 @@ function GradeForm({
     studentId: number;
     studentName: string;
     class: string;
-    weeklyTest: number;
-    project: number;
-    assignment: number;
-    takeHomeTest: number;
-    endOfTermTest: number;
+    weeklyTests: number[];
+    projects: number[];
+    assignments: number[];
+    takeHomeTests: number[];
+    openBookTests: number[];
+    endOfTermTests: number[];
     totalMarks: number;
     letterGrade: string;
   }>>([]);
 
   // Calculate total marks and letter grade
-  const calculateTotalAndGrade = (weeklyTest: number, project: number, assignment: number, takeHomeTest: number, endOfTermTest: number) => {
-    const total = Math.round(weeklyTest + project + assignment + takeHomeTest + endOfTermTest);
+  const calculateTotalAndGrade = (weeklyTests: number[], projects: number[], assignments: number[], takeHomeTests: number[], openBookTests: number[], endOfTermTests: number[]) => {
+    const weeklyAvg = weeklyTests.length > 0 ? weeklyTests.reduce((sum, score) => sum + score, 0) / weeklyTests.length : 0;
+    const projectAvg = projects.length > 0 ? projects.reduce((sum, score) => sum + score, 0) / projects.length : 0;
+    const assignmentAvg = assignments.length > 0 ? assignments.reduce((sum, score) => sum + score, 0) / assignments.length : 0;
+    const takeHomeAvg = takeHomeTests.length > 0 ? takeHomeTests.reduce((sum, score) => sum + score, 0) / takeHomeTests.length : 0;
+    const openBookAvg = openBookTests.length > 0 ? openBookTests.reduce((sum, score) => sum + score, 0) / openBookTests.length : 0;
+    const endOfTermAvg = endOfTermTests.length > 0 ? endOfTermTests.reduce((sum, score) => sum + score, 0) / endOfTermTests.length : 0;
+
+    // Weighted calculation: Weekly(20%) + Project(25%) + Assignment(20%) + Take-home(15%) + Open-book(10%) + End-of-term(10%)
+    const total = Math.round((weeklyAvg * 0.20) + (projectAvg * 0.25) + (assignmentAvg * 0.20) + (takeHomeAvg * 0.15) + (openBookAvg * 0.10) + (endOfTermAvg * 0.10));
+
     let letterGrade = 'F';
     if (total >= 85) letterGrade = 'D';
     else if (total >= 70) letterGrade = 'C';
