@@ -2585,9 +2585,15 @@ function GradeForm({
       )}
 
       {/* Empty State */}
-      {!selectedClass && (
+      {!selectedGradeLevel && (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Select a class to begin entering grades</p>
+          <p className="text-gray-500">Select a grade level to begin entering grades</p>
+        </div>
+      )}
+
+      {selectedGradeLevel && !selectedClass && (
+        <div className="text-center py-12 bg-gray-50 rounded-lg">
+          <p className="text-gray-500">Select a class from Grade {selectedGradeLevel} to continue</p>
         </div>
       )}
     </div>
