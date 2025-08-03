@@ -2253,15 +2253,15 @@ function GradeForm({
             <Table>
               <TableHeader>
                 <TableRow className="bg-blue-100">
-                  <TableHead className="font-bold text-blue-900 min-w-[150px]">Student Name</TableHead>
-                  <TableHead className="font-bold text-blue-900 min-w-[80px]">Class</TableHead>
-                  <TableHead className="font-bold text-blue-900 min-w-[120px]">Weekly Test (20%)</TableHead>
-                  <TableHead className="font-bold text-blue-900 min-w-[120px]">Project (25%)</TableHead>
-                  <TableHead className="font-bold text-blue-900 min-w-[120px]">Assignment (20%)</TableHead>
-                  <TableHead className="font-bold text-blue-900 min-w-[140px]">Take-Home Test (15%)</TableHead>
-                  <TableHead className="font-bold text-blue-900 min-w-[160px]">End-of-Term Test (Exam) (20%)</TableHead>
-                  <TableHead className="font-bold text-blue-900 min-w-[100px]">Total Marks</TableHead>
-                  <TableHead className="font-bold text-blue-900 min-w-[100px]">Letter Grade</TableHead>
+                  <TableHead className="font-bold text-blue-900 w-[140px]">Student Name</TableHead>
+                  <TableHead className="font-bold text-blue-900 w-[70px]">Class</TableHead>
+                  <TableHead className="font-bold text-blue-900 w-[100px]">Weekly Test (20%)</TableHead>
+                  <TableHead className="font-bold text-blue-900 w-[100px]">Project (25%)</TableHead>
+                  <TableHead className="font-bold text-blue-900 w-[100px]">Assignment (20%)</TableHead>
+                  <TableHead className="font-bold text-blue-900 w-[120px]">Take-Home Test (15%)</TableHead>
+                  <TableHead className="font-bold text-blue-900 w-[140px]">End-of-Term Test (Exam) (20%)</TableHead>
+                  <TableHead className="font-bold text-blue-900 w-[90px]">Total Marks</TableHead>
+                  <TableHead className="font-bold text-blue-900 w-[90px]">Letter Grade</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
