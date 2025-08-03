@@ -181,13 +181,108 @@ class DataStore {
         { id: 41, name: 'Belinda Kerenga', grade: 'Grade 12', class: '12F', subjects: ['Language and Literature', 'Advanced Mathematics', 'Biology', 'Chemistry', 'Business Studies', 'Accounting', 'Food Technology', 'Personal Development'], dob: '2004-06-16', gender: 'Female', address: '666 Success St, Ialibu', email: 'belinda.kerenga@example.com', phone: '123-456-7841', guardianName: 'George Kerenga', guardianPhone: '+675-234-5641' },
         { id: 42, name: 'Luke Siaguru', grade: 'Grade 12', class: '12G', subjects: ['Language and Literature', 'Advanced Mathematics', 'Physics', 'Chemistry', 'Information and Communication Technology (ICT)', 'Computer Studies', 'Design and Technology', 'Personal Development'], dob: '2004-07-04', gender: 'Male', address: '777 Victory Rd, Ialibu', email: 'luke.siaguru@example.com', phone: '123-456-7842', guardianName: 'Patricia Siaguru', guardianPhone: '+675-345-6742' },
         { id: 43, name: 'Christine Natera', grade: 'Grade 12', class: '12H', subjects: ['Language and Literature', 'Advanced Mathematics', 'Biology', 'Applied Science', 'Tourism Studies', 'Business Studies', 'Textile Technology', 'Personal Development'], dob: '2004-08-20', gender: 'Female', address: '888 Triumph Ave, Ialibu', email: 'christine.natera@example.com', phone: '123-456-7843', guardianName: 'Joseph Natera', guardianPhone: '+675-456-7843' },
-        { id: 4, name: 'Emily Williams', grade: 'Grade 10', class: '10A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Business Studies', 'Information Technology', 'Arts', 'Personal Development'], dob: '2007-07-12', gender: 'Female', address: '101 Maple St, Ialibu', email: 'emily.williams@example.com', phone: '123-456-7893', guardianName: 'Patricia Williams', guardianPhone: '+675-567-8901' },
-        { id: 5, name: 'David Brown', grade: 'Grade 10', class: '10B', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Technology & Industrial Arts', 'Personal Development', 'Family and Consumer Studies'], dob: '2006-09-20', gender: 'Male', address: '202 Cedar Ln, Ialibu', email: 'david.brown@example.com', phone: '123-456-7894', guardianName: 'Susan Brown', guardianPhone: '+675-678-9012' },
-        { id: 6, name: 'Sarah Davis', grade: 'Grade 11', class: '11A', subjects: ['Language and Literature', 'General Mathematics', 'Biology', 'Chemistry', 'Physics', 'Economics', 'Geography', 'Personal Development'], dob: '2005-12-03', gender: 'Female', address: '303 Birch St, Ialibu', email: 'sarah.davis@example.com', phone: '123-456-7895', guardianName: 'Mark Davis', guardianPhone: '+675-789-0123' },
-        { id: 7, name: 'Chris Wilson', grade: 'Grade 11', class: '11C', subjects: ['Language and Literature', 'General Mathematics', 'Chemistry', 'Biology', 'Economics', 'History', 'Legal Studies', 'Personal Development'], dob: '2005-08-17', gender: 'Male', address: '404 Elm Ave, Ialibu', email: 'chris.wilson@example.com', phone: '123-456-7896', guardianName: 'Linda Wilson', guardianPhone: '+675-890-1234' },
-        { id: 8, name: 'Lisa Anderson', grade: 'Grade 12', class: '12A', subjects: ['Language and Literature', 'Advanced Mathematics', 'Biology', 'Chemistry', 'Physics', 'Economics', 'Business Studies', 'Accounting'], dob: '2004-04-25', gender: 'Female', address: '505 Spruce Rd, Ialibu', email: 'lisa.anderson@example.com', phone: '123-456-7897', guardianName: 'Karen Anderson', guardianPhone: '+675-901-2345' },
-        { id: 9, name: 'Kevin Taylor', grade: 'Grade 12', class: '12B', subjects: ['Language and Literature', 'Advanced Mathematics', 'Physics', 'Chemistry', 'Economics', 'Business Studies', 'Computer Studies', 'Tourism Studies'], dob: '2004-07-10', gender: 'Male', address: '606 Willow St, Ialibu', email: 'kevin.taylor@example.com', phone: '123-456-7898', guardianName: 'Michelle Taylor', guardianPhone: '+675-012-3456' },
+        // More Grade 9A students
+        { id: 4, name: 'Paul Kila', grade: 'Grade 9', class: '9A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Business Studies', 'Personal Development', 'Arts'], dob: '2007-03-18', gender: 'Male', address: '303 Main Ave, Ialibu', email: 'paul.kila@example.com', phone: '123-456-7804', guardianName: 'Daniel Kila', guardianPhone: '+675-234-5678' },
+
+        // More Grade 9C students
         { id: 10, name: 'Amy Martinez', grade: 'Grade 9', class: '9C', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Arts', 'Personal Development', 'Religious Education', 'Information Technology'], dob: '2007-02-14', gender: 'Female', address: '707 Oak Hill, Ialibu', email: 'amy.martinez@example.com', phone: '123-456-7899', guardianName: 'Carlos Martinez', guardianPhone: '+675-123-4567' },
+        { id: 70, name: 'Mark Temu', grade: 'Grade 9', class: '9C', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Business Studies', 'Personal Development', 'Arts'], dob: '2007-04-22', gender: 'Male', address: '808 Forest Ave, Ialibu', email: 'mark.temu@example.com', phone: '123-456-7870', guardianName: 'Grace Temu', guardianPhone: '+675-567-8970' },
+
+        // More Grade 9D students
+        { id: 71, name: 'Susan Mendi', grade: 'Grade 9', class: '9D', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Information Technology', 'Personal Development', 'Arts'], dob: '2007-05-15', gender: 'Female', address: '909 River St, Ialibu', email: 'susan.mendi@example.com', phone: '123-456-7871', guardianName: 'Samuel Mendi', guardianPhone: '+675-678-9071' },
+
+        // More Grade 9E students
+        { id: 72, name: 'Thomas Nipa', grade: 'Grade 9', class: '9E', subjects: ['Mathematics', 'English', 'Science', 'Business Studies', 'Technology & Industrial Arts', 'Personal Development', 'Arts'], dob: '2007-06-08', gender: 'Male', address: '111 Mountain Rd, Ialibu', email: 'thomas.nipa@example.com', phone: '123-456-7872', guardianName: 'Rebecca Nipa', guardianPhone: '+675-789-0172' },
+
+        // More Grade 9F students
+        { id: 73, name: 'Helen Kila', grade: 'Grade 9', class: '9F', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Family and Consumer Studies', 'Personal Development', 'Arts'], dob: '2007-07-12', gender: 'Female', address: '222 Valley View, Ialibu', email: 'helen.kila@example.com', phone: '123-456-7873', guardianName: 'Daniel Kila', guardianPhone: '+675-890-1273' },
+
+        // More Grade 9G students
+        { id: 74, name: 'Peter Wambi', grade: 'Grade 9', class: '9G', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Business Studies', 'Personal Development', 'Religious Education'], dob: '2007-08-25', gender: 'Male', address: '333 Garden St, Ialibu', email: 'peter.wambi@example.com', phone: '123-456-7874', guardianName: 'Joyce Wambi', guardianPhone: '+675-901-2374' },
+
+        // More Grade 9H students
+        { id: 75, name: 'Grace Wilson', grade: 'Grade 9', class: '9H', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Arts', 'Personal Development', 'Information Technology'], dob: '2007-09-18', gender: 'Female', address: '444 Sunset Ave, Ialibu', email: 'grace.wilson@example.com', phone: '123-456-7875', guardianName: 'Peter Wilson', guardianPhone: '+675-012-3475' },
+
+        // Grade 10A students (missing completely)
+        { id: 5, name: 'Emily Williams', grade: 'Grade 10', class: '10A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Business Studies', 'Information Technology', 'Arts', 'Personal Development'], dob: '2006-07-12', gender: 'Female', address: '101 Maple St, Ialibu', email: 'emily.williams@example.com', phone: '123-456-7805', guardianName: 'Patricia Williams', guardianPhone: '+675-567-8901' },
+        { id: 76, name: 'Robert Yama', grade: 'Grade 10', class: '10A', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Business Studies', 'Information Technology', 'Arts', 'Personal Development'], dob: '2006-08-20', gender: 'Male', address: '555 Hill Top, Ialibu', email: 'robert.yama@example.com', phone: '123-456-7876', guardianName: 'Thomas Yama', guardianPhone: '+675-123-4576' },
+
+        // More Grade 10B students
+        { id: 77, name: 'David Brown', grade: 'Grade 10', class: '10B', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Technology & Industrial Arts', 'Personal Development', 'Family and Consumer Studies'], dob: '2006-09-20', gender: 'Male', address: '202 Cedar Ln, Ialibu', email: 'david.brown@example.com', phone: '123-456-7877', guardianName: 'Susan Brown', guardianPhone: '+675-678-9012' },
+
+        // More Grade 10C students
+        { id: 78, name: 'Anna Kaupa', grade: 'Grade 10', class: '10C', subjects: ['Mathematics', 'English', 'Science', 'Business Studies', 'Information Technology', 'Personal Development', 'Arts'], dob: '2006-10-15', gender: 'Female', address: '666 Creek View, Ialibu', email: 'anna.kaupa@example.com', phone: '123-456-7878', guardianName: 'Moses Kaupa', guardianPhone: '+675-234-5678' },
+
+        // More Grade 10D students
+        { id: 79, name: 'John Pila', grade: 'Grade 10', class: '10D', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Family and Consumer Studies', 'Personal Development', 'Arts'], dob: '2006-11-22', gender: 'Male', address: '777 Bridge St, Ialibu', email: 'john.pila@example.com', phone: '123-456-7879', guardianName: 'Ruth Pila', guardianPhone: '+675-345-6779' },
+
+        // More Grade 10E students
+        { id: 80, name: 'Mary Wanma', grade: 'Grade 10', class: '10E', subjects: ['Mathematics', 'English', 'Science', 'Business Studies', 'Technology & Industrial Arts', 'Personal Development', 'Religious Education'], dob: '2006-12-08', gender: 'Female', address: '888 Park Lane, Ialibu', email: 'mary.wanma@example.com', phone: '123-456-7880', guardianName: 'James Wanma', guardianPhone: '+675-456-7880' },
+
+        // More Grade 10F students
+        { id: 81, name: 'Simon Mekere', grade: 'Grade 10', class: '10F', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Information Technology', 'Personal Development', 'Arts'], dob: '2006-01-25', gender: 'Male', address: '999 Lake View, Ialibu', email: 'simon.mekere@example.com', phone: '123-456-7881', guardianName: 'Esther Mekere', guardianPhone: '+675-567-8981' },
+
+        // More Grade 10G students
+        { id: 82, name: 'Ruth Temu', grade: 'Grade 10', class: '10G', subjects: ['Mathematics', 'English', 'Science', 'Business Studies', 'Family and Consumer Studies', 'Personal Development', 'Arts'], dob: '2006-02-18', gender: 'Female', address: '111 Meadow St, Ialibu', email: 'ruth.temu@example.com', phone: '123-456-7882', guardianName: 'Joshua Temu', guardianPhone: '+675-678-9082' },
+
+        // More Grade 10H students
+        { id: 83, name: 'Paul Konga', grade: 'Grade 10', class: '10H', subjects: ['Mathematics', 'English', 'Science', 'Social Science', 'Technology & Industrial Arts', 'Personal Development', 'Information Technology'], dob: '2006-03-12', gender: 'Male', address: '222 Church Rd, Ialibu', email: 'paul.konga@example.com', phone: '123-456-7883', guardianName: 'Mary Konga', guardianPhone: '+675-789-0183' },
+
+        // Grade 11A students
+        { id: 6, name: 'Sarah Davis', grade: 'Grade 11', class: '11A', subjects: ['Language and Literature', 'General Mathematics', 'Biology', 'Chemistry', 'Physics', 'Economics', 'Geography', 'Personal Development'], dob: '2005-12-03', gender: 'Female', address: '303 Birch St, Ialibu', email: 'sarah.davis@example.com', phone: '123-456-7806', guardianName: 'Mark Davis', guardianPhone: '+675-789-0123' },
+
+        // More Grade 11B students
+        { id: 84, name: 'Michael Kerenga', grade: 'Grade 11', class: '11B', subjects: ['Language and Literature', 'General Mathematics', 'Chemistry', 'Biology', 'Economics', 'History', 'Legal Studies', 'Personal Development'], dob: '2005-04-15', gender: 'Male', address: '444 University St, Ialibu', email: 'michael.kerenga@example.com', phone: '123-456-7884', guardianName: 'Anna Kerenga', guardianPhone: '+675-890-1284' },
+
+        // Grade 11C students
+        { id: 7, name: 'Chris Wilson', grade: 'Grade 11', class: '11C', subjects: ['Language and Literature', 'General Mathematics', 'Chemistry', 'Biology', 'Economics', 'History', 'Legal Studies', 'Personal Development'], dob: '2005-08-17', gender: 'Male', address: '404 Elm Ave, Ialibu', email: 'chris.wilson@example.com', phone: '123-456-7807', guardianName: 'Linda Wilson', guardianPhone: '+675-890-1234' },
+
+        // More Grade 11D students
+        { id: 85, name: 'Joseph Namaliu', grade: 'Grade 11', class: '11D', subjects: ['Language and Literature', 'General Mathematics', 'Biology', 'Chemistry', 'Environment', 'Political Science', 'Legal Studies', 'Personal Development'], dob: '2005-06-22', gender: 'Male', address: '666 Scholar Ave, Ialibu', email: 'joseph.namaliu@example.com', phone: '123-456-7885', guardianName: 'Priscilla Namaliu', guardianPhone: '+675-901-2385' },
+
+        // More Grade 11E students
+        { id: 86, name: 'Helen Parkop', grade: 'Grade 11', class: '11E', subjects: ['Language and Literature', 'General Mathematics', 'Physics', 'Applied Science', 'Economics', 'Business Studies', 'Accounting', 'Personal Development'], dob: '2005-07-28', gender: 'Female', address: '777 Learning Lane, Ialibu', email: 'helen.parkop@example.com', phone: '123-456-7886', guardianName: 'Isaac Parkop', guardianPhone: '+675-012-3486' },
+
+        // More Grade 11F students
+        { id: 87, name: 'Samuel Agarobe', grade: 'Grade 11', class: '11F', subjects: ['Language and Literature', 'General Mathematics', 'Biology', 'Geology', 'Geography', 'Environment', 'Tourism Studies', 'Personal Development'], dob: '2005-08-12', gender: 'Male', address: '888 Education St, Ialibu', email: 'samuel.agarobe@example.com', phone: '123-456-7887', guardianName: 'Deborah Agarobe', guardianPhone: '+675-123-4587' },
+
+        // More Grade 11G students
+        { id: 88, name: 'Grace Pato', grade: 'Grade 11', class: '11G', subjects: ['Language and Literature', 'General Mathematics', 'Chemistry', 'Physics', 'Economics', 'Information and Communication Technology (ICT)', 'Computer Studies', 'Personal Development'], dob: '2005-09-25', gender: 'Female', address: '999 Knowledge Rd, Ialibu', email: 'grace.pato@example.com', phone: '123-456-7888', guardianName: 'Solomon Pato', guardianPhone: '+675-234-5688' },
+
+        // More Grade 11H students
+        { id: 89, name: 'David Somare', grade: 'Grade 11', class: '11H', subjects: ['Language and Literature', 'General Mathematics', 'Biology', 'Chemistry', 'History', 'Legal Studies', 'Business Studies', 'Personal Development'], dob: '2005-10-18', gender: 'Male', address: '111 Wisdom Ave, Ialibu', email: 'david.somare@example.com', phone: '123-456-7889', guardianName: 'Rachel Somare', guardianPhone: '+675-345-6789' },
+
+        // Grade 12A students
+        { id: 8, name: 'Lisa Anderson', grade: 'Grade 12', class: '12A', subjects: ['Language and Literature', 'Advanced Mathematics', 'Biology', 'Chemistry', 'Physics', 'Economics', 'Business Studies', 'Accounting'], dob: '2004-04-25', gender: 'Female', address: '505 Spruce Rd, Ialibu', email: 'lisa.anderson@example.com', phone: '123-456-7808', guardianName: 'Karen Anderson', guardianPhone: '+675-901-2345' },
+        { id: 90, name: 'Andrew Namah', grade: 'Grade 12', class: '12A', subjects: ['Language and Literature', 'Advanced Mathematics', 'Biology', 'Chemistry', 'Physics', 'Economics', 'Business Studies', 'Accounting'], dob: '2004-01-05', gender: 'Male', address: '222 Senior St, Ialibu', email: 'andrew.namah@example.com', phone: '123-456-7890', guardianName: 'Catherine Namah', guardianPhone: '+675-456-7890' },
+
+        // Grade 12B students
+        { id: 9, name: 'Kevin Taylor', grade: 'Grade 12', class: '12B', subjects: ['Language and Literature', 'Advanced Mathematics', 'Physics', 'Chemistry', 'Economics', 'Business Studies', 'Computer Studies', 'Tourism Studies'], dob: '2004-07-10', gender: 'Male', address: '606 Willow St, Ialibu', email: 'kevin.taylor@example.com', phone: '123-456-7809', guardianName: 'Michelle Taylor', guardianPhone: '+675-012-3456' },
+        { id: 91, name: 'Vanessa Kramer', grade: 'Grade 12', class: '12B', subjects: ['Language and Literature', 'Advanced Mathematics', 'Physics', 'Chemistry', 'Economics', 'Business Studies', 'Computer Studies', 'Tourism Studies'], dob: '2004-02-14', gender: 'Female', address: '333 Final Ave, Ialibu', email: 'vanessa.kramer@example.com', phone: '123-456-7891', guardianName: 'Steven Kramer', guardianPhone: '+675-567-8991' },
+
+        // Grade 12C students
+        { id: 92, name: 'Gabriel Kapris', grade: 'Grade 12', class: '12C', subjects: ['Language and Literature', 'Advanced Mathematics', 'Biology', 'Applied Science', 'Economics', 'Geography', 'Environment', 'Personal Development'], dob: '2004-03-22', gender: 'Male', address: '444 Graduate Rd, Ialibu', email: 'gabriel.kapris@example.com', phone: '123-456-7892', guardianName: 'Diana Kapris', guardianPhone: '+675-678-9092' },
+        { id: 93, name: 'Stephanie Siaguru', grade: 'Grade 12', class: '12C', subjects: ['Language and Literature', 'Advanced Mathematics', 'Chemistry', 'Physics', 'Legal Studies', 'Political Science', 'Business Studies', 'Personal Development'], dob: '2004-04-11', gender: 'Female', address: '555 Achievement St, Ialibu', email: 'stephanie.siaguru@example.com', phone: '123-456-7893', guardianName: 'Francis Siaguru', guardianPhone: '+675-789-0193' },
+
+        // Grade 12D students
+        { id: 94, name: 'Matthew Tomscoll', grade: 'Grade 12', class: '12D', subjects: ['Language and Literature', 'Advanced Mathematics', 'Physics', 'Geology', 'Economics', 'Design and Technology', 'Construction', 'Personal Development'], dob: '2004-05-28', gender: 'Male', address: '666 Excellence Ave, Ialibu', email: 'matthew.tomscoll@example.com', phone: '123-456-7894', guardianName: 'Linda Tomscoll', guardianPhone: '+675-890-1294' },
+        { id: 95, name: 'Belinda Kerenga', grade: 'Grade 12', class: '12D', subjects: ['Language and Literature', 'Advanced Mathematics', 'Biology', 'Chemistry', 'Business Studies', 'Accounting', 'Food Technology', 'Personal Development'], dob: '2004-06-16', gender: 'Female', address: '777 Success St, Ialibu', email: 'belinda.kerenga@example.com', phone: '123-456-7895', guardianName: 'George Kerenga', guardianPhone: '+675-901-2395' },
+
+        // Grade 12E students
+        { id: 96, name: 'Luke Siaguru', grade: 'Grade 12', class: '12E', subjects: ['Language and Literature', 'Advanced Mathematics', 'Physics', 'Chemistry', 'Information and Communication Technology (ICT)', 'Computer Studies', 'Design and Technology', 'Personal Development'], dob: '2004-07-04', gender: 'Male', address: '888 Victory Rd, Ialibu', email: 'luke.siaguru@example.com', phone: '123-456-7896', guardianName: 'Patricia Siaguru', guardianPhone: '+675-012-3496' },
+        { id: 97, name: 'Christine Natera', grade: 'Grade 12', class: '12E', subjects: ['Language and Literature', 'Advanced Mathematics', 'Biology', 'Applied Science', 'Tourism Studies', 'Business Studies', 'Textile Technology', 'Personal Development'], dob: '2004-08-20', gender: 'Female', address: '999 Triumph Ave, Ialibu', email: 'christine.natera@example.com', phone: '123-456-7897', guardianName: 'Joseph Natera', guardianPhone: '+675-123-4597' },
+
+        // Grade 12F students
+        { id: 98, name: 'Robert Wilson', grade: 'Grade 12', class: '12F', subjects: ['Language and Literature', 'Advanced Mathematics', 'Biology', 'Chemistry', 'Economics', 'Business Studies', 'Accounting', 'Personal Development'], dob: '2004-09-15', gender: 'Male', address: '111 Champion St, Ialibu', email: 'robert.wilson@example.com', phone: '123-456-7898', guardianName: 'Chris Wilson', guardianPhone: '+675-234-5698' },
+        { id: 99, name: 'Patricia Davis', grade: 'Grade 12', class: '12F', subjects: ['Language and Literature', 'Advanced Mathematics', 'Physics', 'Applied Science', 'Economics', 'Computer Studies', 'Tourism Studies', 'Personal Development'], dob: '2004-10-22', gender: 'Female', address: '222 Winner Ave, Ialibu', email: 'patricia.davis@example.com', phone: '123-456-7899', guardianName: 'Sarah Davis', guardianPhone: '+675-345-6799' },
+
+        // Grade 12G students
+        { id: 100, name: 'Joseph Anderson', grade: 'Grade 12', class: '12G', subjects: ['Language and Literature', 'Advanced Mathematics', 'Chemistry', 'Physics', 'Information and Communication Technology (ICT)', 'Computer Studies', 'Design and Technology', 'Personal Development'], dob: '2004-11-08', gender: 'Male', address: '333 Leader Rd, Ialibu', email: 'joseph.anderson@example.com', phone: '123-456-7900', guardianName: 'Lisa Anderson', guardianPhone: '+675-456-7900' },
+        { id: 101, name: 'Diana Taylor', grade: 'Grade 12', class: '12G', subjects: ['Language and Literature', 'Advanced Mathematics', 'Biology', 'Geology', 'Geography', 'Environment', 'Business Studies', 'Personal Development'], dob: '2004-12-18', gender: 'Female', address: '444 Pioneer St, Ialibu', email: 'diana.taylor@example.com', phone: '123-456-7901', guardianName: 'Kevin Taylor', guardianPhone: '+675-567-8901' },
+
+        // Grade 12H students
+        { id: 102, name: 'Francis Brown', grade: 'Grade 12', class: '12H', subjects: ['Language and Literature', 'Advanced Mathematics', 'Physics', 'Chemistry', 'Economics', 'Legal Studies', 'Political Science', 'Personal Development'], dob: '2004-01-12', gender: 'Male', address: '555 Summit Ave, Ialibu', email: 'francis.brown@example.com', phone: '123-456-7902', guardianName: 'David Brown', guardianPhone: '+675-678-9002' },
+        { id: 103, name: 'Linda Williams', grade: 'Grade 12', class: '12H', subjects: ['Language and Literature', 'Advanced Mathematics', 'Biology', 'Chemistry', 'Business Studies', 'Accounting', 'Food Technology', 'Personal Development'], dob: '2004-02-25', gender: 'Female', address: '666 Peak St, Ialibu', email: 'linda.williams@example.com', phone: '123-456-7903', guardianName: 'Emily Williams', guardianPhone: '+675-789-0103' },
       ],
       attendance: [
         { id: 1, date: '2024-01-15', studentId: 1, studentName: 'John Doe', status: 'Present', subject: 'Mathematics', notes: '' },
