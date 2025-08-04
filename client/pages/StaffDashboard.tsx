@@ -1336,6 +1336,15 @@ export default function StaffDashboard() {
             <div>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-800">Grade Management</h2>
+                <div className="flex items-center gap-4">
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                    {myGrades.length} grades • {filteredGrades.length} filtered
+                  </Badge>
+                  <Badge variant="secondary" className="bg-green-100 text-green-800">
+                    <TrendingUp className="mr-1 h-3 w-3" />
+                    Teaching Dashboard
+                  </Badge>
+                </div>
               </div>
 
               <div className="mb-6 space-y-4">
