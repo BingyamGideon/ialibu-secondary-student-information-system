@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +12,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useDataStore } from '@/hooks/useDataStore';
+import { useAuth } from '@/hooks/useAuth';
 import { type Student, type Attendance, type Grade, type StudentReport } from '@/lib/dataStore';
 import {
   Users,
@@ -36,7 +37,8 @@ import {
   FileBarChart,
   BookOpen,
   GraduationCap,
-  RefreshCw
+  RefreshCw,
+  LogOut
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
