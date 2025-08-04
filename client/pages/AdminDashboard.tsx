@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
 import { useDataStore } from '@/hooks/useDataStore';
+import { useAuth } from '@/hooks/useAuth';
 import { type Student, type Attendance, type Grade, type Finance, type Staff, type StudentReport } from '@/lib/dataStore';
 import {
   Users,
@@ -37,7 +38,8 @@ import {
   BarChart3,
   PieChart,
   FileBarChart,
-  RefreshCw
+  RefreshCw,
+  LogOut
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
@@ -46,7 +48,15 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const dataStore = useDataStore();
+  const { currentUser, isAuthenticated, logout, loading } = useAuth();
   const [activeSection, setActiveSection] = useState('dashboard');
+
+  // Redirect if not authenticated or not admin
+  useEffect(() => {
+    if (!loading && (!isAuthenticated || (currentUser && currentUser.userType !== 'admin'))) {
+      navigate('/');
+    }
+  }, [isAuthenticated, currentUser, loading, navigate]);
 
   // Search states
   const [studentSearch, setStudentSearch] = useState('');
