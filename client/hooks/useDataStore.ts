@@ -53,5 +53,8 @@ export function useDataStore() {
     updateReport: (report: StudentReport) => dataStore.updateReport(report),
     deleteReport: (id: number) => dataStore.deleteReport(id),
     getStudentReports: (studentId: number) => dataStore.getStudentReports(studentId),
+
+    // Utility operations
+    reloadDefaultData: () => dataStore.reloadDefaultData(),
   };
 }
