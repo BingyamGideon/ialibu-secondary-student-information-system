@@ -2926,3 +2926,167 @@ function StaffForm({
     </form>
   );
 }
+
+// User Form Component for Admin
+function UserForm({
+  mode,
+  data,
+  onSave,
+  onCancel
+}: {
+  mode: 'add' | 'edit';
+  data: User | null;
+  onSave: (user: any) => void;
+  onCancel: () => void;
+}) {
+  const [formData, setFormData] = useState<Partial<User>>(
+    data || {
+      username: '',
+      password: '',
+      email: '',
+      firstName: '',
+      lastName: '',
+      userType: 'staff',
+      department: '',
+      position: '',
+      isActive: true,
+      permissions: ['students', 'attendance', 'grades', 'reports']
+    }
+  );
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formData.username && formData.email && formData.firstName && formData.lastName) {
+      onSave(mode === 'edit' ? formData as User : formData as Omit<User, 'id' | 'createdAt'>);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="firstName">First Name</Label>
+          <Input
+            id="firstName"
+            value={formData.firstName || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+            required
+          />
+        </div>
+        <div>
+          <Label htmlFor="lastName">Last Name</Label>
+          <Input
+            id="lastName"
+            value={formData.lastName || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+            required
+          />
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="username">Username</Label>
+        <Input
+          id="username"
+          value={formData.username || ''}
+          onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
+          required
+          disabled={mode === 'edit'}
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          value={formData.email || ''}
+          onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+          required
+        />
+      </div>
+
+      {mode === 'add' && (
+        <div>
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            type="password"
+            value={formData.password || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+            required
+            minLength={6}
+          />
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="department">Department</Label>
+          <Input
+            id="department"
+            value={formData.department || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, department: e.target.value }))}
+            placeholder="e.g., Science, Mathematics"
+          />
+        </div>
+        <div>
+          <Label htmlFor="position">Position</Label>
+          <Input
+            id="position"
+            value={formData.position || ''}
+            onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value }))}
+            placeholder="e.g., Teacher, Head of Department"
+          />
+        </div>
+      </div>
+
+      <div>
+        <Label htmlFor="userType">User Type</Label>
+        <Select
+          value={formData.userType || 'staff'}
+          onValueChange={(value: 'admin' | 'staff') => setFormData(prev => ({
+            ...prev,
+            userType: value,
+            permissions: value === 'admin' ? ['all'] : ['students', 'attendance', 'grades', 'reports']
+          }))}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="staff">Staff Member</SelectItem>
+            <SelectItem value="admin">Administrator</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {mode === 'edit' && (
+        <div>
+          <Label htmlFor="isActive">Account Status</Label>
+          <Select
+            value={formData.isActive ? 'active' : 'inactive'}
+            onValueChange={(value) => setFormData(prev => ({ ...prev, isActive: value === 'active' }))}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="inactive">Inactive</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      <div className="flex justify-end gap-2">
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button type="submit">
+          {mode === 'add' ? 'Add User' : 'Update User'}
+        </Button>
+      </div>
+    </form>
+  );
+}
