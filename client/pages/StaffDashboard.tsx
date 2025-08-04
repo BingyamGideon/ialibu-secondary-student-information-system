@@ -573,7 +573,7 @@ export default function StaffDashboard() {
               onClick={resetData}
               className="text-blue-900 border-white hover:bg-white"
             >
-              Reset Data
+              Reload Sample Data
             </Button>
             <div className="text-right">
               <div className="text-sm font-medium">{currentUser.firstName} {currentUser.lastName}</div>
