@@ -1,232 +1,330 @@
 # Ialibu Secondary School Management System
 
-A comprehensive school management system built with PHP, MySQL, HTML, CSS, and JavaScript using XAMPP.
+A comprehensive school management system built with React TypeScript, featuring authentication, student management, grade tracking, attendance management, and administrative tools designed specifically for Papua New Guinea secondary schools.
 
-## 🚀 Features
+## 🎓 Features
 
-- **User Authentication**: Admin and Staff login with role-based access
-- **Student Management**: Complete student records with personal information
-- **Attendance Tracking**: Record and monitor student attendance
-- **Grade Management**: Track academic performance and assessments
-- **Financial Records**: Manage school fees and payments (Kina currency)
-- **Staff Administration**: Manage staff information and roles
-- **Reports**: Generate and export various reports
-- **Search Functionality**: Search across all modules
-- **Responsive Design**: Works on desktop and mobile devices
+### **Authentication & User Management**
+- Secure login/registration system
+- Role-based access (Admin & Staff)
+- Session management with automatic expiry
+- User profile management
 
-## 🛠️ Technology Stack
+### **Student Management**
+- Complete student records (Grades 9-12, Classes A-H)
+- Student enrollment and profile management
+- Guardian/parent contact information
+- Subject assignment and tracking
 
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Backend**: PHP 7.4+
-- **Database**: MySQL 5.7+
-- **Server**: Apache (XAMPP)
-- **Icons**: Font Awesome 6.4.0
+### **Advanced Grade Management**
+- Papua New Guinea education standards (D: 85-100, C: 70-84, UP: 55-69, P: 40-54, F: <40)
+- Comprehensive assessment system:
+  - Weekly Tests (20%)
+  - Projects (25%) 
+  - Assignments (20%)
+  - Take-Home Tests (15%)
+  - Open-Book Tests (10%)
+  - End-of-Term Tests (10%)
+- Individual assessment score editing (CRUD operations)
+- Real-time grade calculations
+- Batch grade entry for entire classes
 
-## 📋 Requirements
+### **Attendance Management**
+- Daily attendance tracking
+- Class-wise attendance recording
+- Attendance history and reports
+- Late/absent/present status tracking
 
-- XAMPP (Apache + MySQL + PHP)
-- Web browser (Chrome, Firefox, Safari, Edge)
-- Minimum 512MB RAM
-- 100MB disk space
+### **Administrative Features**
+- Staff management
+- Financial records and fee tracking
+- Comprehensive reporting system
+- User management (Admin only)
+- Data backup and restore
 
-## 🔧 Installation Instructions
+## 🚀 How to Download and Setup on Your PC
 
-### Step 1: Install XAMPP
+### **Method 1: Download Project Files (Recommended)**
 
-1. Download XAMPP from [https://www.apachefriends.org/](https://www.apachefriends.org/)
-2. Install XAMPP on your computer
-3. Start Apache and MySQL services from XAMPP Control Panel
+#### Step 1: Download the Project
+1. If you have access to the source code repository, download it as a ZIP file
+2. Extract the ZIP file to your desired location (e.g., `C:\Projects\ialibu-school-system`)
 
-### Step 2: Setup the Application
+#### Step 2: Install Prerequisites
+**Install Node.js:**
+1. Visit [https://nodejs.org](https://nodejs.org)
+2. Download and install Node.js (version 18 or higher)
+3. Verify installation by opening Command Prompt/Terminal and running:
+   ```bash
+   node --version
+   npm --version
+   ```
 
-1. **Copy Project Files**:
-   - Extract the project files to `C:\xampp\htdocs\ialibu_school\` (Windows)
-   - Or `/Applications/XAMPP/htdocs/ialibu_school/` (Mac)
-   - Or `/opt/lampp/htdocs/ialibu_school/` (Linux)
+**Install Git (Optional but recommended):**
+1. Visit [https://git-scm.com](https://git-scm.com)
+2. Download and install Git
 
-2. **Create Database**:
-   - Open phpMyAdmin in your browser: `http://localhost/phpmyadmin`
-   - Create a new database named `ialibu_school`
-   - Import the SQL file: `database/school_management.sql`
+#### Step 3: Setup the Project
+1. Open Command Prompt or Terminal
+2. Navigate to your project folder:
+   ```bash
+   cd C:\Projects\ialibu-school-system
+   ```
+   (Replace with your actual path)
 
-3. **Configure Database Connection**:
-   - Open `config/database.php`
-   - Update database settings if needed (default XAMPP settings should work):
-     ```php
-     define('DB_HOST', 'localhost');
-     define('DB_USERNAME', 'root');
-     define('DB_PASSWORD', ''); // Empty for XAMPP
-     define('DB_NAME', 'ialibu_school');
-     ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-### Step 3: Access the Application
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-1. Open your web browser
-2. Navigate to: `http://localhost/ialibu_school/`
-3. You will be redirected to the login page
+5. Open your browser and go to: `http://localhost:5173`
 
-## 🔐 Default Login Credentials
+### **Method 2: Clone from Repository (If Available)**
 
-### Administrator Access:
-- **Username**: `admin`
-- **Password**: `admin123`
+If the project is in a Git repository:
 
-### Staff Access:
-- **Username**: `staff`
-- **Password**: `staff123`
+```bash
+# Clone the repository
+git clone [repository-url]
+
+# Navigate to project folder
+cd ialibu-school-system
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
 
 ## 📁 Project Structure
 
 ```
-ialibu_school/
-├── config/
-│   └── database.php          # Database configuration
-├── assets/
-│   ├── css/
-│   │   └── style.css         # Main stylesheet
-│   └── js/
-│       ├── main.js           # Core JavaScript functions
-│       └── admin.js          # Admin-specific functions
-├── actions/
-│   ├── save_student.php      # Student CRUD operations
-│   ├── save_attendance.php   # Attendance operations
-│   ├── save_grade.php        # Grade operations
-│   ├── save_finance.php      # Finance operations
-│   └── save_staff.php        # Staff operations
-├── modals/
-│   ├── student_modal.php     # Student form modal
-│   ├── attendance_modal.php  # Attendance form modal
-│   ├── grade_modal.php       # Grade form modal
-│   ├── finance_modal.php     # Finance form modal
-│   └── staff_modal.php       # Staff form modal
-├── database/
-│   └── school_management.sql # Database schema and sample data
-├── login.php                 # Login/Registration page
-├── admin_dashboard.php       # Administrator dashboard
-├── staff_dashboard.php       # Staff dashboard
-├── logout.php                # Logout functionality
-├── .htaccess                 # Apache configuration
-└── README.md                 # This file
+ialibu-school-system/
+├── client/                     # Frontend React application
+│   ├── components/             # Reusable UI components
+│   │   └── ui/                # UI component library
+│   ├── hooks/                 # Custom React hooks
+│   │   ├── useAuth.ts         # Authentication hook
+│   │   ├── useDataStore.ts    # Data management hook
+│   │   └── use-toast.ts       # Toast notification hook
+│   ├── lib/                   # Utility libraries
+│   │   ├── authStore.ts       # Authentication management
+│   │   ├── dataStore.ts       # Data storage and management
+│   │   └── utils.ts           # Utility functions
+│   ├── pages/                 # Page components
+│   │   ├── Index.tsx          # Login/Registration page
+│   │   ├── AdminDashboard.tsx # Administrator dashboard
+│   │   ├── StaffDashboard.tsx # Staff member dashboard
+│   │   └── NotFound.tsx       # 404 error page
+│   ├── App.tsx                # Main application component
+│   └── global.css             # Global styles
+├── database/                  # Database schema and setup
+│   ├── full_schema.sql        # Complete database schema
+│   └── school_management.sql  # Basic database structure
+├── public/                    # Static assets
+├── package.json               # Dependencies and scripts
+├── vite.config.ts            # Vite configuration
+├── tailwind.config.ts        # Tailwind CSS configuration
+└── tsconfig.json             # TypeScript configuration
 ```
 
-## 🔑 User Roles & Permissions
+## 🔧 Development Setup
 
-### Administrator Access:
-- ✅ All student records
-- ✅ All attendance records
-- ✅ All academic grades
-- ✅ **Financial management (Finance section)**
-- ✅ **Staff administration (Staff section)**
-- ✅ Comprehensive reports
-- ✅ System settings
+### **Available Scripts**
 
-### Staff Access:
-- ✅ Student records (view/edit)
-- ✅ Attendance tracking
-- ✅ Grade management
-- ✅ Student reports
-- ❌ Financial records (restricted)
-- ❌ Staff management (restricted)
+```bash
+# Start development server
+npm run dev
 
-## 💰 Currency Configuration
+# Build for production
+npm run build
 
-The system uses **Kina (K)** as the default currency for all financial transactions:
-- Payment records display as "K500.00"
-- Financial reports show Kina amounts
-- All monetary inputs accept Kina values
+# Preview production build
+npm run preview
 
-## 🔍 Key Features
+# Type checking
+npm run type-check
 
-### Search Functionality
-- Real-time search across all data tables
-- Multi-field search (name, grade, class, status, etc.)
-- Instant filtering of results
+# Linting
+npm run lint
+```
 
-### CRUD Operations
-- **Create**: Add new records via modal forms
-- **Read**: View data in organized tables
-- **Update**: Edit existing records with pre-populated forms
-- **Delete**: Remove records with confirmation
+### **Environment Configuration**
 
-### Reports & Export
-- Export data to CSV format
-- Print-friendly report layouts
-- Comprehensive student performance reports
-- Attendance summaries
-- Financial reports
+Create a `.env` file in the project root for environment variables:
 
-## 🚨 Troubleshooting
+```env
+# Database Configuration (for future backend integration)
+DB_HOST=localhost
+DB_USER=your_username
+DB_PASSWORD=your_password
+DB_NAME=ialibu_school_management
 
-### Common Issues:
+# Application Settings
+NODE_ENV=development
+PORT=5173
+```
 
-1. **Database Connection Error**:
-   - Ensure MySQL is running in XAMPP
-   - Check database credentials in `config/database.php`
-   - Verify database `ialibu_school` exists
+## 👥 Default User Accounts
 
-2. **Permission Denied**:
-   - Check file permissions in htdocs folder
-   - Ensure Apache has read/write access
+### **Administrator Account**
+- **Username:** `admin`
+- **Password:** `admin123`
+- **Access:** Full system access, user management, all reports
 
-3. **Login Not Working**:
-   - Verify users table has sample data
-   - Check password hashing in database
+### **Staff Account**
+- **Username:** `staff`
+- **Password:** `staff123`
+- **Access:** Students, attendance, grades, reports
 
-4. **Styles Not Loading**:
-   - Check file paths in HTML files
-   - Ensure CSS files are in correct location
-   - Clear browser cache
+## 📚 How to Use the System
 
-### Database Reset:
+### **For Staff Members:**
+1. **Login** with staff credentials
+2. **View Students** - See all students in your assigned classes
+3. **Take Attendance** - Record daily attendance for your classes
+4. **Manage Grades** - Enter and edit assessment scores:
+   - Use individual grade entry for single students
+   - Use batch entry for entire classes
+   - Edit existing grades by clicking the pencil icon
+   - Add/remove individual assessment scores
+5. **Generate Reports** - Create student report cards
 
-If you need to reset the database:
-1. Drop the `ialibu_school` database in phpMyAdmin
-2. Create a new database with the same name
-3. Re-import `database/school_management.sql`
+### **For Administrators:**
+1. **Login** with admin credentials
+2. **User Management** - Create, edit, delete system users
+3. **Student Management** - Manage all student records
+4. **Staff Management** - Manage staff information
+5. **Financial Management** - Track fees and payments
+6. **System Reports** - Generate comprehensive reports
+7. **Data Management** - Backup and restore system data
 
-## 🔐 Security Features
+## 🎯 Grade Management Features
 
-- Password hashing using PHP's `password_hash()`
-- Session-based authentication
-- Role-based access control
-- SQL injection prevention with prepared statements
-- XSS protection with `htmlspecialchars()`
-- CSRF protection for forms
+### **Assessment Components:**
+- **Weekly Tests (20%)** - Regular classroom assessments
+- **Projects (25%)** - Long-term assignments and projects  
+- **Assignments (20%)** - Homework and class assignments
+- **Take-Home Tests (15%)** - Tests completed at home
+- **Open-Book Tests (10%)** - Reference-allowed assessments
+- **End-of-Term Tests (10%)** - Final examinations
 
-## 📱 Mobile Responsiveness
+### **Grade Editing Features:**
+- **Individual Score Management** - Add, edit, remove individual assessment scores
+- **Real-time Calculations** - Automatic total and letter grade updates
+- **Flexible Assessment Numbers** - Support 1-10 assessments per component
+- **Visual Feedback** - Color-coded components and progress indicators
 
-The application is fully responsive and works on:
-- Desktop computers
-- Tablets
-- Mobile phones
-- All modern web browsers
+## 🗄️ Data Storage
 
-## 🎨 Customization
+### **Current Implementation:**
+- **localStorage** - Client-side data storage for development
+- **Real-time sync** - Data synchronized across browser tabs
+- **Data persistence** - Survives browser restarts
 
-### Changing School Information:
-1. Edit the school name in login page headers
-2. Update welcome text and descriptions
-3. Modify color scheme in `assets/css/style.css`
+### **Production Ready:**
+- **Database Schema** - Complete SQL schema provided
+- **API Integration Points** - Ready for backend implementation
+- **Authentication System** - Scalable user management
 
-### Adding New Subjects:
-1. Update subject dropdowns in modal files
-2. No database changes required
+## 🔒 Security Features
 
-### Modifying User Roles:
-1. Update database enum values if needed
-2. Modify access control in `config/database.php`
+- **Session Management** - Automatic session expiry
+- **Role-based Access** - Different permissions for Admin/Staff
+- **Input Validation** - Form validation and data sanitization
+- **Password Requirements** - Minimum 6 characters
+- **Audit Ready** - Tracking system for user actions
+
+## 🚀 Deployment Options
+
+### **Local Development:**
+```bash
+npm run dev
+# Access at http://localhost:5173
+```
+
+### **Production Build:**
+```bash
+npm run build
+# Creates optimized build in 'dist' folder
+```
+
+### **Web Hosting:**
+- Upload the `dist` folder to any web hosting service
+- Works with Netlify, Vercel, GitHub Pages, etc.
+
+## 🔧 Troubleshooting
+
+### **Common Issues:**
+
+**1. Node.js Version Error:**
+- Ensure Node.js version 18 or higher is installed
+- Run `node --version` to check
+
+**2. Dependencies Installation Failed:**
+- Delete `node_modules` folder and `package-lock.json`
+- Run `npm install` again
+
+**3. Port Already in Use:**
+- The development server will automatically find an available port
+- Or specify a different port: `npm run dev -- --port 3000`
+
+**4. Data Not Loading:**
+- Click "Reload Sample Data" button in the dashboard header
+- This will restore all sample data including students, grades, etc.
+
+**5. Browser Compatibility:**
+- Use modern browsers (Chrome, Firefox, Safari, Edge)
+- Enable JavaScript if disabled
 
 ## 📞 Support
 
-For technical support or questions about the system:
-1. Check the troubleshooting section above
-2. Review the code comments for implementation details
-3. Test with the provided sample data first
+### **Getting Help:**
+1. Check this README for common solutions
+2. Review the database schema in `database/full_schema.sql`
+3. Check the browser console for error messages
+4. Ensure all dependencies are properly installed
 
-## 📄 License
+### **System Requirements:**
+- **Node.js:** Version 18 or higher
+- **RAM:** Minimum 4GB recommended
+- **Browser:** Modern browser with JavaScript enabled
+- **Storage:** ~500MB for development setup
 
-This project is for educational purposes. Please ensure you have proper licensing for any production use.
+## 📈 Future Enhancements
+
+- **Backend Integration** - REST API with database
+- **Real-time Notifications** - WebSocket implementation
+- **Mobile App** - React Native version
+- **Advanced Reporting** - PDF generation and email
+- **Backup System** - Automated data backups
+- **Multi-language Support** - Local language options
 
 ---
 
-**Ialibu Secondary School Management System** - Built with ❤️ using PHP, MySQL, HTML, CSS & JavaScript
+## 🎉 Quick Start Summary
+
+1. **Download** the project files
+2. **Install Node.js** from nodejs.org
+3. **Open Terminal/Command Prompt**
+4. **Navigate** to project folder: `cd your-project-path`
+5. **Install dependencies:** `npm install`
+6. **Start server:** `npm run dev`
+7. **Open browser:** Go to `http://localhost:5173`
+8. **Login:** Use `admin/admin123` or `staff/staff123`
+
+**That's it! You now have the complete school management system running on your PC.**
+
+## 📄 License
+
+This project is designed specifically for Ialibu Secondary School and follows Papua New Guinea education standards.
+
+---
+
+**Note:** This system uses localStorage for development. For production use with multiple users, implement the provided database schema and backend API integration points.
