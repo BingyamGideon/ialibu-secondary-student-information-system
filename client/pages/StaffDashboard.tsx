@@ -2550,6 +2550,252 @@ function IndividualGradeForm({
   );
 }
 
+// Edit Grade Form Component for existing grades
+function EditGradeForm({
+  grade,
+  mode,
+  onSave,
+  onCancel
+}: {
+  grade: Grade;
+  mode: 'add' | 'edit';
+  onSave: (grade: Grade) => void;
+  onCancel: () => void;
+}) {
+  const { toast } = useToast();
+  const [selectedSubject, setSelectedSubject] = useState(grade.subject || '');
+  const [selectedTerm, setSelectedTerm] = useState(grade.term || 'Term 1');
+
+  // Initialize assessment scores from existing grade data
+  const [assessmentScores, setAssessmentScores] = useState({
+    weeklyTests: grade.weeklyTests || [0, 0, 0, 0, 0, 0],
+    projects: grade.projects || [0, 0, 0, 0, 0, 0],
+    assignments: grade.assignments || [0, 0, 0, 0, 0, 0],
+    takeHomeTests: grade.takeHomeTests || [0, 0, 0, 0, 0, 0],
+    openBookTests: grade.openBookTests || [0, 0, 0, 0, 0, 0],
+    endOfTermTests: grade.endOfTermTests || [0, 0, 0, 0, 0, 0],
+  });
+
+  // Calculate total marks and letter grade
+  const calculateTotalAndGrade = () => {
+    const getAverage = (scores: number[]) => {
+      const validScores = scores.filter(score => score > 0);
+      return validScores.length > 0 ? validScores.reduce((sum, score) => sum + score, 0) / validScores.length : 0;
+    };
+
+    const weeklyAvg = getAverage(assessmentScores.weeklyTests);
+    const projectAvg = getAverage(assessmentScores.projects);
+    const assignmentAvg = getAverage(assessmentScores.assignments);
+    const takeHomeAvg = getAverage(assessmentScores.takeHomeTests);
+    const openBookAvg = getAverage(assessmentScores.openBookTests);
+    const endOfTermAvg = getAverage(assessmentScores.endOfTermTests);
+
+    const total = Math.round(
+      (weeklyAvg * 0.20) +
+      (projectAvg * 0.25) +
+      (assignmentAvg * 0.20) +
+      (takeHomeAvg * 0.15) +
+      (openBookAvg * 0.10) +
+      (endOfTermAvg * 0.10)
+    );
+
+    let letterGrade = 'F';
+    if (total >= 85) letterGrade = 'D';
+    else if (total >= 70) letterGrade = 'C';
+    else if (total >= 55) letterGrade = 'UP';
+    else if (total >= 40) letterGrade = 'P';
+
+    return { total, letterGrade };
+  };
+
+  // Update individual assessment score
+  const updateScore = (component: keyof typeof assessmentScores, index: number, value: number) => {
+    setAssessmentScores(prev => ({
+      ...prev,
+      [component]: prev[component].map((score, i) => i === index ? value : score)
+    }));
+  };
+
+  // Add new score slot to assessment component
+  const addScoreSlot = (component: keyof typeof assessmentScores) => {
+    if (assessmentScores[component].length < 10) { // Max 10 assessments per component
+      setAssessmentScores(prev => ({
+        ...prev,
+        [component]: [...prev[component], 0]
+      }));
+    }
+  };
+
+  // Remove score slot from assessment component
+  const removeScoreSlot = (component: keyof typeof assessmentScores, index: number) => {
+    if (assessmentScores[component].length > 1) { // Keep at least 1 slot
+      setAssessmentScores(prev => ({
+        ...prev,
+        [component]: prev[component].filter((_, i) => i !== index)
+      }));
+    }
+  };
+
+  const handleSave = () => {
+    if (!selectedSubject) {
+      toast({ title: 'Error', description: 'Please select a subject' });
+      return;
+    }
+
+    const { total, letterGrade } = calculateTotalAndGrade();
+
+    const updatedGrade: Grade = {
+      ...grade,
+      subject: selectedSubject,
+      weeklyTests: assessmentScores.weeklyTests,
+      projects: assessmentScores.projects,
+      assignments: assessmentScores.assignments,
+      takeHomeTests: assessmentScores.takeHomeTests,
+      openBookTests: assessmentScores.openBookTests,
+      endOfTermTests: assessmentScores.endOfTermTests,
+      totalMarks: total,
+      letterGrade: letterGrade,
+      term: selectedTerm
+    };
+
+    onSave(updatedGrade);
+  };
+
+  const { total, letterGrade } = calculateTotalAndGrade();
+
+  // Assessment component data for rendering
+  const assessmentComponents = [
+    { key: 'weeklyTests', name: 'Weekly Tests', weight: '20%', color: 'blue', maxScore: 20 },
+    { key: 'projects', name: 'Projects', weight: '25%', color: 'green', maxScore: 25 },
+    { key: 'assignments', name: 'Assignments', weight: '20%', color: 'purple', maxScore: 20 },
+    { key: 'takeHomeTests', name: 'Take-Home Tests', weight: '15%', color: 'orange', maxScore: 15 },
+    { key: 'openBookTests', name: 'Open-Book Tests', weight: '10%', color: 'teal', maxScore: 10 },
+    { key: 'endOfTermTests', name: 'End-of-Term Tests', weight: '10%', color: 'red', maxScore: 10 },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Student and Grade Info */}
+      <div className="bg-blue-50 p-4 rounded-lg">
+        <h4 className="font-bold text-blue-900">{grade.studentName}</h4>
+        <p className="text-sm text-blue-700">Class: {grade.class}</p>
+        <Badge variant="outline" className="mt-2">
+          {mode === 'edit' ? 'Editing' : 'Creating'} Grade Record
+        </Badge>
+      </div>
+
+      {/* Subject and Term Selection */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label>Subject</Label>
+          <Input
+            value={selectedSubject}
+            onChange={(e) => setSelectedSubject(e.target.value)}
+            placeholder="Enter subject name"
+          />
+        </div>
+
+        <div>
+          <Label>Term</Label>
+          <Select value={selectedTerm} onValueChange={setSelectedTerm}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Term" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Term 1">Term 1</SelectItem>
+              <SelectItem value="Term 2">Term 2</SelectItem>
+              <SelectItem value="Term 3">Term 3</SelectItem>
+              <SelectItem value="Term 4">Term 4</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Results Summary */}
+      <div className="bg-yellow-50 p-4 rounded-lg flex justify-between items-center">
+        <div>
+          <p className="text-sm text-gray-600">Total Marks</p>
+          <p className="text-2xl font-bold">{total}</p>
+        </div>
+        <div>
+          <p className="text-sm text-gray-600">Letter Grade</p>
+          <Badge variant={letterGrade === 'D' ? 'default' : letterGrade === 'C' ? 'secondary' : letterGrade === 'UP' ? 'outline' : 'destructive'} className="text-lg font-bold px-3 py-1">
+            {letterGrade}
+          </Badge>
+        </div>
+      </div>
+
+      {/* Assessment Components */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {assessmentComponents.map((component) => (
+          <div key={component.key} className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h5 className={`font-semibold text-${component.color}-900 text-sm`}>
+                {component.name} ({component.weight})
+              </h5>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addScoreSlot(component.key as keyof typeof assessmentScores)}
+                  className="h-6 w-6 p-0"
+                >
+                  <Plus className="h-3 w-3" />
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2">
+              {assessmentScores[component.key as keyof typeof assessmentScores].map((score, i) => (
+                <div key={i} className="relative">
+                  <Input
+                    type="number"
+                    min="0"
+                    max={component.maxScore}
+                    value={score || ''}
+                    onChange={(e) => updateScore(component.key as keyof typeof assessmentScores, i, Number(e.target.value))}
+                    className="w-full h-12 text-center text-sm font-medium"
+                    placeholder={`${component.name.charAt(0)}${i+1}`}
+                  />
+                  {assessmentScores[component.key as keyof typeof assessmentScores].length > 1 && (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeScoreSlot(component.key as keyof typeof assessmentScores, i)}
+                      className="absolute -top-2 -right-2 h-5 w-5 p-0 rounded-full"
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="text-xs text-gray-500">
+              Valid scores: {assessmentScores[component.key as keyof typeof assessmentScores].filter(s => s > 0).length} |
+              Avg: {assessmentScores[component.key as keyof typeof assessmentScores].filter(s => s > 0).length > 0
+                ? Math.round(assessmentScores[component.key as keyof typeof assessmentScores].filter(s => s > 0).reduce((sum, s) => sum + s, 0) / assessmentScores[component.key as keyof typeof assessmentScores].filter(s => s > 0).length)
+                : 0}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex justify-end gap-3 pt-4">
+        <Button variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button onClick={handleSave} disabled={!selectedSubject}>
+          {mode === 'edit' ? 'Update Grade' : 'Save Grade'}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 // Batch Grade Form Component
 function GradeForm({
   mode,
