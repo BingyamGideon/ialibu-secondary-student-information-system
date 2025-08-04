@@ -126,6 +126,12 @@ export default function AdminDashboard() {
     navigate('/');
   };
 
+  // Debug function to reset data if needed
+  const resetData = () => {
+    dataStore.reloadDefaultData();
+    toast({ title: 'Data Reset', description: 'Sample data has been reloaded successfully.' });
+  };
+
   // Show loading state while checking authentication
   if (loading || !isAuthenticated || !currentUser) {
     return (
