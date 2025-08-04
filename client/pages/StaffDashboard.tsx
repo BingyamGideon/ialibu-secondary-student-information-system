@@ -190,7 +190,9 @@ export default function StaffDashboard() {
     studentsCount: myStudents.length,
     gradesCount: myGrades.length,
     attendanceCount: myAttendance.length,
-    version: dataStore.version
+    version: dataStore.version,
+    grades: myGrades.slice(0, 3), // Show first 3 grades
+    filteredGradesCount: filteredGrades.length
   });
 
   // Show loading state while checking authentication
