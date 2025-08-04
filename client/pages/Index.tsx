@@ -1,76 +1,135 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-
-interface User {
-  username: string;
-  password: string;
-  type: 'admin' | 'staff';
-}
+import { useAuth } from '@/hooks/useAuth';
+import { Loader2 } from 'lucide-react';
 
 export default function Index() {
   const { toast } = useToast();
   const navigate = useNavigate();
-  
+  const { login, register, loading, isAuthenticated, currentUser } = useAuth();
+
   // Authentication state
   const [isLogin, setIsLogin] = useState(true);
-  const [loginForm, setLoginForm] = useState({ 
-    username: '', 
-    password: '', 
-    confirmPassword: '', 
-    userType: 'admin' as 'admin' | 'staff' 
+  const [loginForm, setLoginForm] = useState({
+    username: '',
+    password: '',
+    confirmPassword: '',
+    email: '',
+    firstName: '',
+    lastName: '',
+    department: '',
+    position: '',
+    userType: 'staff' as 'admin' | 'staff'
   });
-  
-  const [users, setUsers] = useState<User[]>([
-    { username: 'admin', password: 'admin123', type: 'admin' },
-    { username: 'staff', password: 'staff123', type: 'staff' },
-  ]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated && currentUser) {
+      if (currentUser.userType === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/staff');
+      }
+    }
+  }, [isAuthenticated, currentUser, navigate]);
 
   // Handle authentication
-  const handleAuth = (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (isLogin) {
-      const user = users.find(u => u.username === loginForm.username && u.password === loginForm.password);
-      if (user) {
-        toast({ title: 'Login successful', description: `Welcome back, ${user.username}!` });
-        // Redirect based on user type
-        if (user.type === 'admin') {
-          navigate('/admin');
+    setIsSubmitting(true);
+
+    try {
+      if (isLogin) {
+        const result = await login({
+          username: loginForm.username,
+          password: loginForm.password
+        });
+
+        if (result.success && result.user) {
+          toast({
+            title: 'Login successful',
+            description: `Welcome back, ${result.user.firstName} ${result.user.lastName}!`
+          });
+
+          // Navigation will be handled by useEffect
         } else {
-          navigate('/staff');
+          toast({
+            title: 'Login failed',
+            description: result.message,
+            variant: 'destructive'
+          });
         }
       } else {
-        toast({ title: 'Login failed', description: 'Invalid username or password', variant: 'destructive' });
-      }
-    } else {
-      if (loginForm.password !== loginForm.confirmPassword) {
-        toast({ title: 'Registration failed', description: 'Passwords do not match', variant: 'destructive' });
-        return;
-      }
+        // Validation
+        if (!loginForm.firstName.trim() || !loginForm.lastName.trim()) {
+          toast({
+            title: 'Registration failed',
+            description: 'First name and last name are required',
+            variant: 'destructive'
+          });
+          return;
+        }
 
-      // Check if username already exists
-      const existingUser = users.find(u => u.username === loginForm.username);
-      if (existingUser) {
-        toast({ title: 'Registration failed', description: 'Username already exists. Please choose a different username.', variant: 'destructive' });
-        return;
+        if (!loginForm.email.trim() || !loginForm.email.includes('@')) {
+          toast({
+            title: 'Registration failed',
+            description: 'Please enter a valid email address',
+            variant: 'destructive'
+          });
+          return;
+        }
+
+        const result = await register({
+          username: loginForm.username,
+          password: loginForm.password,
+          confirmPassword: loginForm.confirmPassword,
+          email: loginForm.email,
+          firstName: loginForm.firstName,
+          lastName: loginForm.lastName,
+          userType: loginForm.userType,
+          department: loginForm.department,
+          position: loginForm.position
+        });
+
+        if (result.success) {
+          toast({
+            title: 'Registration successful',
+            description: 'You can now login with your credentials!'
+          });
+          setIsLogin(true);
+          setLoginForm({
+            username: '',
+            password: '',
+            confirmPassword: '',
+            email: '',
+            firstName: '',
+            lastName: '',
+            department: '',
+            position: '',
+            userType: 'staff'
+          });
+        } else {
+          toast({
+            title: 'Registration failed',
+            description: result.message,
+            variant: 'destructive'
+          });
+        }
       }
-
-      // Add new user to the users array
-      const newUser: User = {
-        username: loginForm.username,
-        password: loginForm.password,
-        type: loginForm.userType
-      };
-      setUsers(prev => [...prev, newUser]);
-
-      toast({ title: 'Registration successful', description: 'You can now login with your credentials!' });
-      setIsLogin(true);
-      setLoginForm({ username: '', password: '', confirmPassword: '', userType: 'admin' });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'An unexpected error occurred. Please try again.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -143,6 +202,43 @@ export default function Index() {
 
             {!isLogin && (
               <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input
+                      id="firstName"
+                      type="text"
+                      value={loginForm.firstName}
+                      onChange={(e) => setLoginForm(prev => ({ ...prev, firstName: e.target.value }))}
+                      placeholder="First name"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input
+                      id="lastName"
+                      type="text"
+                      value={loginForm.lastName}
+                      onChange={(e) => setLoginForm(prev => ({ ...prev, lastName: e.target.value }))}
+                      placeholder="Last name"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={loginForm.email}
+                    onChange={(e) => setLoginForm(prev => ({ ...prev, email: e.target.value }))}
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+
                 <div>
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
                   <Input
@@ -155,6 +251,29 @@ export default function Index() {
                   />
                 </div>
 
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="department">Department</Label>
+                    <Input
+                      id="department"
+                      type="text"
+                      value={loginForm.department}
+                      onChange={(e) => setLoginForm(prev => ({ ...prev, department: e.target.value }))}
+                      placeholder="Department"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="position">Position</Label>
+                    <Input
+                      id="position"
+                      type="text"
+                      value={loginForm.position}
+                      onChange={(e) => setLoginForm(prev => ({ ...prev, position: e.target.value }))}
+                      placeholder="Position"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <Label htmlFor="userType">User Type</Label>
                   <Select
@@ -165,15 +284,20 @@ export default function Index() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="admin">Administrator</SelectItem>
                       <SelectItem value="staff">Staff Member</SelectItem>
+                      <SelectItem value="admin">Administrator</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </>
             )}
 
-            <Button type="submit" className="w-full bg-blue-900 hover:bg-blue-800 text-white">
+            <Button
+              type="submit"
+              className="w-full bg-blue-900 hover:bg-blue-800 text-white"
+              disabled={isSubmitting || loading}
+            >
+              {(isSubmitting || loading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isLogin ? 'Login' : 'Register'}
             </Button>
           </form>
@@ -196,9 +320,20 @@ export default function Index() {
             <button
               onClick={() => {
                 setIsLogin(!isLogin);
-                setLoginForm({ username: '', password: '', confirmPassword: '', userType: 'admin' });
+                setLoginForm({
+                  username: '',
+                  password: '',
+                  confirmPassword: '',
+                  email: '',
+                  firstName: '',
+                  lastName: '',
+                  department: '',
+                  position: '',
+                  userType: 'staff'
+                });
               }}
               className="ml-2 text-blue-900 font-semibold hover:underline"
+              disabled={isSubmitting || loading}
             >
               {isLogin ? 'Register here' : 'Login here'}
             </button>
