@@ -142,6 +142,7 @@ export default function AdminDashboard() {
     { id: 'grades', label: 'Grades', icon: TrendingUp },
     { id: 'finance', label: 'Finance', icon: CreditCard },
     { id: 'staff', label: 'Staff', icon: UserCog },
+    { id: 'users', label: 'User Management', icon: Users },
     { id: 'reports', label: 'Reports', icon: FileText },
   ];
 
