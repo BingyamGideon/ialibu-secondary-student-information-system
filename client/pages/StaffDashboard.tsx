@@ -565,6 +565,14 @@ export default function StaffDashboard() {
               <RefreshCw className="h-4 w-4 animate-spin" />
               <span>Synced v{dataStore.version}</span>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={resetData}
+              className="text-blue-900 border-white hover:bg-white"
+            >
+              Reset Data
+            </Button>
             <div className="text-right">
               <div className="text-sm font-medium">{currentUser.firstName} {currentUser.lastName}</div>
               <div className="text-xs text-blue-100">{currentUser.position} • {currentUser.department}</div>
