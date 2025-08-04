@@ -2304,12 +2304,17 @@ function IndividualGradeForm({
 
   // Calculate total marks and letter grade
   const calculateTotalAndGrade = () => {
-    const weeklyAvg = assessmentScores.weeklyTests.length > 0 ? assessmentScores.weeklyTests.reduce((sum, score) => sum + score, 0) / assessmentScores.weeklyTests.length : 0;
-    const projectAvg = assessmentScores.projects.length > 0 ? assessmentScores.projects.reduce((sum, score) => sum + score, 0) / assessmentScores.projects.length : 0;
-    const assignmentAvg = assessmentScores.assignments.length > 0 ? assessmentScores.assignments.reduce((sum, score) => sum + score, 0) / assessmentScores.assignments.length : 0;
-    const takeHomeAvg = assessmentScores.takeHomeTests.length > 0 ? assessmentScores.takeHomeTests.reduce((sum, score) => sum + score, 0) / assessmentScores.takeHomeTests.length : 0;
-    const openBookAvg = assessmentScores.openBookTests.length > 0 ? assessmentScores.openBookTests.reduce((sum, score) => sum + score, 0) / assessmentScores.openBookTests.length : 0;
-    const endOfTermAvg = assessmentScores.endOfTermTests.length > 0 ? assessmentScores.endOfTermTests.reduce((sum, score) => sum + score, 0) / assessmentScores.endOfTermTests.length : 0;
+    const getAverage = (scores: number[]) => {
+      const validScores = scores.filter(score => score > 0);
+      return validScores.length > 0 ? validScores.reduce((sum, score) => sum + score, 0) / validScores.length : 0;
+    };
+
+    const weeklyAvg = getAverage(assessmentScores.weeklyTests);
+    const projectAvg = getAverage(assessmentScores.projects);
+    const assignmentAvg = getAverage(assessmentScores.assignments);
+    const takeHomeAvg = getAverage(assessmentScores.takeHomeTests);
+    const openBookAvg = getAverage(assessmentScores.openBookTests);
+    const endOfTermAvg = getAverage(assessmentScores.endOfTermTests);
 
     const total = Math.round((weeklyAvg * 0.20) + (projectAvg * 0.25) + (assignmentAvg * 0.20) + (takeHomeAvg * 0.15) + (openBookAvg * 0.10) + (endOfTermAvg * 0.10));
 
