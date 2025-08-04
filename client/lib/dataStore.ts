@@ -609,6 +609,13 @@ class DataStore {
     }
     return this.data.reports.filter(r => r.studentId === studentId);
   }
+
+  // Method to reload default sample data
+  reloadDefaultData(): void {
+    localStorage.removeItem(this.storageKey);
+    this.data = this.loadFromStorage();
+    this.notifyListeners();
+  }
 }
 
 // Create a singleton instance
