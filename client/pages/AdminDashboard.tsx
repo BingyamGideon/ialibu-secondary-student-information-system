@@ -12,6 +12,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
 import { useDataStore } from '@/hooks/useDataStore';
 import { useAuth } from '@/hooks/useAuth';
+import { authStore, type User } from '@/lib/authStore';
 import { type Student, type Attendance, type Grade, type Finance, type Staff, type StudentReport } from '@/lib/dataStore';
 import {
   Users,
