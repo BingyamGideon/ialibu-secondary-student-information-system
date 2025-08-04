@@ -1779,6 +1779,34 @@ export default function StaffDashboard() {
                   </div>
                 </DialogContent>
               </Dialog>
+
+              {/* Edit Grade Modal */}
+              <Dialog open={gradeModal.open} onOpenChange={(open) => setGradeModal(prev => ({ ...prev, open }))}>
+                <DialogContent className="max-w-[95vw] max-h-[95vh] w-full">
+                  <DialogHeader>
+                    <DialogTitle>
+                      {gradeModal.mode === 'edit' ? 'Edit Grade' : 'Add Grade'} - {gradeModal.data?.studentName} ({gradeModal.data?.subject})
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="max-h-[80vh] overflow-y-auto">
+                    {gradeModal.data && (
+                      <EditGradeForm
+                        grade={gradeModal.data}
+                        mode={gradeModal.mode}
+                        onSave={(updatedGrade) => {
+                          if (gradeModal.mode === 'edit') {
+                            handleUpdateGrade(updatedGrade);
+                          } else {
+                            handleAddGrade(updatedGrade);
+                          }
+                          setGradeModal({ open: false, mode: 'add', data: null });
+                        }}
+                        onCancel={() => setGradeModal({ open: false, mode: 'add', data: null })}
+                      />
+                    )}
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           )}
 
