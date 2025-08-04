@@ -65,6 +65,7 @@ export default function AdminDashboard() {
   const [gradeSearch, setGradeSearch] = useState('');
   const [financeSearch, setFinanceSearch] = useState('');
   const [staffSearch, setStaffSearch] = useState('');
+  const [userSearch, setUserSearch] = useState('');
 
   // Student filter states
   const [selectedGrade, setSelectedGrade] = useState('all');
