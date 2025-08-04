@@ -179,6 +179,20 @@ export default function StaffDashboard() {
     navigate('/');
   };
 
+  // Debug function to reset data if needed
+  const resetData = () => {
+    localStorage.removeItem('school_management_data');
+    window.location.reload();
+  };
+
+  // Debug data loading
+  console.log('DataStore Debug:', {
+    studentsCount: myStudents.length,
+    gradesCount: myGrades.length,
+    attendanceCount: myAttendance.length,
+    version: dataStore.version
+  });
+
   // Show loading state while checking authentication
   if (loading || !isAuthenticated || !currentUser) {
     return (
