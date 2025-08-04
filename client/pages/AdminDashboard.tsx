@@ -2080,6 +2080,131 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
+
+          {activeSection === 'users' && (
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">User Management</h2>
+                <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                  <Eye className="mr-1 h-3 w-3" />
+                  Admin Access
+                </Badge>
+              </div>
+
+              {/* Add User Button */}
+              <div className="flex justify-between items-center mb-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    placeholder="Search users..."
+                    value={userSearch}
+                    onChange={(e) => setUserSearch(e.target.value)}
+                    className="pl-10 w-64"
+                  />
+                </div>
+                <Dialog open={userModal.open} onOpenChange={(open) => setUserModal({ ...userModal, open })}>
+                  <DialogTrigger asChild>
+                    <Button onClick={() => setUserModal({ open: true, mode: 'add', data: null })}>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add User
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>{userModal.mode === 'add' ? 'Add New User' : 'Edit User'}</DialogTitle>
+                    </DialogHeader>
+                    <UserForm
+                      mode={userModal.mode}
+                      data={userModal.data}
+                      onSave={userModal.mode === 'add' ? handleAddUser : handleUpdateUser}
+                      onCancel={() => setUserModal({ open: false, mode: 'add', data: null })}
+                    />
+                  </DialogContent>
+                </Dialog>
+              </div>
+
+              {/* Users Table */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>System Users</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Username</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>User Type</TableHead>
+                          <TableHead>Department</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Last Login</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {users
+                          .filter(user =>
+                            userSearch === '' ||
+                            user.username.toLowerCase().includes(userSearch.toLowerCase()) ||
+                            user.firstName.toLowerCase().includes(userSearch.toLowerCase()) ||
+                            user.lastName.toLowerCase().includes(userSearch.toLowerCase()) ||
+                            user.email.toLowerCase().includes(userSearch.toLowerCase())
+                          )
+                          .map((user) => (
+                            <TableRow key={user.id}>
+                              <TableCell className="font-medium">
+                                {user.firstName} {user.lastName}
+                              </TableCell>
+                              <TableCell>{user.username}</TableCell>
+                              <TableCell>{user.email}</TableCell>
+                              <TableCell>
+                                <Badge variant={user.userType === 'admin' ? 'destructive' : 'secondary'}>
+                                  {user.userType === 'admin' ? 'Administrator' : 'Staff'}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{user.department || 'N/A'}</TableCell>
+                              <TableCell>
+                                <Badge variant={user.isActive ? 'default' : 'secondary'}>
+                                  {user.isActive ? 'Active' : 'Inactive'}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                {user.lastLogin
+                                  ? new Date(user.lastLogin).toLocaleDateString()
+                                  : 'Never'
+                                }
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex gap-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setUserModal({ open: true, mode: 'edit', data: user })}
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  {user.id !== currentUser?.id && (
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => handleDeleteUser(user.id)}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  )}
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </main>
       </div>
     </div>
