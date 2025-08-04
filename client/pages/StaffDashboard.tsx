@@ -181,8 +181,8 @@ export default function StaffDashboard() {
 
   // Debug function to reset data if needed
   const resetData = () => {
-    localStorage.removeItem('school_management_data');
-    window.location.reload();
+    dataStore.reloadDefaultData();
+    toast({ title: 'Data Reset', description: 'Sample data has been reloaded successfully.' });
   };
 
   // Debug data loading
