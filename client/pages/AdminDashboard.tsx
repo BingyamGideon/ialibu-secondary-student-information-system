@@ -239,6 +239,60 @@ export default function AdminDashboard() {
     toast({ title: 'Success', description: 'Staff member deleted successfully' });
   };
 
+  // User Management CRUD Functions
+  const [users, setUsers] = useState<User[]>([]);
+
+  // Load users on component mount
+  useEffect(() => {
+    const loadUsers = () => {
+      setUsers(authStore.getAllUsers());
+    };
+
+    loadUsers();
+    const unsubscribe = authStore.subscribe(() => {
+      loadUsers();
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const handleAddUser = (userData: Omit<User, 'id' | 'createdAt'>) => {
+    try {
+      authStore.createUser(userData);
+      toast({ title: 'Success', description: 'User created successfully' });
+      setUserModal({ open: false, mode: 'add', data: null });
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to create user', variant: 'destructive' });
+    }
+  };
+
+  const handleUpdateUser = (user: User) => {
+    try {
+      const success = authStore.updateUser(user.id, user);
+      if (success) {
+        toast({ title: 'Success', description: 'User updated successfully' });
+        setUserModal({ open: false, mode: 'add', data: null });
+      } else {
+        toast({ title: 'Error', description: 'Failed to update user', variant: 'destructive' });
+      }
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to update user', variant: 'destructive' });
+    }
+  };
+
+  const handleDeleteUser = (userId: number) => {
+    try {
+      const success = authStore.deleteUser(userId);
+      if (success) {
+        toast({ title: 'Success', description: 'User deleted successfully' });
+      } else {
+        toast({ title: 'Error', description: 'Cannot delete this user', variant: 'destructive' });
+      }
+    } catch (error) {
+      toast({ title: 'Error', description: 'Failed to delete user', variant: 'destructive' });
+    }
+  };
+
   // Generate class options based on selected grade
   const getClassOptions = (grade: string) => {
     if (grade === 'all') return [];
