@@ -47,7 +47,15 @@ export default function StaffDashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const dataStore = useDataStore();
+  const { currentUser, isAuthenticated, logout, loading } = useAuth();
   const [activeSection, setActiveSection] = useState('dashboard');
+
+  // Redirect if not authenticated or not staff
+  useEffect(() => {
+    if (!loading && (!isAuthenticated || (currentUser && currentUser.userType !== 'staff'))) {
+      navigate('/');
+    }
+  }, [isAuthenticated, currentUser, loading, navigate]);
 
   // Search states
   const [studentSearch, setStudentSearch] = useState('');
