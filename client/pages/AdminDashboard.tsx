@@ -99,6 +99,7 @@ export default function AdminDashboard() {
   const [financeModal, setFinanceModal] = useState({ open: false, mode: 'add', data: null as Finance | null });
   const [staffModal, setStaffModal] = useState({ open: false, mode: 'add', data: null as Staff | null });
   const [userModal, setUserModal] = useState({ open: false, mode: 'add', data: null as User | null });
+  const [users, setUsers] = useState<User[]>([]);
 
   // Use shared data store
   const students = dataStore.students;
