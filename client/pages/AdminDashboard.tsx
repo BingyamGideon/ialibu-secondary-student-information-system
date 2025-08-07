@@ -59,6 +59,20 @@ export default function AdminDashboard() {
     }
   }, [isAuthenticated, currentUser, loading, navigate]);
 
+  // Load users for user management
+  useEffect(() => {
+    const loadUsers = () => {
+      setUsers(authStore.getAllUsers());
+    };
+
+    loadUsers();
+    const unsubscribe = authStore.subscribe(() => {
+      loadUsers();
+    });
+
+    return unsubscribe;
+  }, []);
+
   // Search states
   const [studentSearch, setStudentSearch] = useState('');
   const [attendanceSearch, setAttendanceSearch] = useState('');
