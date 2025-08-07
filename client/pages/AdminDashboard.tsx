@@ -261,21 +261,6 @@ export default function AdminDashboard() {
   };
 
   // User Management CRUD Functions
-  const [users, setUsers] = useState<User[]>([]);
-
-  // Load users on component mount
-  useEffect(() => {
-    const loadUsers = () => {
-      setUsers(authStore.getAllUsers());
-    };
-
-    loadUsers();
-    const unsubscribe = authStore.subscribe(() => {
-      loadUsers();
-    });
-
-    return unsubscribe;
-  }, []);
 
   const handleAddUser = (userData: Omit<User, 'id' | 'createdAt'>) => {
     try {
