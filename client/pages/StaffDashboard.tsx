@@ -3313,11 +3313,46 @@ function StudentReportForm({
     return Number((totalPoints / studentGrades.length).toFixed(2));
   };
 
-  // Update GPA when grades data or term changes
-  useState(() => {
+  // Calculate attendance automatically from recorded attendance data
+  const calculateAttendance = () => {
+    const studentAttendance = dataStore.attendance.filter(a =>
+      a.studentId === student.id &&
+      a.date >= `${formData.academicYear}-01-01` &&
+      a.date <= `${formData.academicYear}-12-31`
+    );
+
+    if (studentAttendance.length === 0) {
+      return {
+        totalSchoolDays: 80, // Default assumption
+        daysPresent: 0,
+        daysAbsent: 0,
+        attendancePercentage: 0
+      };
+    }
+
+    const totalDays = studentAttendance.length;
+    const presentDays = studentAttendance.filter(a => a.status === 'Present' || a.status === 'Late').length;
+    const absentDays = studentAttendance.filter(a => a.status === 'Absent').length;
+    const attendancePercentage = totalDays > 0 ? Number(((presentDays / totalDays) * 100).toFixed(1)) : 0;
+
+    return {
+      totalSchoolDays: totalDays,
+      daysPresent: presentDays,
+      daysAbsent: absentDays,
+      attendancePercentage
+    };
+  };
+
+  // Update GPA and attendance when data or term changes
+  useEffect(() => {
     const gpa = calculateGPA();
-    setFormData(prev => ({ ...prev, gpa }));
-  });
+    const attendance = calculateAttendance();
+    setFormData(prev => ({
+      ...prev,
+      gpa,
+      ...attendance
+    }));
+  }, [student.id, formData.term, formData.academicYear, dataStore.attendance, dataStore.grades]);
 
   // Calculate attendance based on attendance records
   const calculateAttendance = () => {
