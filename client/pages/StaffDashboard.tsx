@@ -3588,37 +3588,39 @@ function StudentReportForm({
         {/* Attendance Record */}
         <div className="bg-green-50 p-4 rounded-lg">
           <h4 className="font-bold text-green-900 mb-3">Attendance Record</h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="flex items-center gap-2">
-              <Label className="font-medium">Total school days:</Label>
-              <Input
-                type="number"
-                value={formData.totalSchoolDays || ''}
-                onChange={(e) => setFormData(prev => ({ ...prev, totalSchoolDays: Number(e.target.value) }))}
-                className="w-20"
-              />
+          <div className="bg-green-50 p-4 rounded-lg border border-green-200 space-y-3">
+            <div className="flex items-center gap-2 text-green-800 mb-2">
+              <Check className="h-4 w-4" />
+              <span className="font-medium text-sm">Attendance Data (Automatically Calculated)</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Label className="font-medium">Days Absent:</Label>
-              <Input
-                type="number"
-                value={formData.daysAbsent || ''}
-                onChange={(e) => setFormData(prev => ({ ...prev, daysAbsent: Number(e.target.value) }))}
-                className="w-20"
-              />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="flex items-center gap-2">
+                <Label className="font-medium text-green-800">Total School Days:</Label>
+                <div className="font-bold text-green-900 bg-white px-3 py-1 rounded border min-w-[3rem] text-center">
+                  {formData.totalSchoolDays || 0}
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Label className="font-medium text-green-800">Days Absent:</Label>
+                <div className="font-bold text-green-900 bg-white px-3 py-1 rounded border min-w-[3rem] text-center">
+                  {formData.daysAbsent || 0}
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Label className="font-medium text-green-800">Days Present:</Label>
+                <div className="font-bold text-green-900 bg-white px-3 py-1 rounded border min-w-[3rem] text-center">
+                  {formData.daysPresent || 0}
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Label className="font-medium text-green-800">Attendance Rate:</Label>
+                <div className="font-bold text-green-900 bg-white px-3 py-1 rounded border min-w-[3rem] text-center">
+                  {formData.attendancePercentage}%
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Label className="font-medium">Days Present:</Label>
-              <Input
-                type="number"
-                value={formData.daysPresent || ''}
-                onChange={(e) => setFormData(prev => ({ ...prev, daysPresent: Number(e.target.value) }))}
-                className="w-20"
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <Label className="font-medium">Percentage Attendance:</Label>
-              <div className="font-bold">{formData.attendancePercentage}%</div>
+            <div className="text-xs text-green-600 bg-green-100 p-2 rounded border border-green-200">
+              📊 This data is automatically calculated from attendance records taken in the "Take Attendance" section
             </div>
           </div>
           <Button
