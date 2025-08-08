@@ -3641,6 +3641,11 @@ function StudentReportForm({
             </div>
             <div className="text-xs text-green-600 bg-green-100 p-2 rounded border border-green-200">
               📊 This data is automatically calculated from attendance records taken in the "Take Attendance" section
+              {dataStore.attendance.filter(a => a.studentId === student.id).length > 0 && (
+                <div className="mt-1 text-green-500">
+                  ✅ {dataStore.attendance.filter(a => a.studentId === student.id).length} attendance records found for this student
+                </div>
+              )}
             </div>
           </div>
           <Button
