@@ -3374,20 +3374,12 @@ function StudentReportForm({
     }));
   }, [student.id, formData.term, formData.academicYear, dataStore.attendance, dataStore.grades]);
 
-  // Calculate attendance based on attendance records
-  const calculateAttendance = () => {
-    const attendanceRecords = dataStore.attendance.filter(a => a.studentId === student.id);
-    const totalDays = attendanceRecords.length;
-    const presentDays = attendanceRecords.filter(a => a.status === 'Present').length;
-    const absentDays = attendanceRecords.filter(a => a.status === 'Absent').length;
-    const percentage = totalDays > 0 ? Number(((presentDays / totalDays) * 100).toFixed(1)) : 100;
-
+  // Manual attendance recalculation function
+  const recalculateAttendance = () => {
+    const attendance = calculateAttendance();
     setFormData(prev => ({
       ...prev,
-      totalSchoolDays: totalDays || 80,
-      daysPresent: presentDays || 80,
-      daysAbsent: absentDays || 0,
-      attendancePercentage: percentage
+      ...attendance
     }));
   };
 
