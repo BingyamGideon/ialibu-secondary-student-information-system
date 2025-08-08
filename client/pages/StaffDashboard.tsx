@@ -1088,6 +1088,23 @@ export default function StaffDashboard() {
                 </CardContent>
               </Card>
 
+              {/* Automatic Integration Info */}
+              <Card className="mb-6 bg-blue-50 border-blue-200">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-blue-100 p-2 rounded-full">
+                      <RefreshCw className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-blue-900">Automatic Report Integration</h4>
+                      <p className="text-sm text-blue-700">
+                        Attendance recorded here automatically appears in student reports - no need to re-enter data!
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Grade and Class Selection */}
               <Card className="mb-6">
                 <CardContent className="p-6">
