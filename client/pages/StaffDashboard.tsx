@@ -3533,7 +3533,7 @@ function StudentReportForm({
                 value={formData.term || ''}
                 onValueChange={(value) => {
                   setFormData(prev => ({ ...prev, term: value }));
-                  calculateAttendance();
+                  recalculateAttendance();
                 }}
               >
                 <SelectTrigger className="border-0 p-0 h-auto">
