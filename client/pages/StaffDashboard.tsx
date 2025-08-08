@@ -3644,7 +3644,7 @@ function StudentReportForm({
             type="button"
             variant="outline"
             size="sm"
-            onClick={calculateAttendance}
+            onClick={recalculateAttendance}
             className="mt-2"
           >
             Calculate from Records
