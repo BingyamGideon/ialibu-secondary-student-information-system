@@ -3332,21 +3332,24 @@ function StudentReportForm({
 
   // Calculate attendance automatically from recorded attendance data
   const calculateAttendance = () => {
+    // Get all attendance records for this student in the academic year
     const studentAttendance = dataStore.attendance.filter(a =>
       a.studentId === student.id &&
       a.date >= `${formData.academicYear}-01-01` &&
       a.date <= `${formData.academicYear}-12-31`
     );
 
+    // If no attendance records, return default values
     if (studentAttendance.length === 0) {
       return {
-        totalSchoolDays: 80, // Default assumption
+        totalSchoolDays: 0,
         daysPresent: 0,
         daysAbsent: 0,
         attendancePercentage: 0
       };
     }
 
+    // Calculate attendance statistics
     const totalDays = studentAttendance.length;
     const presentDays = studentAttendance.filter(a => a.status === 'Present' || a.status === 'Late').length;
     const absentDays = studentAttendance.filter(a => a.status === 'Absent').length;
