@@ -373,7 +373,8 @@ export default function StaffDashboard() {
 
     setAttendanceRecords({});
     toast({
-      title: 'Success',
+      title: 'Attendance Saved Successfully',
+      description: `Attendance for ${Object.keys(attendanceRecords).length} students recorded and will automatically appear in reports.`,
       description: `Attendance recorded for ${format(attendanceDate, 'MMMM d, yyyy')}`
     });
   };
