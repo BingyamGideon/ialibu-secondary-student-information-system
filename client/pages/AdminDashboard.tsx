@@ -1794,7 +1794,7 @@ export default function AdminDashboard() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <FileText className="h-5 w-5" />
-                      Student Reports (Created by Staff)
+                      Student Reports (Inherited from Staff - View Only)
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
