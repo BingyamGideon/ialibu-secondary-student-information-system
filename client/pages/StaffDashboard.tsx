@@ -1008,7 +1008,7 @@ export default function StaffDashboard() {
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <h4 className="font-medium mb-2">Selected Subjects ({selectedStudentSubjects.length})</h4>
                         <div className="flex flex-wrap gap-2">
-                          {selectedStudentSubjects.map((subject, idx) => (
+                          {(selectedStudentSubjects || []).map((subject, idx) => (
                             <Badge key={idx} variant="default" className="flex items-center gap-1">
                               {subject}
                               <X
