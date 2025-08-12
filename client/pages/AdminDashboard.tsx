@@ -1398,7 +1398,7 @@ export default function AdminDashboard() {
           {activeSection === 'finance' && (
             <div>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Financial Records</h2>
+                <h2 className="text-2xl font-bold text-gray-800">School Fees Management</h2>
                 <Dialog open={financeModal.open} onOpenChange={(open) => setFinanceModal(prev => ({ ...prev, open }))}>
                   <DialogTrigger asChild>
                     <Button onClick={() => setFinanceModal({ open: true, mode: 'add', data: null })}>
@@ -1410,7 +1410,7 @@ export default function AdminDashboard() {
                     <DialogHeader>
                       <DialogTitle>{financeModal.mode === 'add' ? 'Add Payment' : 'Edit Payment'}</DialogTitle>
                     </DialogHeader>
-                    <FinanceForm 
+                    <FinanceForm
                       mode={financeModal.mode}
                       finance={financeModal.data}
                       students={students}
@@ -1427,24 +1427,166 @@ export default function AdminDashboard() {
                 </Dialog>
               </div>
 
-              <div className="mb-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input
-                    placeholder="Search by student name, description, or status..."
-                    value={financeSearch}
-                    onChange={(e) => setFinanceSearch(e.target.value)}
-                    className="pl-10"
-                  />
+              {/* Enhanced Filter Interface */}
+              <Card className="mb-6">
+                <CardContent className="p-4">
+                  <div className="space-y-4">
+                    {/* Filter Header */}
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold text-gray-800">Filter by:</h3>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={clearFinanceFilters}
+                        className="text-gray-600 hover:text-gray-800"
+                      >
+                        Clear Filters
+                      </Button>
+                    </div>
+
+                    {/* Filter Controls */}
+                    <div className="flex flex-wrap gap-3 items-center">
+                      {/* Grade Filter */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-gray-700">Grade:</span>
+                        <Select value={financeGrade} onValueChange={setFinanceGrade}>
+                          <SelectTrigger className="w-32 h-9 border-2 border-gray-300 rounded-lg">
+                            <SelectValue placeholder="Grade" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Grades</SelectItem>
+                            {getFinanceGrades().map((grade) => (
+                              <SelectItem key={grade} value={grade}>
+                                {grade}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Class Filter */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-gray-700">Class:</span>
+                        <Select value={financeClass} onValueChange={setFinanceClass}>
+                          <SelectTrigger className="w-24 h-9 border-2 border-gray-300 rounded-lg">
+                            <SelectValue placeholder="Class" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All</SelectItem>
+                            {getFinanceClasses().map((classOption) => (
+                              <SelectItem key={classOption} value={classOption}>
+                                {classOption}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Status Filter */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-gray-700">Status:</span>
+                        <Select value={financeStatus} onValueChange={setFinanceStatus}>
+                          <SelectTrigger className="w-28 h-9 border-2 border-gray-300 rounded-lg">
+                            <SelectValue placeholder="Status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All</SelectItem>
+                            <SelectItem value="Paid">Paid</SelectItem>
+                            <SelectItem value="Pending">Pending</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {/* Search Bar */}
+                    <div className="relative max-w-md">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                      <Input
+                        placeholder="Search student name or description..."
+                        value={financeSearch}
+                        onChange={(e) => setFinanceSearch(e.target.value)}
+                        className="pl-10 border-2 border-gray-300"
+                      />
+                    </div>
+
+                    {/* Active Filters Display */}
+                    {(financeGrade !== 'all' || financeClass !== 'all' || financeStatus !== 'all' || financeSearch) && (
+                      <div className="flex flex-wrap gap-2 pt-2 border-t">
+                        <span className="text-sm text-gray-600">Active filters:</span>
+                        {financeGrade !== 'all' && (
+                          <Badge variant="secondary" className="flex items-center gap-1">
+                            {financeGrade}
+                            <X
+                              className="h-3 w-3 cursor-pointer"
+                              onClick={() => setFinanceGrade('all')}
+                            />
+                          </Badge>
+                        )}
+                        {financeClass !== 'all' && (
+                          <Badge variant="secondary" className="flex items-center gap-1">
+                            Class {financeClass}
+                            <X
+                              className="h-3 w-3 cursor-pointer"
+                              onClick={() => setFinanceClass('all')}
+                            />
+                          </Badge>
+                        )}
+                        {financeStatus !== 'all' && (
+                          <Badge variant="secondary" className="flex items-center gap-1">
+                            {financeStatus}
+                            <X
+                              className="h-3 w-3 cursor-pointer"
+                              onClick={() => setFinanceStatus('all')}
+                            />
+                          </Badge>
+                        )}
+                        {financeSearch && (
+                          <Badge variant="secondary" className="flex items-center gap-1">
+                            "{financeSearch}"
+                            <X
+                              className="h-3 w-3 cursor-pointer"
+                              onClick={() => setFinanceSearch('')}
+                            />
+                          </Badge>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Results Summary */}
+              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm font-medium text-blue-800">
+                      Showing {filteredFinance.length} of {finance.length} records
+                    </span>
+                    {financeGrade !== 'all' && financeClass !== 'all' && (
+                      <span className="text-sm text-blue-600">
+                        for {financeGrade} {financeClass}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex gap-4 text-sm">
+                    <span className="text-green-600 font-medium">
+                      Paid: {filteredFinance.filter(p => p.status === 'Paid').length}
+                    </span>
+                    <span className="text-orange-600 font-medium">
+                      Pending: {filteredFinance.filter(p => p.status === 'Pending').length}
+                    </span>
+                  </div>
                 </div>
               </div>
 
+              {/* Students List */}
               <Card>
                 <CardContent className="p-6">
                   <Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Student Name</TableHead>
+                        <TableHead>Grade/Class</TableHead>
                         <TableHead>Description</TableHead>
                         <TableHead>Amount</TableHead>
                         <TableHead>Date</TableHead>
@@ -1453,37 +1595,73 @@ export default function AdminDashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredFinance.map((payment) => (
-                        <TableRow key={payment.id}>
-                          <TableCell>{payment.studentName}</TableCell>
-                          <TableCell>{payment.description}</TableCell>
-                          <TableCell>K{payment.amount.toFixed(2)}</TableCell>
-                          <TableCell>{payment.date}</TableCell>
-                          <TableCell>
-                            <Badge variant={payment.status === 'Paid' ? 'default' : 'secondary'}>
-                              {payment.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex gap-2">
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => setFinanceModal({ open: true, mode: 'edit', data: payment })}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button 
-                                variant="destructive" 
-                                size="sm"
-                                onClick={() => handleDeleteFinance(payment.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
+                      {filteredFinance.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                            No financial records found for the selected filters.
                           </TableCell>
                         </TableRow>
-                      ))}
+                      ) : (
+                        filteredFinance.map((payment) => {
+                          const student = students.find(s => s.name === payment.studentName);
+                          return (
+                            <TableRow key={payment.id} className="hover:bg-gray-50">
+                              <TableCell className="font-medium">{payment.studentName}</TableCell>
+                              <TableCell>
+                                {student && (
+                                  <div className="text-sm">
+                                    <div className="font-medium">{student.grade}</div>
+                                    <div className="text-gray-500">{student.class}</div>
+                                  </div>
+                                )}
+                              </TableCell>
+                              <TableCell>{payment.description}</TableCell>
+                              <TableCell className="font-semibold">K{payment.amount.toFixed(2)}</TableCell>
+                              <TableCell>{payment.date}</TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant={payment.status === 'Paid' ? 'default' : 'secondary'}
+                                  className={payment.status === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}
+                                >
+                                  {payment.status}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex gap-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setFinanceModal({ open: true, mode: 'edit', data: payment })}
+                                    className="h-8"
+                                  >
+                                    <Edit className="h-3 w-3" />
+                                  </Button>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => handleDeleteFinance(payment.id)}
+                                    className="h-8"
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                  {payment.status === 'Pending' && (
+                                    <Button
+                                      size="sm"
+                                      onClick={() => {
+                                        const updatedPayment = { ...payment, status: 'Paid' as const };
+                                        handleUpdateFinance(updatedPayment);
+                                      }}
+                                      className="h-8 bg-green-600 hover:bg-green-700"
+                                    >
+                                      Mark Paid
+                                    </Button>
+                                  )}
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })
+                      )}
                     </TableBody>
                   </Table>
                 </CardContent>
