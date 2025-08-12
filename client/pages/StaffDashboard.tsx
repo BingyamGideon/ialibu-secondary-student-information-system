@@ -297,7 +297,7 @@ export default function StaffDashboard() {
       toast({ title: 'Warning', description: 'Students should have at least 7 subjects' });
     }
 
-    const student = myStudents.find(s => s.id === studentId);
+    const student = (myStudents || []).find(s => s.id === studentId);
     if (student) {
       dataStore.updateStudent({ ...student, subjects: newSubjects });
     }
@@ -358,7 +358,7 @@ export default function StaffDashboard() {
 
     // Then add new attendance records
     Object.entries(attendanceRecords).forEach(([studentId, record]) => {
-      const student = myStudents.find(s => s.id === parseInt(studentId));
+      const student = (myStudents || []).find(s => s.id === parseInt(studentId));
       if (student) {
         dataStore.addAttendance({
           date: dateStr,
@@ -471,7 +471,7 @@ export default function StaffDashboard() {
 
   const generateGradeDistribution = () => {
     const allGrades = (myGrades || []).filter(grade =>
-      reportGrade === 'all' || myStudents.find(s => s.id === grade.studentId)?.grade === reportGrade
+      reportGrade === 'all' || (myStudents || []).find(s => s.id === grade.studentId)?.grade === reportGrade
     );
 
     const distribution = {
