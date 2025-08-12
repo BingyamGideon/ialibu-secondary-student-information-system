@@ -2881,7 +2881,7 @@ function GradeForm({
   const getClassStudents = () => {
     if (!selectedClass || !selectedGradeLevel) return [];
     const targetGrade = `Grade ${selectedGradeLevel}`;
-    return students.filter(student => student.grade === targetGrade && student.class === selectedClass).slice(0, 6);
+    return (students || []).filter(student => student.grade === targetGrade && student.class === selectedClass).slice(0, 6);
   };
 
   // Initialize student grades when class is selected
