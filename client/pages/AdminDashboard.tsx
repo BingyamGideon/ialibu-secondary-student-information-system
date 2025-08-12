@@ -1789,12 +1789,12 @@ export default function AdminDashboard() {
 
               {/* Student Reports from Staff Dashboard */}
               <div className="grid gap-6">
-                {/* Student Performance Report */}
+                {/* Student Reports from Staff Dashboard */}
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <BarChart3 className="h-5 w-5" />
-                      Student Performance Report
+                      <FileText className="h-5 w-5" />
+                      Student Reports (Created by Staff)
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
