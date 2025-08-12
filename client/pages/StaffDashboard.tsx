@@ -381,7 +381,7 @@ export default function StaffDashboard() {
   // Get students for selected class in attendance
   const getAttendanceStudents = () => {
     if (attendanceGrade === 'all' || attendanceClass === 'all') return [];
-    return myStudents.filter(student =>
+    return (myStudents || []).filter(student =>
       student.grade === attendanceGrade && student.class === attendanceClass
     );
   };
@@ -414,7 +414,7 @@ export default function StaffDashboard() {
   // Get students for grade filtering
   const getGradeFilteredStudents = () => {
     if (gradeFilterGrade === 'all' || gradeFilterClass === 'all') return [];
-    return myStudents.filter(student =>
+    return (myStudents || []).filter(student =>
       student.grade === gradeFilterGrade && student.class === gradeFilterClass
     );
   };
@@ -527,7 +527,7 @@ export default function StaffDashboard() {
   };
 
   // Filter functions
-  const filteredStudents = myStudents.filter(student => {
+  const filteredStudents = (myStudents || []).filter(student => {
     // Apply text search filter
     const matchesSearch = student.name.toLowerCase().includes(studentSearch.toLowerCase()) ||
       student.grade.toLowerCase().includes(studentSearch.toLowerCase()) ||
@@ -897,7 +897,7 @@ export default function StaffDashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredStudents.map((student) => (
+                      {(filteredStudents || []).map((student) => (
                         <TableRow key={student.id}>
                           <TableCell>{student.id}</TableCell>
                           <TableCell>{student.name}</TableCell>
@@ -1187,7 +1187,7 @@ export default function StaffDashboard() {
                   <CardContent className="p-6">
                     {!showHistory ? (
                       <div className="space-y-4">
-                        {getAttendanceStudents().map((student) => (
+                        {(getAttendanceStudents() || []).map((student) => (
                           <div key={student.id} className="flex items-center justify-between p-4 border rounded-lg">
                             <div className="flex-1">
                               <h4 className="font-medium">{student.name}</h4>
@@ -1250,7 +1250,7 @@ export default function StaffDashboard() {
                       <div className="space-y-6">
                         <h3 className="text-lg font-semibold text-gray-800">Attendance History - {attendanceGrade} {attendanceClass}</h3>
 
-                        {getAttendanceStudents().map((student) => {
+                        {(getAttendanceStudents() || []).map((student) => {
                           const stats = getStudentAttendanceStats(student.id);
                           const history = getStudentAttendanceHistory(student.id);
 
@@ -1459,7 +1459,7 @@ export default function StaffDashboard() {
                   </CardHeader>
                   <CardContent className="p-6">
                     <div className="space-y-4">
-                      {getGradeFilteredStudents().map((student) => {
+                      {(getGradeFilteredStudents() || []).map((student) => {
                         const studentGrades = getStudentGrades(student.id);
                         return (
                           <div key={student.id} className="border rounded-lg p-4">
