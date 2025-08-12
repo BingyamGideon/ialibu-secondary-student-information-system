@@ -85,6 +85,11 @@ export default function AdminDashboard() {
   const [selectedGrade, setSelectedGrade] = useState('all');
   const [selectedClass, setSelectedClass] = useState('all');
 
+  // Finance filter states
+  const [financeGrade, setFinanceGrade] = useState('all');
+  const [financeClass, setFinanceClass] = useState('all');
+  const [financeStatus, setFinanceStatus] = useState('all');
+
   // Attendance history states
   const [showAttendanceHistory, setShowAttendanceHistory] = useState(false);
   const [historyGrade, setHistoryGrade] = useState('all');
