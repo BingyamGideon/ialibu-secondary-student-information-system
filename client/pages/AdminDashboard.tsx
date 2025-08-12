@@ -1779,11 +1779,15 @@ export default function AdminDashboard() {
                         </Select>
                       </div>
                     )}
+
+                    <Badge variant="outline" className="text-green-700 border-green-300">
+                      {reports.length} Reports Available
+                    </Badge>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Report Types */}
+              {/* Student Reports from Staff Dashboard */}
               <div className="grid gap-6">
                 {/* Student Performance Report */}
                 <Card>
