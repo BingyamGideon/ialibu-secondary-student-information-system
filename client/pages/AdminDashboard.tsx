@@ -1697,11 +1697,17 @@ export default function AdminDashboard() {
           {activeSection === 'reports' && (
             <div>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Administrative Reports</h2>
-                <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                  <Eye className="mr-1 h-3 w-3" />
-                  Admin Access
-                </Badge>
+                <h2 className="text-2xl font-bold text-gray-800">Student Reports (Inherited from Staff)</h2>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="bg-green-100 text-green-800">
+                    <RefreshCw className="mr-1 h-3 w-3" />
+                    Live Data from Staff
+                  </Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                    <Eye className="mr-1 h-3 w-3" />
+                    Admin View-Only
+                  </Badge>
+                </div>
               </div>
 
               {/* Report Filters */}
