@@ -3309,7 +3309,7 @@ function StudentReportForm({
   const { toast } = useToast();
 
   // Get student's grades for this term to calculate GPA and populate subjects table
-  const studentGrades = dataStore.grades.filter(g =>
+  const studentGrades = (dataStore.grades || []).filter(g =>
     g.studentId === student.id &&
     g.term === formData.term
   );
@@ -3333,7 +3333,7 @@ function StudentReportForm({
   // Calculate attendance automatically from recorded attendance data
   const calculateAttendance = () => {
     // Get all attendance records for this student in the academic year
-    const studentAttendance = dataStore.attendance.filter(a =>
+    const studentAttendance = (dataStore.attendance || []).filter(a =>
       a.studentId === student.id &&
       a.date >= `${formData.academicYear}-01-01` &&
       a.date <= `${formData.academicYear}-12-31`
@@ -3633,9 +3633,9 @@ function StudentReportForm({
             </div>
             <div className="text-xs text-green-600 bg-green-100 p-2 rounded border border-green-200">
               📊 This data is automatically calculated from attendance records taken in the "Take Attendance" section
-              {dataStore.attendance.filter(a => a.studentId === student.id).length > 0 && (
+              {(dataStore.attendance || []).filter(a => a.studentId === student.id).length > 0 && (
                 <div className="mt-1 text-green-500">
-                  ✅ {dataStore.attendance.filter(a => a.studentId === student.id).length} attendance records found for this student
+                  ✅ {(dataStore.attendance || []).filter(a => a.studentId === student.id).length} attendance records found for this student
                 </div>
               )}
             </div>
