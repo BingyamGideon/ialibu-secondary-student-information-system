@@ -1730,7 +1730,7 @@ export default function AdminDashboard() {
               {/* Report Filters */}
               <Card className="mb-6">
                 <CardHeader>
-                  <CardTitle>Report Filters</CardTitle>
+                  <CardTitle>Filter Student Reports</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-4 items-center">
