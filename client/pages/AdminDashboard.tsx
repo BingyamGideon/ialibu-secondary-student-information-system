@@ -534,6 +534,27 @@ export default function AdminDashboard() {
     return matchesSearch && matchesDepartment;
   });
 
+  // Helper functions for finance filtering
+  const getFinanceGrades = () => {
+    const grades = [...new Set(students.map(student => student.grade))].sort();
+    return grades;
+  };
+
+  const getFinanceClasses = () => {
+    const selectedGradeStudents = financeGrade === 'all'
+      ? students
+      : students.filter(student => student.grade === financeGrade);
+    const classes = [...new Set(selectedGradeStudents.map(student => student.class))].sort();
+    return classes;
+  };
+
+  const clearFinanceFilters = () => {
+    setFinanceGrade('all');
+    setFinanceClass('all');
+    setFinanceStatus('all');
+    setFinanceSearch('');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
