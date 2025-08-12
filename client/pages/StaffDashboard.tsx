@@ -1921,7 +1921,7 @@ export default function StaffDashboard() {
                               </div>
                               <div className="flex flex-wrap gap-1">
                                 <Badge variant="outline" className="text-xs">
-                                  {student.subjects.length} subjects
+                                  {(student.subjects || []).length} subjects
                                 </Badge>
                                 {myReports.filter(r => r.studentId === student.id).length > 0 && (
                                   <Badge variant="secondary" className="text-xs">
