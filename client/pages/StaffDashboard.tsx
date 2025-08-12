@@ -906,12 +906,12 @@ export default function StaffDashboard() {
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <div className="flex flex-wrap gap-1 max-w-xs">
-                                {student.subjects.slice(0, 3).map((subject, idx) => (
+                                {(student.subjects || []).slice(0, 3).map((subject, idx) => (
                                   <Badge key={idx} variant="outline" className="text-xs">
                                     {subject.length > 12 ? subject.substring(0, 12) + '...' : subject}
                                   </Badge>
                                 ))}
-                                {student.subjects.length > 3 && (
+                                {(student.subjects || []).length > 3 && (
                                   <Badge variant="secondary" className="text-xs">
                                     +{student.subjects.length - 3} more
                                   </Badge>
