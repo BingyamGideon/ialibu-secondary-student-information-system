@@ -310,7 +310,7 @@ export default function StaffDashboard() {
   };
 
   const openSubjectModal = (student: Student) => {
-    setSelectedStudentSubjects([...student.subjects]);
+    setSelectedStudentSubjects([...(student.subjects || [])]);
     setSubjectModal({ open: true, student });
   };
 
