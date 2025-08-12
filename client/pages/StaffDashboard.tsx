@@ -388,7 +388,7 @@ export default function StaffDashboard() {
 
   // Calculate attendance statistics for a student
   const getStudentAttendanceStats = (studentId: number) => {
-    const studentRecords = myAttendance.filter(record => record.studentId === studentId);
+    const studentRecords = (myAttendance || []).filter(record => record.studentId === studentId);
     const totalDays = studentRecords.length;
     const presentDays = studentRecords.filter(record => record.status === 'Present').length;
     const absentDays = studentRecords.filter(record => record.status === 'Absent').length;
@@ -406,7 +406,7 @@ export default function StaffDashboard() {
 
   // Get detailed attendance history for a student
   const getStudentAttendanceHistory = (studentId: number) => {
-    return myAttendance
+    return (myAttendance || [])
       .filter(record => record.studentId === studentId)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   };
@@ -422,7 +422,7 @@ export default function StaffDashboard() {
   // Calculate ranking for students in a class and subject
   const getStudentRanking = (studentId: number, subject: string, term: string) => {
     const classStudents = getGradeFilteredStudents();
-    const subjectGrades = myGrades.filter(grade =>
+    const subjectGrades = (myGrades || []).filter(grade =>
       grade.subject === subject &&
       grade.term === term &&
       classStudents.some(student => student.id === grade.studentId)
@@ -440,15 +440,15 @@ export default function StaffDashboard() {
 
   // Get grades for a specific student
   const getStudentGrades = (studentId: number) => {
-    return myGrades.filter(grade => grade.studentId === studentId)
+    return (myGrades || []).filter(grade => grade.studentId === studentId)
       .sort((a, b) => new Date(b.term).getTime() - new Date(a.term).getTime());
   };
 
   // Report generation functions
   const generateStudentPerformanceReport = () => {
     const reportStudents = reportGrade !== 'all' && reportClass !== 'all'
-      ? myStudents.filter(s => s.grade === reportGrade && s.class === reportClass)
-      : myStudents;
+      ? (myStudents || []).filter(s => s.grade === reportGrade && s.class === reportClass)
+      : (myStudents || []);
 
     return reportStudents.map(student => {
       const studentGrades = getStudentGrades(student.id);
@@ -470,7 +470,7 @@ export default function StaffDashboard() {
   };
 
   const generateGradeDistribution = () => {
-    const allGrades = myGrades.filter(grade =>
+    const allGrades = (myGrades || []).filter(grade =>
       reportGrade === 'all' || myStudents.find(s => s.id === grade.studentId)?.grade === reportGrade
     );
 
@@ -542,13 +542,13 @@ export default function StaffDashboard() {
     return matchesSearch && matchesGrade && matchesClass;
   });
 
-  const filteredAttendance = myAttendance.filter(record => 
+  const filteredAttendance = (myAttendance || []).filter(record => 
     record.studentName.toLowerCase().includes(attendanceSearch.toLowerCase()) ||
     record.date.includes(attendanceSearch) ||
     record.status.toLowerCase().includes(attendanceSearch.toLowerCase())
   );
 
-  const filteredGrades = myGrades.filter(grade =>
+  const filteredGrades = (myGrades || []).filter(grade =>
     grade.studentName.toLowerCase().includes(gradeSearch.toLowerCase()) ||
     grade.subject.toLowerCase().includes(gradeSearch.toLowerCase()) ||
     grade.class.toLowerCase().includes(gradeSearch.toLowerCase()) ||
