@@ -576,7 +576,7 @@ export default function StaffDashboard() {
             </Button>
             <div className="text-right">
               <div className="text-sm font-medium">{currentUser.firstName} {currentUser.lastName}</div>
-              <div className="text-xs text-blue-100">{currentUser.position} • {currentUser.department}</div>
+              <div className="text-xs text-blue-100">{currentUser.position} �� {currentUser.department}</div>
             </div>
             <Badge variant="secondary" className="bg-white/20 text-white">
               Staff Dashboard
@@ -1310,7 +1310,7 @@ export default function StaffDashboard() {
                                         </TableRow>
                                       </TableHeader>
                                       <TableBody>
-                                        {history.slice(0, 10).map((record) => (
+                                        {(history || []).slice(0, 10).map((record) => (
                                           <TableRow key={record.id}>
                                             <TableCell>{record.date}</TableCell>
                                             <TableCell>
