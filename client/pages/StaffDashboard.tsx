@@ -2889,7 +2889,7 @@ function GradeForm({
     setSelectedClass(classValue);
     if (!selectedGradeLevel) return;
     const targetGrade = `Grade ${selectedGradeLevel}`;
-    const classStudents = students.filter(student => student.grade === targetGrade && student.class === classValue).slice(0, 6);
+    const classStudents = (students || []).filter(student => student.grade === targetGrade && student.class === classValue).slice(0, 6);
 
     setStudentGrades(classStudents.map(student => ({
       studentId: student.id,
