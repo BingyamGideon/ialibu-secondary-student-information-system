@@ -1710,6 +1710,23 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
+              {/* Live Data Info */}
+              <Card className="mb-6 bg-green-50 border-green-200">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-100 p-2 rounded-full">
+                      <RefreshCw className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-green-900">Live Staff Data Integration</h4>
+                      <p className="text-sm text-green-700">
+                        These reports are automatically inherited from the Staff Dashboard. Any changes made by staff appear here instantly as view-only data.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Report Filters */}
               <Card className="mb-6">
                 <CardHeader>
