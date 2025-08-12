@@ -1906,7 +1906,7 @@ export default function StaffDashboard() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      {myStudents
+                      {(myStudents || [])
                         .filter(student =>
                           student.grade === reportGrade &&
                           student.class === reportClass &&
