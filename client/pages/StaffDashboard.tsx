@@ -3485,7 +3485,7 @@ function StudentReportForm({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {student.subjects.map((subject, index) => {
+              {(student.subjects || []).map((subject, index) => {
                 const gradeRecord = studentGrades.find(g => g.subject === subject);
                 const getCommentFromPercentage = (percentage: number) => {
                   if (percentage >= 85) return 'Excellent';
