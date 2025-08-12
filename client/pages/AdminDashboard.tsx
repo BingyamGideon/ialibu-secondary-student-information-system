@@ -501,11 +501,26 @@ export default function AdminDashboard() {
     grade.assignment.toLowerCase().includes(gradeSearch.toLowerCase())
   );
 
-  const filteredFinance = finance.filter(payment => 
-    payment.studentName.toLowerCase().includes(financeSearch.toLowerCase()) ||
-    payment.description.toLowerCase().includes(financeSearch.toLowerCase()) ||
-    payment.status.toLowerCase().includes(financeSearch.toLowerCase())
-  );
+  const filteredFinance = finance.filter(payment => {
+    // Find the student to get grade and class information
+    const student = students.find(s => s.name === payment.studentName);
+
+    // Apply text search filter
+    const matchesSearch = payment.studentName.toLowerCase().includes(financeSearch.toLowerCase()) ||
+      payment.description.toLowerCase().includes(financeSearch.toLowerCase()) ||
+      payment.status.toLowerCase().includes(financeSearch.toLowerCase());
+
+    // Apply grade filter
+    const matchesGrade = financeGrade === 'all' || (student && student.grade === financeGrade);
+
+    // Apply class filter
+    const matchesClass = financeClass === 'all' || (student && student.class === financeClass);
+
+    // Apply status filter
+    const matchesStatus = financeStatus === 'all' || payment.status === financeStatus;
+
+    return matchesSearch && matchesGrade && matchesClass && matchesStatus;
+  });
 
   const filteredStaff = staff.filter(member => {
     // Apply search filter
