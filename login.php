@@ -196,23 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <button type="submit" name="register" class="btn w-100">Register</button>
                 </form>
 
-                <!-- Demo Credentials -->
-                <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-top: 20px;">
-                    <h4 style="margin-bottom: 10px; color: #374151;">Demo Credentials:</h4>
-                    <div style="font-size: 14px; color: #6b7280;">
-                        <div><strong>Admin:</strong> admin / admin123</div>
-                        <div><strong>Staff:</strong> staff / staff123</div>
-                    </div>
-                </div>
-
-                <!-- Switch Form -->
-                <div class="text-center mt-4">
-                    <span id="switch-text">Don't have an account?</span>
-                    <a href="#" id="switch-link" style="color: var(--primary); font-weight: 600; text-decoration: none;">Register here</a>
-                </div>
-            </div>
-        </div>
-    </div>
+              
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
