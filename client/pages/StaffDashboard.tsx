@@ -814,7 +814,7 @@ export default function StaffDashboard() {
                     placeholder="Search students by name, grade, or class..."
                     value={studentSearch}
                     onChange={(e) => setStudentSearch(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 border-2 border-gray-300"
                   />
                 </div>
 
@@ -1372,7 +1372,7 @@ export default function StaffDashboard() {
                     placeholder="Search by student name, subject, or assignment..."
                     value={gradeSearch}
                     onChange={(e) => setGradeSearch(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 border-2 border-gray-300"
                   />
                 </div>
 
@@ -1892,7 +1892,7 @@ export default function StaffDashboard() {
                       placeholder="Search students by name..."
                       value={reportSearch}
                       onChange={(e) => setReportSearch(e.target.value)}
-                      className="pl-10"
+                      className="pl-10 border-2 border-gray-300"
                     />
                   </div>
                 </CardContent>
