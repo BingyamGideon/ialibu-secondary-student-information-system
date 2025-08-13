@@ -2257,13 +2257,13 @@ export default function AdminDashboard() {
 
               {/* Add User Button */}
               <div className="flex justify-between items-center mb-4">
-                <div className="relative">
+                <div className="relative max-w-md">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
                     placeholder="Search users..."
                     value={userSearch}
                     onChange={(e) => setUserSearch(e.target.value)}
-                    className="pl-10 w-64 border-2 border-gray-300"
+                    className="pl-10 border-2 border-gray-300"
                   />
                 </div>
                 <Dialog open={userModal.open} onOpenChange={(open) => setUserModal({ ...userModal, open })}>
