@@ -990,7 +990,7 @@ export default function AdminDashboard() {
               {!showAttendanceHistory ? (
                 <div>
                   <div className="mb-4">
-                    <div className="relative">
+                    <div className="relative max-w-md">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                       <Input
                         placeholder="Search by student name, date, or status..."
