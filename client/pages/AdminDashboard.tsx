@@ -835,7 +835,7 @@ export default function AdminDashboard() {
                     placeholder="Search students by name, grade, or class..."
                     value={studentSearch}
                     onChange={(e) => setStudentSearch(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 border-2 border-gray-300"
                   />
                 </div>
 
@@ -996,7 +996,7 @@ export default function AdminDashboard() {
                         placeholder="Search by student name, date, or status..."
                         value={attendanceSearch}
                         onChange={(e) => setAttendanceSearch(e.target.value)}
-                        className="pl-10"
+                        className="pl-10 border-2 border-gray-300"
                       />
                     </div>
                   </div>
@@ -1223,7 +1223,7 @@ export default function AdminDashboard() {
                     placeholder="Search by student name, subject, or assignment..."
                     value={gradeSearch}
                     onChange={(e) => setGradeSearch(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 border-2 border-gray-300"
                   />
                 </div>
 
@@ -1762,7 +1762,7 @@ export default function AdminDashboard() {
                     placeholder="Search by name, position, or department..."
                     value={staffSearch}
                     onChange={(e) => setStaffSearch(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 border-2 border-gray-300"
                   />
                 </div>
               </div>
@@ -2263,7 +2263,7 @@ export default function AdminDashboard() {
                     placeholder="Search users..."
                     value={userSearch}
                     onChange={(e) => setUserSearch(e.target.value)}
-                    className="pl-10 w-64"
+                    className="pl-10 w-64 border-2 border-gray-300"
                   />
                 </div>
                 <Dialog open={userModal.open} onOpenChange={(open) => setUserModal({ ...userModal, open })}>
