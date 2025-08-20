@@ -2,7 +2,14 @@
 
 ## Overview
 
-This is a comprehensive school management system with full authentication, user management, and dashboard functionality for Ialibu Secondary School. The system supports both admin and staff roles with different permissions and capabilities.
+This is a comprehensive school management system with full authentication, user management, and dashboard functionality for Ialibu Secondary School. The system uses a **single unified database** that serves both admin and staff roles with different permissions and capabilities.
+
+## 🎯 **Unified Database Architecture**
+
+The system now uses **ONE DATABASE** for all functionality:
+- **Database Name**: `ialibu_school_unified`
+- **Database File**: `database/unified_school_database.sql`
+- **Coverage**: Complete system for both Admin and Staff dashboards
 
 ## Features
 
@@ -41,35 +48,43 @@ This is a comprehensive school management system with full authentication, user 
 
 ## Database Schema
 
-### Core Tables
+### Single Unified Database: `ialibu_school_unified`
+
+The unified database contains all tables needed for complete system functionality:
+
 1. **users** - System authentication and user management
-2. **user_sessions** - Session management and security
-3. **students** - Student records with grades 9-12, classes A-H
-4. **attendance** - Daily attendance tracking
-5. **grades** - Advanced grading with assessment arrays
-6. **finance** - Financial records and payment tracking
-7. **staff** - Staff member information
-8. **student_reports** - Comprehensive report cards
-9. **audit_log** - System activity tracking
+2. **students** - Student records with grades 9-12, classes A-H
+3. **attendance** - Daily attendance tracking
+4. **grades** - Advanced grading with assessment arrays
+5. **finance** - Financial records and payment tracking
+6. **staff** - Staff member information
+7. **student_reports** - Comprehensive report cards
+8. **audit_log** - System activity tracking
 
 ## Setup Instructions
 
 ### 1. Database Setup (Production)
 ```sql
--- Run the full schema
-mysql -u your_username -p < database/full_schema.sql
+-- Import the unified database
+mysql -u your_username -p < database/unified_school_database.sql
 ```
 
-### 2. Environment Configuration
+### 2. XAMPP Setup (Development)
+```sql
+-- Use the XAMPP-ready import file
+Import: xampp_database_import.sql via phpMyAdmin
+```
+
+### 3. Environment Configuration
 ```bash
 # Create .env file with database credentials
 DB_HOST=localhost
 DB_USER=your_username
 DB_PASS=your_password
-DB_NAME=ialibu_school_management
+DB_NAME=ialibu_school_unified
 ```
 
-### 3. Application Setup
+### 4. Application Setup
 ```bash
 # Install dependencies
 npm install
@@ -189,23 +204,20 @@ Each grade has 8 classes: A, B, C, D, E, F, G, H
 - XSS protection through proper escaping
 - CSRF protection ready for implementation
 
-## API Endpoints (Future Enhancement)
+## Database Files
 
-The current system uses local storage but is ready for backend API integration:
-
+### Current Structure (Simplified)
 ```
-POST /api/auth/login
-POST /api/auth/register
-POST /api/auth/logout
-GET  /api/users
-POST /api/users
-PUT  /api/users/:id
-DELETE /api/users/:id
-GET  /api/students
-POST /api/students
-PUT  /api/students/:id
-DELETE /api/students/:id
-...and more
+database/
+├── unified_school_database.sql    # Main database (COMPLETE SYSTEM)
+└── (legacy files removed)
+```
+
+### Additional Files
+```
+xampp_database_import.sql          # XAMPP-ready version
+XAMPP_SETUP_INSTRUCTIONS.md       # XAMPP setup guide
+DATABASE_UNIFIED.md               # Technical documentation
 ```
 
 ## Production Deployment
@@ -242,7 +254,8 @@ For technical support or questions about the system:
 - **v1.2** - Enhanced grading system with arrays
 - **v1.3** - Complete authentication and authorization
 - **v2.0** - Full database integration ready
+- **v3.0** - **UNIFIED DATABASE SYSTEM** - Single database for entire system
 
 ---
 
-**Note**: This system is designed for Ialibu Secondary School in Papua New Guinea and follows the local education standards and grading system.
+**Note**: This system now uses a single unified database that serves both Admin and Staff dashboards with complete real-time synchronization and follows Papua New Guinea education standards.
