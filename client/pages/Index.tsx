@@ -303,15 +303,6 @@ export default function Index() {
           </form>
 
           {/* Demo Credentials */}
-          {isLogin && (
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">Demo Credentials:</h3>
-              <div className="text-sm text-gray-600 space-y-1">
-                <div><strong>Admin:</strong> admin / admin123</div>
-                <div><strong>Staff:</strong> staff / staff123</div>
-              </div>
-            </div>
-          )}
 
           <div className="text-center mt-6">
             <span className="text-gray-600">
