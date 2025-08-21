@@ -364,6 +364,29 @@ class AuthStore {
   async getAllUsers(): Promise<User[]> {
     try {
       const response = await apiService.getAllUsers();
+
+      // If API is unavailable, fallback to localStorage
+      if (!response.success && response.error === 'API_UNAVAILABLE') {
+        const localResponse = await localAuthStore.getAllUsers();
+        if (localResponse.success && localResponse.users) {
+          return localResponse.users.map((user: any) => ({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            firstName: user.first_name,
+            lastName: user.last_name,
+            userType: user.user_type,
+            department: user.department,
+            position: user.position,
+            isActive: user.is_active,
+            createdAt: user.created_at,
+            lastLogin: user.last_login,
+            permissions: user.permissions || []
+          }));
+        }
+        return [];
+      }
+
       if (response.success && response.users) {
         // Convert the API response format to our User interface
         return response.users.map((user: any) => ({
@@ -384,6 +407,28 @@ class AuthStore {
       return [];
     } catch (error) {
       console.error('Error fetching users:', error);
+      // Try localStorage fallback on error
+      try {
+        const localResponse = await localAuthStore.getAllUsers();
+        if (localResponse.success && localResponse.users) {
+          return localResponse.users.map((user: any) => ({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            firstName: user.first_name,
+            lastName: user.last_name,
+            userType: user.user_type,
+            department: user.department,
+            position: user.position,
+            isActive: user.is_active,
+            createdAt: user.created_at,
+            lastLogin: user.last_login,
+            permissions: user.permissions || []
+          }));
+        }
+      } catch (localError) {
+        console.error('Error with localStorage fallback:', localError);
+      }
       return [];
     }
   }
