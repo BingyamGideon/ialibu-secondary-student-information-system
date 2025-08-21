@@ -296,6 +296,128 @@ class AuthStore {
       };
     }
   }
+
+  // User management methods
+  async getAllUsers(): Promise<User[]> {
+    try {
+      const response = await apiService.getAllUsers();
+      if (response.success && response.users) {
+        // Convert the API response format to our User interface
+        return response.users.map((user: any) => ({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          firstName: user.first_name,
+          lastName: user.last_name,
+          userType: user.user_type,
+          department: user.department,
+          position: user.position,
+          isActive: user.is_active,
+          createdAt: user.created_at,
+          lastLogin: user.last_login,
+          permissions: user.permissions || []
+        }));
+      }
+      return [];
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      return [];
+    }
+  }
+
+  async addUser(userData: Omit<RegisterData, 'confirmPassword'>): Promise<{ success: boolean; message: string }> {
+    try {
+      const response = await apiService.addUser({
+        username: userData.username,
+        email: userData.email,
+        password: userData.password,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        userType: userData.userType,
+        department: userData.department,
+        position: userData.position
+      });
+
+      if (response.success) {
+        this.notifyListeners(); // Refresh the users list
+      }
+
+      return {
+        success: response.success,
+        message: response.message || (response.success ? 'User added successfully' : 'Failed to add user')
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Error adding user. Please try again.'
+      };
+    }
+  }
+
+  async updateUser(userId: number, userData: Partial<User>): Promise<{ success: boolean; message: string }> {
+    try {
+      const response = await apiService.updateUser(userId, {
+        username: userData.username,
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        userType: userData.userType,
+        department: userData.department,
+        position: userData.position,
+        isActive: userData.isActive
+      });
+
+      if (response.success) {
+        this.notifyListeners(); // Refresh the users list
+      }
+
+      return {
+        success: response.success,
+        message: response.message || (response.success ? 'User updated successfully' : 'Failed to update user')
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Error updating user. Please try again.'
+      };
+    }
+  }
+
+  async deleteUser(userId: number): Promise<{ success: boolean; message: string }> {
+    try {
+      const response = await apiService.deleteUser(userId);
+
+      if (response.success) {
+        this.notifyListeners(); // Refresh the users list
+      }
+
+      return {
+        success: response.success,
+        message: response.message || (response.success ? 'User deleted successfully' : 'Failed to delete user')
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Error deleting user. Please try again.'
+      };
+    }
+  }
+
+  async changeUserPassword(userId: number, newPassword: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const response = await apiService.changeUserPassword(userId, newPassword);
+
+      return {
+        success: response.success,
+        message: response.message || (response.success ? 'Password changed successfully' : 'Failed to change password')
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Error changing password. Please try again.'
+      };
+    }
+  }
 }
 
 export const authStore = new AuthStore();
