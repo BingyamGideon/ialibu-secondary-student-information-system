@@ -277,37 +277,52 @@ export default function AdminDashboard() {
 
   // User Management CRUD Functions
 
-  const handleAddUser = (userData: Omit<User, 'id' | 'createdAt'>) => {
+  const handleAddUser = async (userData: any) => {
     try {
-      authStore.createUser(userData);
-      toast({ title: 'Success', description: 'User created successfully' });
-      setUserModal({ open: false, mode: 'add', data: null });
+      const result = await authStore.addUser({
+        username: userData.username,
+        password: userData.password,
+        confirmPassword: userData.password, // For compatibility
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        userType: userData.userType,
+        department: userData.department,
+        position: userData.position
+      });
+
+      if (result.success) {
+        toast({ title: 'Success', description: result.message });
+        setUserModal({ open: false, mode: 'add', data: null });
+      } else {
+        toast({ title: 'Error', description: result.message, variant: 'destructive' });
+      }
     } catch (error) {
       toast({ title: 'Error', description: 'Failed to create user', variant: 'destructive' });
     }
   };
 
-  const handleUpdateUser = (user: User) => {
+  const handleUpdateUser = async (user: User) => {
     try {
-      const success = authStore.updateUser(user.id, user);
-      if (success) {
-        toast({ title: 'Success', description: 'User updated successfully' });
+      const result = await authStore.updateUser(user.id, user);
+      if (result.success) {
+        toast({ title: 'Success', description: result.message });
         setUserModal({ open: false, mode: 'add', data: null });
       } else {
-        toast({ title: 'Error', description: 'Failed to update user', variant: 'destructive' });
+        toast({ title: 'Error', description: result.message, variant: 'destructive' });
       }
     } catch (error) {
       toast({ title: 'Error', description: 'Failed to update user', variant: 'destructive' });
     }
   };
 
-  const handleDeleteUser = (userId: number) => {
+  const handleDeleteUser = async (userId: number) => {
     try {
-      const success = authStore.deleteUser(userId);
-      if (success) {
-        toast({ title: 'Success', description: 'User deleted successfully' });
+      const result = await authStore.deleteUser(userId);
+      if (result.success) {
+        toast({ title: 'Success', description: result.message });
       } else {
-        toast({ title: 'Error', description: 'Cannot delete this user', variant: 'destructive' });
+        toast({ title: 'Error', description: result.message, variant: 'destructive' });
       }
     } catch (error) {
       toast({ title: 'Error', description: 'Failed to delete user', variant: 'destructive' });
