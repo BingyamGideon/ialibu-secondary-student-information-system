@@ -1,5 +1,14 @@
 // API Service for connecting to XAMPP MySQL backend
+// Falls back to localStorage if API is not available
 const API_BASE_URL = 'http://localhost/school-management/server';
+
+// Check if we're in a development environment where XAMPP might not be available
+const isCloudEnvironment = () => {
+  return window.location.hostname.includes('fly.dev') ||
+         window.location.hostname.includes('vercel.app') ||
+         window.location.hostname.includes('netlify.app') ||
+         window.location.hostname !== 'localhost';
+};
 
 interface ApiResponse<T = any> {
   success: boolean;
