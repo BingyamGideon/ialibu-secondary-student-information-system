@@ -1,5 +1,6 @@
-// Authentication and User Management System - Updated for MySQL Database
+// Authentication and User Management System - Updated for MySQL Database with localStorage fallback
 import { apiService } from './apiService';
+import { localAuthStore } from './localAuthStore';
 
 export interface User {
   id: number;
