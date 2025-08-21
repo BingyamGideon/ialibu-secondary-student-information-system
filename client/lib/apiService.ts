@@ -179,6 +179,38 @@ class ApiService {
       body: JSON.stringify(staffData),
     });
   }
+
+  // Users API calls
+  async getAllUsers() {
+    return this.request('users.php?action=list');
+  }
+
+  async addUser(userData: any) {
+    return this.request('users.php?action=add', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    });
+  }
+
+  async updateUser(userId: number, userData: any) {
+    return this.request(`users.php?action=update&id=${userId}`, {
+      method: 'PUT',
+      body: JSON.stringify(userData),
+    });
+  }
+
+  async deleteUser(userId: number) {
+    return this.request(`users.php?action=delete&id=${userId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async changeUserPassword(userId: number, newPassword: string) {
+    return this.request(`users.php?action=change_password&id=${userId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ password: newPassword }),
+    });
+  }
 }
 
 export const apiService = new ApiService();
