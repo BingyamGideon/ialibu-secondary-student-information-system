@@ -446,6 +446,27 @@ class AuthStore {
         position: userData.position
       });
 
+      // If API is unavailable, fallback to localStorage
+      if (!response.success && response.error === 'API_UNAVAILABLE') {
+        const localResponse = await localAuthStore.addUser({
+          username: userData.username,
+          email: userData.email,
+          password: userData.password,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          userType: userData.userType
+        });
+
+        if (localResponse.success) {
+          this.notifyListeners(); // Refresh the users list
+        }
+
+        return {
+          success: localResponse.success,
+          message: localResponse.message + ' (localStorage)'
+        };
+      }
+
       if (response.success) {
         this.notifyListeners(); // Refresh the users list
       }
@@ -455,10 +476,31 @@ class AuthStore {
         message: response.message || (response.success ? 'User added successfully' : 'Failed to add user')
       };
     } catch (error) {
-      return {
-        success: false,
-        message: 'Error adding user. Please try again.'
-      };
+      // Try localStorage fallback on error
+      try {
+        const localResponse = await localAuthStore.addUser({
+          username: userData.username,
+          email: userData.email,
+          password: userData.password,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          userType: userData.userType
+        });
+
+        if (localResponse.success) {
+          this.notifyListeners();
+        }
+
+        return {
+          success: localResponse.success,
+          message: localResponse.message + ' (localStorage fallback)'
+        };
+      } catch (localError) {
+        return {
+          success: false,
+          message: 'Error adding user. Please try again.'
+        };
+      }
     }
   }
 
