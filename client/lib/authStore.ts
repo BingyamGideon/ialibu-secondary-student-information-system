@@ -106,7 +106,13 @@ class AuthStore {
   async login(credentials: LoginCredentials): Promise<{ success: boolean; message: string; user?: User }> {
     try {
       const response = await apiService.login(credentials);
-      
+
+      // If API is unavailable, fallback to localStorage
+      if (!response.success && response.error === 'API_UNAVAILABLE') {
+        console.log('API unavailable, using localStorage fallback');
+        return this.loginWithLocalStorage(credentials);
+      }
+
       if (response.success && response.user) {
         // Create session
         const session: Session = {
@@ -143,7 +149,7 @@ class AuthStore {
 
         return {
           success: true,
-          message: 'Login successful',
+          message: 'Login successful (API)',
           user: this.state.currentUser
         };
       } else {
@@ -154,9 +160,65 @@ class AuthStore {
       }
     } catch (error) {
       console.error('Login error:', error);
+      // Fallback to localStorage on any error
+      return this.loginWithLocalStorage(credentials);
+    }
+  }
+
+  private async loginWithLocalStorage(credentials: LoginCredentials): Promise<{ success: boolean; message: string; user?: User }> {
+    try {
+      const response = await localAuthStore.login(credentials);
+
+      if (response.success && response.user) {
+        // Create session
+        const session: Session = {
+          id: `local_session_${Date.now()}`,
+          userId: response.user.id,
+          username: response.user.username,
+          userType: response.user.user_type,
+          createdAt: new Date().toISOString(),
+          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
+          isActive: true
+        };
+
+        // Update state
+        this.state = {
+          currentUser: {
+            id: response.user.id,
+            username: response.user.username,
+            email: response.user.email,
+            firstName: response.user.first_name,
+            lastName: response.user.last_name,
+            userType: response.user.user_type,
+            department: response.user.department,
+            position: response.user.position,
+            isActive: response.user.is_active,
+            permissions: response.user.permissions || []
+          },
+          currentSession: session,
+          isAuthenticated: true,
+          token: null
+        };
+
+        this.saveToStorage();
+        this.notifyListeners();
+
+        return {
+          success: true,
+          message: 'Login successful (localStorage)',
+          user: this.state.currentUser
+        };
+      } else {
+        return {
+          success: false,
+          message: response.message || 'Login failed'
+        };
+      }
+    } catch (error) {
+      console.error('localStorage login error:', error);
       return {
         success: false,
-        message: 'An error occurred during login. Please check your connection and try again.'
+        message: 'Login failed. Please try again.'
       };
     }
   }
