@@ -1,0 +1,363 @@
+<?php
+require_once 'database.php';
+
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
+
+class UsersAPI {
+    private $db;
+
+    public function __construct() {
+        $database = new Database();
+        $this->db = $database->getConnection();
+    }
+
+    public function getAllUsers() {
+        try {
+            $stmt = $this->db->prepare("
+                SELECT id, username, email, first_name, last_name, user_type, 
+                       department, position, is_active, permissions, last_login,
+                       created_at, updated_at
+                FROM users 
+                ORDER BY created_at DESC
+            ");
+            $stmt->execute();
+            $users = $stmt->fetchAll();
+
+            // Parse permissions for each user
+            foreach ($users as &$user) {
+                if ($user['permissions']) {
+                    $user['permissions'] = json_decode($user['permissions'], true);
+                }
+            }
+
+            return [
+                'success' => true,
+                'users' => $users
+            ];
+
+        } catch (PDOException $e) {
+            return [
+                'success' => false,
+                'message' => 'Database error while fetching users',
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    public function addUser($userData) {
+        try {
+            $username = $userData['username'] ?? '';
+            $email = $userData['email'] ?? '';
+            $password = $userData['password'] ?? '';
+            $firstName = $userData['firstName'] ?? '';
+            $lastName = $userData['lastName'] ?? '';
+            $userType = $userData['userType'] ?? 'staff';
+            $department = $userData['department'] ?? '';
+            $position = $userData['position'] ?? '';
+
+            // Validate required fields
+            if (empty($username) || empty($email) || empty($password) || empty($firstName) || empty($lastName)) {
+                return [
+                    'success' => false,
+                    'message' => 'All required fields must be filled'
+                ];
+            }
+
+            // Check if username or email already exists
+            $stmt = $this->db->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
+            $stmt->execute([$username, $email]);
+            if ($stmt->fetch()) {
+                return [
+                    'success' => false,
+                    'message' => 'Username or email already exists'
+                ];
+            }
+
+            // Hash password
+            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+            // Set permissions based on user type
+            $permissions = json_encode($userType === 'admin' ? ['all'] : ['students', 'attendance', 'grades', 'reports']);
+
+            // Insert new user
+            $stmt = $this->db->prepare("
+                INSERT INTO users (username, email, password_hash, first_name, last_name, 
+                                 user_type, department, position, permissions)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ");
+            
+            $stmt->execute([
+                $username, $email, $passwordHash, $firstName, $lastName, 
+                $userType, $department, $position, $permissions
+            ]);
+
+            $userId = $this->db->lastInsertId();
+
+            return [
+                'success' => true,
+                'message' => 'User added successfully',
+                'user_id' => $userId
+            ];
+
+        } catch (PDOException $e) {
+            return [
+                'success' => false,
+                'message' => 'Database error while adding user',
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    public function updateUser($userId, $userData) {
+        try {
+            $username = $userData['username'] ?? '';
+            $email = $userData['email'] ?? '';
+            $firstName = $userData['firstName'] ?? '';
+            $lastName = $userData['lastName'] ?? '';
+            $userType = $userData['userType'] ?? 'staff';
+            $department = $userData['department'] ?? '';
+            $position = $userData['position'] ?? '';
+            $isActive = isset($userData['isActive']) ? (bool)$userData['isActive'] : true;
+
+            // Validate required fields
+            if (empty($username) || empty($email) || empty($firstName) || empty($lastName)) {
+                return [
+                    'success' => false,
+                    'message' => 'All required fields must be filled'
+                ];
+            }
+
+            // Check if username or email already exists for other users
+            $stmt = $this->db->prepare("SELECT id FROM users WHERE (username = ? OR email = ?) AND id != ?");
+            $stmt->execute([$username, $email, $userId]);
+            if ($stmt->fetch()) {
+                return [
+                    'success' => false,
+                    'message' => 'Username or email already exists for another user'
+                ];
+            }
+
+            // Set permissions based on user type
+            $permissions = json_encode($userType === 'admin' ? ['all'] : ['students', 'attendance', 'grades', 'reports']);
+
+            // Update user
+            $stmt = $this->db->prepare("
+                UPDATE users 
+                SET username = ?, email = ?, first_name = ?, last_name = ?, 
+                    user_type = ?, department = ?, position = ?, permissions = ?, 
+                    is_active = ?, updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+            ");
+            
+            $stmt->execute([
+                $username, $email, $firstName, $lastName, 
+                $userType, $department, $position, $permissions, 
+                $isActive, $userId
+            ]);
+
+            return [
+                'success' => true,
+                'message' => 'User updated successfully'
+            ];
+
+        } catch (PDOException $e) {
+            return [
+                'success' => false,
+                'message' => 'Database error while updating user',
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    public function deleteUser($userId) {
+        try {
+            // Check if user exists
+            $stmt = $this->db->prepare("SELECT username FROM users WHERE id = ?");
+            $stmt->execute([$userId]);
+            $user = $stmt->fetch();
+
+            if (!$user) {
+                return [
+                    'success' => false,
+                    'message' => 'User not found'
+                ];
+            }
+
+            // Don't allow deletion of admin user
+            if ($user['username'] === 'admin') {
+                return [
+                    'success' => false,
+                    'message' => 'Cannot delete the admin user'
+                ];
+            }
+
+            // Soft delete by setting is_active to false
+            $stmt = $this->db->prepare("
+                UPDATE users 
+                SET is_active = 0, updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+            ");
+            $stmt->execute([$userId]);
+
+            return [
+                'success' => true,
+                'message' => 'User deleted successfully'
+            ];
+
+        } catch (PDOException $e) {
+            return [
+                'success' => false,
+                'message' => 'Database error while deleting user',
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    public function changePassword($userId, $newPassword) {
+        try {
+            if (strlen($newPassword) < 6) {
+                return [
+                    'success' => false,
+                    'message' => 'Password must be at least 6 characters long'
+                ];
+            }
+
+            $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+
+            $stmt = $this->db->prepare("
+                UPDATE users 
+                SET password_hash = ?, updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+            ");
+            $stmt->execute([$passwordHash, $userId]);
+
+            return [
+                'success' => true,
+                'message' => 'Password changed successfully'
+            ];
+
+        } catch (PDOException $e) {
+            return [
+                'success' => false,
+                'message' => 'Database error while changing password',
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+}
+
+// Handle API requests
+$usersAPI = new UsersAPI();
+$method = $_SERVER['REQUEST_METHOD'];
+$action = $_GET['action'] ?? '';
+
+// Get JSON input
+$input = json_decode(file_get_contents('php://input'), true);
+
+switch ($method) {
+    case 'GET':
+        switch ($action) {
+            case 'list':
+                echo json_encode($usersAPI->getAllUsers());
+                break;
+                
+            default:
+                echo json_encode([
+                    'message' => 'Users API',
+                    'available_endpoints' => [
+                        'GET /users.php?action=list' => 'Get all users',
+                        'POST /users.php?action=add' => 'Add new user',
+                        'PUT /users.php?action=update&id=X' => 'Update user',
+                        'DELETE /users.php?action=delete&id=X' => 'Delete user',
+                        'PUT /users.php?action=change_password&id=X' => 'Change password'
+                    ]
+                ]);
+        }
+        break;
+        
+    case 'POST':
+        switch ($action) {
+            case 'add':
+                echo json_encode($usersAPI->addUser($input));
+                break;
+                
+            default:
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Invalid action for POST request'
+                ]);
+        }
+        break;
+        
+    case 'PUT':
+        switch ($action) {
+            case 'update':
+                $userId = $_GET['id'] ?? '';
+                if ($userId) {
+                    echo json_encode($usersAPI->updateUser($userId, $input));
+                } else {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'User ID required'
+                    ]);
+                }
+                break;
+                
+            case 'change_password':
+                $userId = $_GET['id'] ?? '';
+                $newPassword = $input['password'] ?? '';
+                if ($userId && $newPassword) {
+                    echo json_encode($usersAPI->changePassword($userId, $newPassword));
+                } else {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'User ID and password required'
+                    ]);
+                }
+                break;
+                
+            default:
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Invalid action for PUT request'
+                ]);
+        }
+        break;
+        
+    case 'DELETE':
+        switch ($action) {
+            case 'delete':
+                $userId = $_GET['id'] ?? '';
+                if ($userId) {
+                    echo json_encode($usersAPI->deleteUser($userId));
+                } else {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'User ID required'
+                    ]);
+                }
+                break;
+                
+            default:
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Invalid action for DELETE request'
+                ]);
+        }
+        break;
+        
+    default:
+        echo json_encode([
+            'success' => false,
+            'message' => 'Method not allowed'
+        ]);
+}
+?>
