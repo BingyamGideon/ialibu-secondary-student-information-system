@@ -61,8 +61,18 @@ export default function AdminDashboard() {
 
   // Load users for user management
   useEffect(() => {
-    const loadUsers = () => {
-      setUsers(authStore.getAllUsers());
+    const loadUsers = async () => {
+      try {
+        const users = await authStore.getAllUsers();
+        setUsers(users);
+      } catch (error) {
+        console.error('Error loading users:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to load users. Please check your connection.',
+          variant: 'destructive'
+        });
+      }
     };
 
     loadUsers();
@@ -71,7 +81,7 @@ export default function AdminDashboard() {
     });
 
     return unsubscribe;
-  }, []);
+  }, [toast]);
 
   // Search states
   const [studentSearch, setStudentSearch] = useState('');
