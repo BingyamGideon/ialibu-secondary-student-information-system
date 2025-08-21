@@ -30,9 +30,18 @@ class ApiService {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
+    // If we're in a cloud environment, immediately return API unavailable
+    if (isCloudEnvironment()) {
+      return {
+        success: false,
+        message: 'API server not available in cloud environment. Using local storage instead.',
+        error: 'API_UNAVAILABLE'
+      };
+    }
+
     try {
       const url = `${this.baseUrl}/${endpoint}`;
-      
+
       const defaultOptions: RequestInit = {
         headers: {
           'Content-Type': 'application/json',
@@ -53,16 +62,16 @@ class ApiService {
       return data;
     } catch (error) {
       console.error('API Request failed:', error);
-      
+
       // Check if it's a network error (XAMPP not running)
       if (error instanceof TypeError && error.message.includes('fetch')) {
         return {
           success: false,
-          message: 'Cannot connect to server. Make sure XAMPP is running and Apache is started.',
-          error: 'Network connection failed'
+          message: 'Cannot connect to XAMPP server. Using local storage instead.',
+          error: 'API_UNAVAILABLE'
         };
       }
-      
+
       return {
         success: false,
         message: 'An error occurred while connecting to the server',
