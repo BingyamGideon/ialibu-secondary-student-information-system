@@ -517,6 +517,18 @@ class AuthStore {
         isActive: userData.isActive
       });
 
+      // If API is unavailable, fallback to localStorage
+      if (!response.success && response.error === 'API_UNAVAILABLE') {
+        const localResponse = await localAuthStore.updateUser(userId, userData);
+        if (localResponse.success) {
+          this.notifyListeners();
+        }
+        return {
+          success: localResponse.success,
+          message: localResponse.message + ' (localStorage)'
+        };
+      }
+
       if (response.success) {
         this.notifyListeners(); // Refresh the users list
       }
@@ -526,16 +538,40 @@ class AuthStore {
         message: response.message || (response.success ? 'User updated successfully' : 'Failed to update user')
       };
     } catch (error) {
-      return {
-        success: false,
-        message: 'Error updating user. Please try again.'
-      };
+      // Try localStorage fallback
+      try {
+        const localResponse = await localAuthStore.updateUser(userId, userData);
+        if (localResponse.success) {
+          this.notifyListeners();
+        }
+        return {
+          success: localResponse.success,
+          message: localResponse.message + ' (localStorage fallback)'
+        };
+      } catch (localError) {
+        return {
+          success: false,
+          message: 'Error updating user. Please try again.'
+        };
+      }
     }
   }
 
   async deleteUser(userId: number): Promise<{ success: boolean; message: string }> {
     try {
       const response = await apiService.deleteUser(userId);
+
+      // If API is unavailable, fallback to localStorage
+      if (!response.success && response.error === 'API_UNAVAILABLE') {
+        const localResponse = await localAuthStore.deleteUser(userId);
+        if (localResponse.success) {
+          this.notifyListeners();
+        }
+        return {
+          success: localResponse.success,
+          message: localResponse.message + ' (localStorage)'
+        };
+      }
 
       if (response.success) {
         this.notifyListeners(); // Refresh the users list
@@ -546,10 +582,22 @@ class AuthStore {
         message: response.message || (response.success ? 'User deleted successfully' : 'Failed to delete user')
       };
     } catch (error) {
-      return {
-        success: false,
-        message: 'Error deleting user. Please try again.'
-      };
+      // Try localStorage fallback
+      try {
+        const localResponse = await localAuthStore.deleteUser(userId);
+        if (localResponse.success) {
+          this.notifyListeners();
+        }
+        return {
+          success: localResponse.success,
+          message: localResponse.message + ' (localStorage fallback)'
+        };
+      } catch (localError) {
+        return {
+          success: false,
+          message: 'Error deleting user. Please try again.'
+        };
+      }
     }
   }
 
