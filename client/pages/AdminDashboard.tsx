@@ -44,6 +44,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { DatabaseStatus } from '@/components/DatabaseStatus';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
