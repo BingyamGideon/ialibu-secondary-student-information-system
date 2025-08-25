@@ -1267,12 +1267,60 @@ export default function AdminDashboard() {
 
                   {/* Student Attendance History */}
                   {historyGrade !== 'all' && historyClass !== 'all' && (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Attendance History - {historyGrade} {historyClass}</CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-6">
-                        <div className="space-y-6">
+                    <div className="space-y-6">
+                      {/* Class Summary Statistics */}
+                      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2 text-blue-800">
+                            <BarChart3 className="h-5 w-5" />
+                            Class Overview - {historyGrade} {historyClass}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-6">
+                          {(() => {
+                            const classStudents = getHistoryStudents();
+                            const classStats = classStudents.map(student => getStudentAttendanceStats(student.id));
+                            const totalStudents = classStudents.length;
+                            const avgAttendanceRate = classStats.length > 0
+                              ? classStats.reduce((sum, stat) => sum + stat.attendanceRate, 0) / classStats.length
+                              : 0;
+                            const totalAbsences = classStats.reduce((sum, stat) => sum + stat.absentDays, 0);
+                            const totalLateArrivals = classStats.reduce((sum, stat) => sum + stat.lateDays, 0);
+
+                            return (
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div className="text-center">
+                                  <div className="text-2xl font-bold text-blue-600">{totalStudents}</div>
+                                  <div className="text-sm text-gray-600">Students in Class</div>
+                                </div>
+                                <div className="text-center">
+                                  <div className="text-2xl font-bold text-green-600">{avgAttendanceRate.toFixed(1)}%</div>
+                                  <div className="text-sm text-gray-600">Avg Attendance Rate</div>
+                                </div>
+                                <div className="text-center">
+                                  <div className="text-2xl font-bold text-red-600">{totalAbsences}</div>
+                                  <div className="text-sm text-gray-600">Total Absences</div>
+                                </div>
+                                <div className="text-center">
+                                  <div className="text-2xl font-bold text-yellow-600">{totalLateArrivals}</div>
+                                  <div className="text-sm text-gray-600">Total Late Arrivals</div>
+                                </div>
+                              </div>
+                            );
+                          })()}
+                        </CardContent>
+                      </Card>
+
+                      {/* Individual Student Summaries */}
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <Users className="h-5 w-5" />
+                            Individual Student Summaries
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-6">
+                          <div className="space-y-6">
                           {getHistoryStudents().map((student) => {
                             const stats = getStudentAttendanceStats(student.id);
                             const history = getStudentAttendanceHistory(student.id);
@@ -1452,9 +1500,10 @@ export default function AdminDashboard() {
                               </div>
                             );
                           })}
-                        </div>
-                      </CardContent>
-                    </Card>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
                   )}
                 </div>
               )}
