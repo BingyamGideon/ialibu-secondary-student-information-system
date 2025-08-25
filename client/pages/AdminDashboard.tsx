@@ -1284,6 +1284,26 @@ export default function AdminDashboard() {
                     </CardContent>
                   </Card>
 
+                  {/* Message when no class selected */}
+                  {(historyGrade === 'all' || historyClass === 'all') && (
+                    <Card className="mt-6">
+                      <CardContent className="p-8 text-center">
+                        <div className="flex flex-col items-center gap-4">
+                          <div className="bg-gray-100 rounded-full p-4">
+                            <Users className="h-8 w-8 text-gray-400" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-medium text-gray-800 mb-2">Select a Class to View Attendance Analysis</h3>
+                            <p className="text-gray-600">
+                              Choose both a grade and class from the filters above to view comprehensive
+                              attendance summaries for all students in that class.
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
                   {/* Student Attendance History */}
                   {historyGrade !== 'all' && historyClass !== 'all' && (
                     <div className="space-y-6">
