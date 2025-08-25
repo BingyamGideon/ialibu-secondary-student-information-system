@@ -102,7 +102,7 @@ export default function AdminDashboard() {
   const [financeStatus, setFinanceStatus] = useState('all');
 
   // Attendance history states
-  const [showAttendanceHistory, setShowAttendanceHistory] = useState(false);
+  const [showAttendanceHistory, setShowAttendanceHistory] = useState(true);
   const [historyGrade, setHistoryGrade] = useState('all');
   const [historyClass, setHistoryClass] = useState('all');
   const [selectedStudentForHistory, setSelectedStudentForHistory] = useState<number | null>(null);
