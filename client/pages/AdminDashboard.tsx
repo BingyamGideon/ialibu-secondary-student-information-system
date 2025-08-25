@@ -597,6 +597,13 @@ export default function AdminDashboard() {
     setFinanceSearch('');
   };
 
+  // Helper functions for attendance filtering
+  const clearAttendanceFilters = () => {
+    setAttendanceGrade('all');
+    setAttendanceClass('all');
+    setAttendanceSearch('');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
