@@ -341,21 +341,48 @@ export default function AdminDashboard() {
     return ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(letter => `${gradeNumber}${letter}`);
   };
 
-  // Calculate attendance statistics for a student (Admin version)
+  // Calculate comprehensive attendance statistics for a student (Admin version)
   const getStudentAttendanceStats = (studentId: number) => {
     const studentRecords = attendance.filter(record => record.studentId === studentId);
     const totalDays = studentRecords.length;
     const presentDays = studentRecords.filter(record => record.status === 'Present').length;
-    const absentDays = studentRecords.filter(record => record.status === 'Absent').length;
-    const lateDays = studentRecords.filter(record => record.status === 'Late').length;
+    const absentRecords = studentRecords.filter(record => record.status === 'Absent');
+    const lateRecords = studentRecords.filter(record => record.status === 'Late');
     const attendanceRate = totalDays > 0 ? (presentDays / totalDays) * 100 : 0;
+
+    // Collect and categorize absence reasons
+    const absenceReasons = absentRecords.reduce((acc, record) => {
+      const reason = record.notes || 'No reason provided';
+      acc[reason] = (acc[reason] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Collect and categorize late reasons
+    const lateReasons = lateRecords.reduce((acc, record) => {
+      const reason = record.notes || 'No reason provided';
+      acc[reason] = (acc[reason] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Get recent attendance pattern (last 10 days)
+    const recentRecords = studentRecords
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 10);
 
     return {
       totalDays,
       presentDays,
-      absentDays,
-      lateDays,
-      attendanceRate: Math.round(attendanceRate * 10) / 10
+      absentDays: absentRecords.length,
+      lateDays: lateRecords.length,
+      attendanceRate: Math.round(attendanceRate * 10) / 10,
+      absenceReasons,
+      lateReasons,
+      recentPattern: recentRecords.map(r => ({
+        date: r.date,
+        status: r.status,
+        subject: r.subject,
+        notes: r.notes
+      }))
     };
   };
 
