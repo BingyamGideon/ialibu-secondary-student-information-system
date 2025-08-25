@@ -107,6 +107,10 @@ export default function AdminDashboard() {
   const [historyClass, setHistoryClass] = useState('all');
   const [selectedStudentForHistory, setSelectedStudentForHistory] = useState<number | null>(null);
 
+  // Attendance records filter states
+  const [attendanceGrade, setAttendanceGrade] = useState('all');
+  const [attendanceClass, setAttendanceClass] = useState('all');
+
   // Grade filter states
   const [gradeFilterGrade, setGradeFilterGrade] = useState('all');
   const [gradeFilterClass, setGradeFilterClass] = useState('all');
