@@ -1113,31 +1113,38 @@ export default function AdminDashboard() {
                           <TableRow>
                             <TableHead>Date</TableHead>
                             <TableHead>Student Name</TableHead>
+                            <TableHead>Grade</TableHead>
+                            <TableHead>Class</TableHead>
                             <TableHead>Subject</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Notes</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {filteredAttendance.map((record) => (
-                            <TableRow key={record.id}>
-                              <TableCell>{record.date}</TableCell>
-                              <TableCell>{record.studentName}</TableCell>
-                              <TableCell>{record.subject}</TableCell>
-                              <TableCell>
-                                <Badge
-                                  variant={
-                                    record.status === 'Present' ? 'default' :
-                                    record.status === 'Absent' ? 'destructive' :
-                                    'secondary'
-                                  }
-                                >
-                                  {record.status}
-                                </Badge>
-                              </TableCell>
-                              <TableCell>{record.notes}</TableCell>
-                            </TableRow>
-                          ))}
+                          {filteredAttendance.map((record) => {
+                            const student = students.find(s => s.name === record.studentName);
+                            return (
+                              <TableRow key={record.id}>
+                                <TableCell>{record.date}</TableCell>
+                                <TableCell>{record.studentName}</TableCell>
+                                <TableCell>{student?.grade || 'N/A'}</TableCell>
+                                <TableCell>{student?.class || 'N/A'}</TableCell>
+                                <TableCell>{record.subject}</TableCell>
+                                <TableCell>
+                                  <Badge
+                                    variant={
+                                      record.status === 'Present' ? 'default' :
+                                      record.status === 'Absent' ? 'destructive' :
+                                      'secondary'
+                                    }
+                                  >
+                                    {record.status}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell>{record.notes}</TableCell>
+                              </TableRow>
+                            );
+                          })}
                         </TableBody>
                       </Table>
                     </CardContent>
