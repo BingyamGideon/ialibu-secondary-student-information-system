@@ -1048,17 +1048,25 @@ export default function AdminDashboard() {
           {activeSection === 'attendance-records' && (
             <div>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Attendance Records & History</h2>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-800">Attendance Management</h2>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {showAttendanceHistory
+                      ? 'Comprehensive attendance summaries with detailed analysis for each student'
+                      : 'View and search all attendance records across the school'
+                    }
+                  </p>
+                </div>
                 <div className="flex items-center gap-2">
                   <Button
                     variant={showAttendanceHistory ? "default" : "outline"}
                     onClick={() => setShowAttendanceHistory(!showAttendanceHistory)}
                   >
-                    {showAttendanceHistory ? 'View Records' : 'View History'}
+                    {showAttendanceHistory ? 'View Records' : 'View History & Analysis'}
                   </Button>
                   <Badge variant="secondary" className="bg-blue-100 text-blue-800">
                     <Eye className="mr-1 h-3 w-3" />
-                    View Only
+                    Admin View
                   </Badge>
                 </div>
               </div>
