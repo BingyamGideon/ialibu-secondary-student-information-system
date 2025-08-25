@@ -1208,12 +1208,31 @@ export default function AdminDashboard() {
                 </div>
               ) : (
                 <div>
+                  {/* Instructions */}
+                  <Card className="mb-6 bg-blue-50 border-blue-200">
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="bg-blue-100 rounded-full p-2">
+                          <CalendarDays className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-blue-800 mb-1">Comprehensive Attendance Analysis</h3>
+                          <p className="text-sm text-blue-700">
+                            View detailed attendance summaries for each student including attendance rates,
+                            reasons for absences and late arrivals, and recent attendance patterns.
+                            Select a grade and class below to begin.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
                   {/* Grade and Class Selection for History */}
                   <Card className="mb-6">
                     <CardContent className="p-6">
                       <div className="flex flex-wrap gap-4 items-center">
                         <div className="flex items-center gap-2">
-                          <Label className="text-sm font-medium whitespace-nowrap">Select Class for History:</Label>
+                          <Label className="text-sm font-medium whitespace-nowrap">Select Class for Analysis:</Label>
                         </div>
 
                         <div className="flex items-center gap-2">
