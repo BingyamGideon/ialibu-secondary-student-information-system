@@ -1114,6 +1114,20 @@ export default function AdminDashboard() {
                   </div>
 
                   <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        <span>Attendance Records</span>
+                        <div className="text-sm font-normal text-gray-600">
+                          Showing {filteredAttendance.length} of {attendance.length} records
+                          {(attendanceGrade !== 'all' || attendanceClass !== 'all') && (
+                            <span className="ml-2">
+                              • Filtered by {attendanceGrade !== 'all' ? attendanceGrade : 'All Grades'}
+                              {attendanceClass !== 'all' && ` ${attendanceClass}`}
+                            </span>
+                          )}
+                        </div>
+                      </CardTitle>
+                    </CardHeader>
                     <CardContent className="p-6">
                       <Table>
                         <TableHeader>
