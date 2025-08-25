@@ -519,11 +519,23 @@ export default function AdminDashboard() {
     return matchesSearch && matchesGrade && matchesClass;
   });
 
-  const filteredAttendance = attendance.filter(record => 
-    record.studentName.toLowerCase().includes(attendanceSearch.toLowerCase()) ||
-    record.date.includes(attendanceSearch) ||
-    record.status.toLowerCase().includes(attendanceSearch.toLowerCase())
-  );
+  const filteredAttendance = attendance.filter(record => {
+    // Find the student to get grade and class information
+    const student = students.find(s => s.name === record.studentName);
+
+    // Apply text search filter
+    const matchesSearch = record.studentName.toLowerCase().includes(attendanceSearch.toLowerCase()) ||
+      record.date.includes(attendanceSearch) ||
+      record.status.toLowerCase().includes(attendanceSearch.toLowerCase());
+
+    // Apply grade filter
+    const matchesGrade = attendanceGrade === 'all' || (student && student.grade === attendanceGrade);
+
+    // Apply class filter
+    const matchesClass = attendanceClass === 'all' || (student && student.class === attendanceClass);
+
+    return matchesSearch && matchesGrade && matchesClass;
+  });
 
   const filteredGrades = grades.filter(grade => 
     grade.studentName.toLowerCase().includes(gradeSearch.toLowerCase()) ||
