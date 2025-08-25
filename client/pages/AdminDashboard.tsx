@@ -1383,17 +1383,23 @@ export default function AdminDashboard() {
                                   )}
                                 </div>
 
-                                {/* Recent Attendance Records */}
-                                <div className="mt-4">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setSelectedStudentForHistory(
-                                      selectedStudentForHistory === student.id ? null : student.id
-                                    )}
-                                  >
-                                    {selectedStudentForHistory === student.id ? 'Hide Details' : 'View Details'}
-                                  </Button>
+                                {/* Detailed Attendance Records */}
+                                <div className="mt-6 border-t pt-4">
+                                  <div className="flex items-center justify-between mb-3">
+                                    <h5 className="font-semibold text-gray-800 flex items-center">
+                                      <FileText className="h-4 w-4 mr-2" />
+                                      Complete Attendance History
+                                    </h5>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => setSelectedStudentForHistory(
+                                        selectedStudentForHistory === student.id ? null : student.id
+                                      )}
+                                    >
+                                      {selectedStudentForHistory === student.id ? 'Hide Records' : 'View All Records'}
+                                    </Button>
+                                  </div>
 
                                   {selectedStudentForHistory === student.id && (
                                     <div className="mt-4 max-h-60 overflow-y-auto">
