@@ -1031,7 +1031,7 @@ export default function AdminDashboard() {
 
               {!showAttendanceHistory ? (
                 <div>
-                  <div className="mb-4">
+                  <div className="mb-6 space-y-4">
                     <div className="relative max-w-md">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                       <Input
@@ -1040,6 +1040,69 @@ export default function AdminDashboard() {
                         onChange={(e) => setAttendanceSearch(e.target.value)}
                         className="pl-10 border-2 border-gray-300"
                       />
+                    </div>
+
+                    {/* Grade and Class Filter Row */}
+                    <div className="flex flex-wrap gap-4 items-center">
+                      <div className="flex items-center gap-2">
+                        <Label className="text-sm font-medium whitespace-nowrap">Filter by:</Label>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Select
+                          value={attendanceGrade}
+                          onValueChange={(value) => {
+                            setAttendanceGrade(value);
+                            setAttendanceClass('all'); // Reset class when grade changes
+                          }}
+                        >
+                          <SelectTrigger className="w-[160px]">
+                            <SelectValue placeholder="All Grades" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Grades</SelectItem>
+                            <SelectItem value="Grade 9">Grade 9</SelectItem>
+                            <SelectItem value="Grade 10">Grade 10</SelectItem>
+                            <SelectItem value="Grade 11">Grade 11</SelectItem>
+                            <SelectItem value="Grade 12">Grade 12</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {attendanceGrade !== 'all' && (
+                        <div className="flex items-center gap-2">
+                          <Select
+                            value={attendanceClass}
+                            onValueChange={setAttendanceClass}
+                          >
+                            <SelectTrigger className="w-[120px]">
+                              <SelectValue placeholder="All Classes" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Classes</SelectItem>
+                              {getClassOptions(attendanceGrade).map((classOption) => (
+                                <SelectItem key={classOption} value={classOption}>
+                                  {classOption}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+
+                      {(attendanceGrade !== 'all' || attendanceClass !== 'all') && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setAttendanceGrade('all');
+                            setAttendanceClass('all');
+                          }}
+                          className="text-xs"
+                        >
+                          Clear Filters
+                        </Button>
+                      )}
                     </div>
                   </div>
 
