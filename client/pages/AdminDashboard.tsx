@@ -1270,36 +1270,117 @@ export default function AdminDashboard() {
                             const history = getStudentAttendanceHistory(student.id);
 
                             return (
-                              <div key={student.id} className="border rounded-lg p-4">
-                                <div className="flex items-center justify-between mb-4">
+                              <div key={student.id} className="border rounded-lg p-6 bg-white">
+                                {/* Student Header */}
+                                <div className="flex items-center justify-between mb-6">
                                   <div>
-                                    <h4 className="font-medium">{student.name}</h4>
-                                    <p className="text-sm text-gray-500">{student.grade} {student.class}</p>
+                                    <h4 className="text-lg font-semibold text-gray-800">{student.name}</h4>
+                                    <p className="text-sm text-gray-500">{student.grade} {student.class} • Student ID: {student.id}</p>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="text-2xl font-bold text-blue-600">{stats.attendanceRate}%</div>
+                                    <div className="text-sm text-gray-500">Attendance Rate</div>
+                                  </div>
+                                </div>
+
+                                {/* Main Statistics Grid */}
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                                  <div className="bg-gray-50 rounded-lg p-4 text-center">
+                                    <div className="text-2xl font-bold text-gray-700">{stats.totalDays}</div>
+                                    <div className="text-sm text-gray-500">Total Days Recorded</div>
+                                  </div>
+                                  <div className="bg-green-50 rounded-lg p-4 text-center">
+                                    <div className="text-2xl font-bold text-green-600">{stats.presentDays}</div>
+                                    <div className="text-sm text-gray-500">Days Present</div>
+                                  </div>
+                                  <div className="bg-red-50 rounded-lg p-4 text-center">
+                                    <div className="text-2xl font-bold text-red-600">{stats.absentDays}</div>
+                                    <div className="text-sm text-gray-500">Days Absent</div>
+                                  </div>
+                                  <div className="bg-yellow-50 rounded-lg p-4 text-center">
+                                    <div className="text-2xl font-bold text-yellow-600">{stats.lateDays}</div>
+                                    <div className="text-sm text-gray-500">Days Late</div>
+                                  </div>
+                                </div>
+
+                                {/* Reasons for Absences and Late Arrivals */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                  {/* Absence Reasons */}
+                                  <div className="bg-red-50 rounded-lg p-4">
+                                    <h5 className="font-semibold text-red-800 mb-3 flex items-center">
+                                      <X className="h-4 w-4 mr-2" />
+                                      Absence Reasons ({stats.absentDays} total)
+                                    </h5>
+                                    {Object.keys(stats.absenceReasons).length > 0 ? (
+                                      <div className="space-y-2">
+                                        {Object.entries(stats.absenceReasons).map(([reason, count]) => (
+                                          <div key={reason} className="flex justify-between items-center text-sm">
+                                            <span className="text-gray-700">{reason}</span>
+                                            <Badge variant="destructive" className="text-xs">
+                                              {count} {count === 1 ? 'day' : 'days'}
+                                            </Badge>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    ) : (
+                                      <p className="text-sm text-gray-600 italic">No absences recorded</p>
+                                    )}
                                   </div>
 
-                                  {/* Attendance Statistics */}
-                                  <div className="flex gap-6 text-sm">
-                                    <div className="text-center">
-                                      <div className="font-semibold text-lg">{stats.totalDays}</div>
-                                      <div className="text-gray-500">Total Days</div>
-                                    </div>
-                                    <div className="text-center">
-                                      <div className="font-semibold text-lg text-green-600">{stats.presentDays}</div>
-                                      <div className="text-gray-500">Present</div>
-                                    </div>
-                                    <div className="text-center">
-                                      <div className="font-semibold text-lg text-red-600">{stats.absentDays}</div>
-                                      <div className="text-gray-500">Absent</div>
-                                    </div>
-                                    <div className="text-center">
-                                      <div className="font-semibold text-lg text-yellow-600">{stats.lateDays}</div>
-                                      <div className="text-gray-500">Late</div>
-                                    </div>
-                                    <div className="text-center">
-                                      <div className="font-semibold text-lg text-blue-600">{stats.attendanceRate}%</div>
-                                      <div className="text-gray-500">Rate</div>
-                                    </div>
+                                  {/* Late Reasons */}
+                                  <div className="bg-yellow-50 rounded-lg p-4">
+                                    <h5 className="font-semibold text-yellow-800 mb-3 flex items-center">
+                                      <Clock className="h-4 w-4 mr-2" />
+                                      Late Arrival Reasons ({stats.lateDays} total)
+                                    </h5>
+                                    {Object.keys(stats.lateReasons).length > 0 ? (
+                                      <div className="space-y-2">
+                                        {Object.entries(stats.lateReasons).map(([reason, count]) => (
+                                          <div key={reason} className="flex justify-between items-center text-sm">
+                                            <span className="text-gray-700">{reason}</span>
+                                            <Badge variant="secondary" className="text-xs bg-yellow-200 text-yellow-800">
+                                              {count} {count === 1 ? 'time' : 'times'}
+                                            </Badge>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    ) : (
+                                      <p className="text-sm text-gray-600 italic">No late arrivals recorded</p>
+                                    )}
                                   </div>
+                                </div>
+
+                                {/* Recent Attendance Pattern */}
+                                <div className="mb-4">
+                                  <h5 className="font-semibold text-gray-800 mb-3 flex items-center">
+                                    <CalendarDays className="h-4 w-4 mr-2" />
+                                    Recent Attendance Pattern (Last 10 Days)
+                                  </h5>
+                                  {stats.recentPattern.length > 0 ? (
+                                    <div className="flex flex-wrap gap-2">
+                                      {stats.recentPattern.map((record, index) => (
+                                        <div
+                                          key={index}
+                                          className={`px-3 py-2 rounded-lg border text-xs font-medium ${
+                                            record.status === 'Present'
+                                              ? 'bg-green-100 text-green-800 border-green-200'
+                                              : record.status === 'Absent'
+                                              ? 'bg-red-100 text-red-800 border-red-200'
+                                              : 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                                          }`}
+                                          title={`${record.date} - ${record.subject}${record.notes ? ': ' + record.notes : ''}`}
+                                        >
+                                          <div className="font-semibold">{record.date}</div>
+                                          <div>{record.status}</div>
+                                          {record.notes && (
+                                            <div className="text-xs opacity-75 mt-1">{record.notes}</div>
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <p className="text-sm text-gray-600 italic">No recent attendance records</p>
+                                  )}
                                 </div>
 
                                 {/* Recent Attendance Records */}
