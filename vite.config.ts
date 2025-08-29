@@ -5,6 +5,8 @@ import { createServer } from "./server";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  // Use relative paths in production so the app works under a subfolder (e.g., /school-management on XAMPP)
+  base: mode === "production" ? "./" : "/",
   server: {
     host: "::",
     port: 8080,
