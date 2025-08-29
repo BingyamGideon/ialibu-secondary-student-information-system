@@ -61,6 +61,10 @@ if (file_exists($rootIndex)) {
 } elseif (file_exists($spaIndex)) {
     header('Location: dist/spa/index.html');
     exit;
+} else {
+    // No SPA build found: fallback to classic PHP app for XAMPP
+    include __DIR__ . '/login.php';
+    exit;
 }
 ?>
 <!DOCTYPE html>
