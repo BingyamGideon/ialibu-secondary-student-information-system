@@ -51,6 +51,17 @@ if (strpos($_SERVER['REQUEST_URI'], '/server/') !== false ||
 }
 
 // For all other requests, serve the React application
+
+// If a built SPA index exists, serve it directly
+$rootIndex = __DIR__ . '/index.html';
+$spaIndex = __DIR__ . '/dist/spa/index.html';
+if (file_exists($rootIndex)) {
+    readfile($rootIndex);
+    exit;
+} elseif (file_exists($spaIndex)) {
+    header('Location: dist/spa/index.html');
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
