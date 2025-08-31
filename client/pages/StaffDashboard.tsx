@@ -30,8 +30,6 @@ import {
   X,
   Clock,
   Download,
-  Mail,
-  Printer,
   BarChart3,
   PieChart,
   FileBarChart,
@@ -3305,7 +3303,6 @@ function StudentReportForm({
     }
   );
 
-  const [emailAddress, setEmailAddress] = useState('');
   const { toast } = useToast();
 
   // Get student's grades for this term to calculate GPA and populate subjects table
@@ -3390,16 +3387,6 @@ function StudentReportForm({
     }
   };
 
-  const handleEmailReport = async () => {
-    if (!emailAddress) {
-      toast({ title: 'Error', description: 'Please enter an email address' });
-      return;
-    }
-    toast({
-      title: 'Success',
-      description: `Student permanent report has been sent to ${emailAddress}`
-    });
-  };
 
   const handleDownloadReport = () => {
     toast({
@@ -3408,13 +3395,6 @@ function StudentReportForm({
     });
   };
 
-  const handlePrintReport = () => {
-    toast({
-      title: 'Printing',
-      description: 'Student permanent report is being prepared for printing'
-    });
-    window.print();
-  };
 
   return (
     <div className="space-y-6">
@@ -3710,22 +3690,6 @@ function StudentReportForm({
             {/* Email, Download, Print Actions */}
             <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="font-medium mb-3">Report Actions</h4>
-              <div className="flex gap-2 items-center mb-3">
-                <Input
-                  placeholder="Enter email address to send report"
-                  value={emailAddress}
-                  onChange={(e) => setEmailAddress(e.target.value)}
-                  className="flex-1"
-                />
-                <Button
-                  type="button"
-                  onClick={handleEmailReport}
-                  className="flex items-center gap-1"
-                >
-                  <Mail className="h-4 w-4" />
-                  Email
-                </Button>
-              </div>
               <div className="flex gap-2">
                 <Button
                   type="button"
@@ -3735,15 +3699,6 @@ function StudentReportForm({
                 >
                   <Download className="h-4 w-4" />
                   Download PDF
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handlePrintReport}
-                  className="flex items-center gap-1"
-                >
-                  <Printer className="h-4 w-4" />
-                  Print
                 </Button>
               </div>
             </div>
