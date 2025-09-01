@@ -2332,6 +2332,8 @@ function IndividualGradeForm({
   onCancel: () => void;
 }) {
   const { toast } = useToast();
+  const { currentUser } = useAuth();
+  const assignedSubjects = (currentUser && (currentUser as any).assignedSubjects) || [];
   const [selectedSubject, setSelectedSubject] = useState('');
   const [selectedTerm, setSelectedTerm] = useState('Term 1');
 
