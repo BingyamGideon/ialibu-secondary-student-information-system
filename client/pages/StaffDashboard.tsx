@@ -190,7 +190,7 @@ export default function StaffDashboard() {
     myStudents: myStudents.length,
     avgGrade: myGrades.length > 0 ? myGrades.reduce((sum, grade) => sum + grade.totalMarks, 0) / myGrades.length : 0,
     attendanceRate: myAttendance.length > 0 ? (myAttendance.filter(a => a.status === 'Present').length / myAttendance.length) * 100 : 0,
-    assignedClasses: 3
+    assignedClasses: assignedClasses ? assignedClasses.length : 0
   };
 
   const handleLogout = () => {
@@ -385,7 +385,7 @@ export default function StaffDashboard() {
           studentId: parseInt(studentId),
           studentName: student.name,
           status: record.status,
-          subject: 'Mathematics', // Default subject for staff
+          subject: (assignedSubjects.find(subj => (student.subjects || []).includes(subj))) || (assignedSubjects[0] || 'Mathematics'),
           notes: record.notes
         });
       }
@@ -2400,7 +2400,7 @@ function IndividualGradeForm({
     const gradeData = {
       studentId: student.id,
       studentName: student.name,
-      class: `${student.grade} ${student.class}`,
+      class: student.class,
       subject: selectedSubject,
       weeklyTests: assessmentScores.weeklyTests,
       projects: assessmentScores.projects,
@@ -2926,7 +2926,7 @@ function GradeForm({
     setStudentGrades(classStudents.map(student => ({
       studentId: student.id,
       studentName: student.name,
-      class: `${student.grade} ${student.class}`,
+      class: student.class,
       weeklyTests: [0, 0, 0, 0, 0, 0],
       projects: [0, 0, 0, 0, 0, 0],
       assignments: [0, 0, 0, 0, 0, 0],
