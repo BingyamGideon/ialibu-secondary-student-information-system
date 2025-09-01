@@ -466,7 +466,10 @@ class AuthStore {
         lastName: userData.lastName,
         userType: userData.userType,
         department: userData.department,
-        position: userData.position
+        position: userData.position,
+        assignedClasses: (userData as any).assignedClasses || [],
+        assignedSubjects: (userData as any).assignedSubjects || [],
+        allowCrossClass: !!(userData as any).allowCrossClass
       });
 
       // If API is unavailable, fallback to localStorage
