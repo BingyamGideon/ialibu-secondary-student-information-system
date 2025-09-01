@@ -140,6 +140,9 @@ class UsersAPI {
             $department = $userData['department'] ?? '';
             $position = $userData['position'] ?? '';
             $isActive = isset($userData['isActive']) ? (bool)$userData['isActive'] : true;
+            $assignedClasses = $userData['assignedClasses'] ?? null;
+            $assignedSubjects = $userData['assignedSubjects'] ?? null;
+            $allowCrossClass = isset($userData['allowCrossClass']) ? (bool)$userData['allowCrossClass'] : null;
 
             // Validate required fields
             if (empty($username) || empty($email) || empty($firstName) || empty($lastName)) {
