@@ -229,6 +229,19 @@ class ApiService {
       body: JSON.stringify({ password: newPassword }),
     });
   }
+
+  async inviteUser(userId: number) {
+    return this.request(`users.php?action=invite&id=${userId}`, {
+      method: 'POST'
+    });
+  }
+
+  async completeRegistration(data: { username: string; token: string; password: string }) {
+    return this.request('auth.php?action=complete_registration', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
 }
 
 export const apiService = new ApiService();

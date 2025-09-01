@@ -295,7 +295,8 @@ export default function AdminDashboard() {
       });
 
       if (result.success) {
-        toast({ title: 'Success', description: result.message });
+        const extra = result.registrationToken ? ` Registration Code: ${result.registrationToken}` : '';
+        toast({ title: 'Success', description: `${result.message}${extra}` });
         setUserModal({ open: false, mode: 'add', data: null });
       } else {
         toast({ title: 'Error', description: result.message, variant: 'destructive' });
@@ -3408,14 +3409,14 @@ function UserForm({
 
       {mode === 'add' && (
         <div>
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">Password (optional)</Label>
           <Input
             id="password"
             type="password"
             value={formData.password || ''}
             onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-            required
             minLength={6}
+            placeholder="Leave blank to generate a registration code"
           />
         </div>
       )}

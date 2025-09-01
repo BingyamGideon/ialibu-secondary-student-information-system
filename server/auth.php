@@ -33,8 +33,8 @@ class AuthAPI {
 
             // Query user from database
             $stmt = $this->db->prepare("
-                SELECT id, username, email, first_name, last_name, user_type, 
-                       department, position, is_active, permissions, password_hash
+                SELECT id, username, email, first_name, last_name, user_type,
+                       department, position, is_active, permissions, password_hash, must_set_password
                 FROM users 
                 WHERE username = ? AND is_active = 1
             ");
@@ -45,6 +45,14 @@ class AuthAPI {
                 return [
                     'success' => false,
                     'message' => 'Invalid username or password'
+                ];
+            }
+
+            // Require completion of registration if flagged
+            if (!empty($user['must_set_password'])) {
+                return [
+                    'success' => false,
+                    'message' => 'Account not activated. Please complete registration with your code.'
                 ];
             }
 
@@ -209,6 +217,36 @@ switch ($method) {
                 
             case 'register':
                 echo json_encode($authAPI->register($input));
+                break;
+            case 'complete_registration':
+                try {
+                    $username = $input['username'] ?? '';
+                    $token = $input['token'] ?? '';
+                    $password = $input['password'] ?? '';
+                    if (empty($username) || empty($token) || empty($password)) {
+                        echo json_encode(['success' => false, 'message' => 'Username, token, and password are required']);
+                        break;
+                    }
+                    $db = new Database();
+                    $pdo = $db->getConnection();
+                    $stmt = $pdo->prepare("SELECT id, registration_token, registration_expires FROM users WHERE username = ? AND is_active = 1");
+                    $stmt->execute([$username]);
+                    $u = $stmt->fetch();
+                    if (!$u || empty($u['registration_token']) || $u['registration_token'] !== $token) {
+                        echo json_encode(['success' => false, 'message' => 'Invalid registration token']);
+                        break;
+                    }
+                    if (!empty($u['registration_expires']) && strtotime($u['registration_expires']) < time()) {
+                        echo json_encode(['success' => false, 'message' => 'Registration token expired']);
+                        break;
+                    }
+                    $hash = password_hash($password, PASSWORD_DEFAULT);
+                    $upd = $pdo->prepare("UPDATE users SET password_hash = ?, registration_token = NULL, registration_expires = NULL, must_set_password = 0 WHERE id = ?");
+                    $ok = $upd->execute([$hash, $u['id']]);
+                    echo json_encode(['success' => $ok, 'message' => $ok ? 'Registration completed' : 'Failed to complete registration']);
+                } catch (Exception $e) {
+                    echo json_encode(['success' => false, 'message' => 'Server error completing registration']);
+                }
                 break;
                 
             default:

@@ -456,7 +456,7 @@ class AuthStore {
     }
   }
 
-  async addUser(userData: Omit<RegisterData, 'confirmPassword'>): Promise<{ success: boolean; message: string }> {
+  async addUser(userData: Omit<RegisterData, 'confirmPassword'>): Promise<{ success: boolean; message: string; registrationToken?: string }> {
     try {
       const response = await apiService.addUser({
         username: userData.username,
@@ -502,7 +502,8 @@ class AuthStore {
 
       return {
         success: response.success,
-        message: response.message || (response.success ? 'User added successfully' : 'Failed to add user')
+        message: response.message || (response.success ? 'User added successfully' : 'Failed to add user'),
+        registrationToken: (response as any).registrationToken
       };
     } catch (error) {
       // Try localStorage fallback on error
@@ -652,6 +653,24 @@ class AuthStore {
         success: false,
         message: 'Error changing password. Please try again.'
       };
+    }
+  }
+
+  async createRegistrationInvite(userId: number): Promise<{ success: boolean; registrationToken?: string; message?: string }> {
+    try {
+      const res = await apiService.inviteUser(userId);
+      return { success: !!res.success, registrationToken: (res as any).registrationToken, message: res.message };
+    } catch (e) {
+      return { success: false, message: 'Failed to create invite' };
+    }
+  }
+
+  async completeRegistration(username: string, token: string, password: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const res = await apiService.completeRegistration({ username, token, password });
+      return { success: !!res.success, message: res.message || (res.success ? 'Registration completed' : 'Failed') };
+    } catch (e) {
+      return { success: false, message: 'Failed to complete registration' };
     }
   }
 }

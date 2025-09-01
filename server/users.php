@@ -23,7 +23,7 @@ class UsersAPI {
         try {
             $stmt = $this->db->prepare("
                 SELECT id, username, email, first_name, last_name, user_type, 
-                       department, position, is_active, permissions, assigned_classes, assigned_subjects, allow_cross_class, last_login,
+                       department, position, is_active, permissions, assigned_classes, assigned_subjects, allow_cross_class, registration_token, registration_expires, must_set_password, last_login,
                        created_at, updated_at
                 FROM users 
                 ORDER BY created_at DESC
@@ -77,8 +77,8 @@ class UsersAPI {
             $assignedSubjects = $userData['assignedSubjects'] ?? [];
             $allowCrossClass = isset($userData['allowCrossClass']) ? (bool)$userData['allowCrossClass'] : false;
 
-            // Validate required fields
-            if (empty($username) || empty($email) || empty($password) || empty($firstName) || empty($lastName)) {
+            // Validate required fields (password optional; token flow if omitted)
+            if (empty($username) || empty($email) || empty($firstName) || empty($lastName)) {
                 return [
                     'success' => false,
                     'message' => 'All required fields must be filled'
@@ -104,14 +104,16 @@ class UsersAPI {
             // Insert new user
             $stmt = $this->db->prepare("
                 INSERT INTO users (username, email, password_hash, first_name, last_name,
-                                 user_type, department, position, permissions, assigned_classes, assigned_subjects, allow_cross_class)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                 user_type, department, position, permissions, assigned_classes, assigned_subjects, allow_cross_class,
+                                 registration_token, registration_expires, must_set_password)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
             
             $stmt->execute([
                 $username, $email, $passwordHash, $firstName, $lastName,
                 $userType, $department, $position, $permissions,
-                json_encode($assignedClasses), json_encode($assignedSubjects), $allowCrossClass ? 1 : 0
+                json_encode($assignedClasses), json_encode($assignedSubjects), $allowCrossClass ? 1 : 0,
+                $registrationToken, $registrationExpires, $mustSetPassword
             ]);
 
             $userId = $this->db->lastInsertId();
@@ -119,7 +121,8 @@ class UsersAPI {
             return [
                 'success' => true,
                 'message' => 'User added successfully',
-                'user_id' => $userId
+                'user_id' => $userId,
+                'registrationToken' => $registrationToken
             ];
 
         } catch (PDOException $e) {
@@ -307,6 +310,26 @@ switch ($method) {
         switch ($action) {
             case 'add':
                 echo json_encode($usersAPI->addUser($input));
+                break;
+            case 'invite':
+                $userId = $_GET['id'] ?? '';
+                if ($userId) {
+                    // Generate new token
+                    $token = bin2hex(random_bytes(16));
+                    $expires = date('Y-m-d H:i:s', strtotime('+7 days'));
+                    $stmt = $usersAPI->db->prepare("UPDATE users SET registration_token = ?, registration_expires = ?, must_set_password = 1 WHERE id = ?");
+                    $ok = $stmt->execute([$token, $expires, $userId]);
+                    echo json_encode([
+                        'success' => $ok,
+                        'registrationToken' => $token,
+                        'expires' => $expires
+                    ]);
+                } else {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'User ID required'
+                    ]);
+                }
                 break;
                 
             default:
