@@ -468,7 +468,10 @@ class AuthStore {
           password: userData.password,
           firstName: userData.firstName,
           lastName: userData.lastName,
-          userType: userData.userType
+          userType: userData.userType,
+          assignedClasses: (userData as any).assignedClasses || [],
+          assignedSubjects: (userData as any).assignedSubjects || [],
+          allowCrossClass: !!(userData as any).allowCrossClass
         });
 
         if (localResponse.success) {
@@ -498,7 +501,10 @@ class AuthStore {
           password: userData.password,
           firstName: userData.firstName,
           lastName: userData.lastName,
-          userType: userData.userType
+          userType: userData.userType,
+          assignedClasses: (userData as any).assignedClasses || [],
+          assignedSubjects: (userData as any).assignedSubjects || [],
+          allowCrossClass: !!(userData as any).allowCrossClass
         });
 
         if (localResponse.success) {
