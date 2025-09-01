@@ -73,6 +73,9 @@ class UsersAPI {
             $userType = $userData['userType'] ?? 'staff';
             $department = $userData['department'] ?? '';
             $position = $userData['position'] ?? '';
+            $assignedClasses = $userData['assignedClasses'] ?? [];
+            $assignedSubjects = $userData['assignedSubjects'] ?? [];
+            $allowCrossClass = isset($userData['allowCrossClass']) ? (bool)$userData['allowCrossClass'] : false;
 
             // Validate required fields
             if (empty($username) || empty($email) || empty($password) || empty($firstName) || empty($lastName)) {
