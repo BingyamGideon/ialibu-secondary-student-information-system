@@ -3307,12 +3307,19 @@ function UserForm({
       department: '',
       position: '',
       isActive: true,
-      permissions: ['students', 'attendance', 'grades', 'reports']
+      permissions: ['students', 'attendance', 'grades', 'reports'],
+      assignedClasses: [],
+      assignedSubjects: [],
+      allowCrossClass: false
     }
   );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.email || !/@ialibu\.edu\.pg$/i.test(formData.email)) {
+      alert('Email must be a valid ialibu.edu.pg address');
+      return;
+    }
     if (formData.username && formData.email && formData.firstName && formData.lastName) {
       onSave(mode === 'edit' ? formData as User : formData as Omit<User, 'id' | 'createdAt'>);
     }
@@ -3417,6 +3424,67 @@ function UserForm({
           </SelectContent>
         </Select>
       </div>
+
+      {formData.userType === 'staff' && (
+        <div className="space-y-4 border-t pt-4">
+          <h4 className="font-semibold">Teacher Permissions</h4>
+          <div>
+            <Label>Assigned Classes</Label>
+            <div className="grid grid-cols-4 gap-2 mt-2 max-h-40 overflow-auto border p-2 rounded">
+              {[9,10,11,12].flatMap(g => ['A','B','C','D','E','F','G','H'].map(l => `${g}${l}`)).map(code => (
+                <label key={code} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={(formData.assignedClasses || []).includes(code)}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setFormData(prev => ({
+                        ...prev,
+                        assignedClasses: checked
+                          ? ([...(prev.assignedClasses || []), code])
+                          : (prev.assignedClasses || []).filter(c => c !== code)
+                      }));
+                    }}
+                  />
+                  {code}
+                </label>
+              ))}
+            </div>
+          </div>
+          <div>
+            <Label>Assigned Subjects</Label>
+            <div className="grid grid-cols-3 gap-2 mt-2 max-h-40 overflow-auto border p-2 rounded">
+              {[ 'Mathematics','English','Science','Social Science','Business Studies','Information Technology','Arts','Personal Development','Language and Literature','General Mathematics','Biology','Chemistry','Physics','Economics','Geography','History','Environment','Political Science','Legal Studies','Accounting','Tourism Studies','Computer Studies','Design and Technology','Construction','Food Technology','Textile Technology','Applied Science','Geology','Information and Communication Technology (ICT)' ].map(subj => (
+                <label key={subj} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={(formData.assignedSubjects || []).includes(subj)}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setFormData(prev => ({
+                        ...prev,
+                        assignedSubjects: checked
+                          ? ([...(prev.assignedSubjects || []), subj])
+                          : (prev.assignedSubjects || []).filter(s => s !== subj)
+                      }));
+                    }}
+                  />
+                  {subj}
+                </label>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              id="allowCrossClass"
+              type="checkbox"
+              checked={!!formData.allowCrossClass}
+              onChange={(e) => setFormData(prev => ({ ...prev, allowCrossClass: e.target.checked }))}
+            />
+            <Label htmlFor="allowCrossClass">Allow cross-class access</Label>
+          </div>
+        </div>
+      )}
 
       {mode === 'edit' && (
         <div>
