@@ -3489,18 +3489,25 @@ function UserForm({
           </div>
           <div>
             <Label className="mb-2 block">Assigned Subjects</Label>
-            <Popover open={subjectsOpen} onOpenChange={setSubjectsOpen}>
+            <Popover open={subjectsOpen} onOpenChange={setSubjectsOpen} modal={true}>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="mt-3">
+                <Button variant="outline" className="mt-3" onMouseDown={(e) => e.stopPropagation()} onClick={() => setSubjectsOpen((o) => !o)}>
                   {(formData.assignedSubjects || []).length > 0
                     ? `Selected: ${(formData.assignedSubjects || []).length}`
                     : 'Select Subjects'}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-96 max-h-64 overflow-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
-                <div className="grid grid-cols-2 gap-2" onMouseDownCapture={(e) => e.stopPropagation()}>
+              <PopoverContent
+                className="w-96 max-h-64 overflow-auto"
+                onOpenAutoFocus={(e) => e.preventDefault()}
+                onCloseAutoFocus={(e) => e.preventDefault()}
+                onPointerDownOutside={(e) => e.preventDefault()}
+                onFocusOutside={(e) => e.preventDefault()}
+                onInteractOutside={(e) => e.preventDefault()}
+              >
+                <div className="grid grid-cols-2 gap-2 mb-3" onMouseDownCapture={(e) => e.stopPropagation()}>
                   {[ 'Mathematics','English','Science','Social Science','Business Studies','Information Technology','Arts','Personal Development','Language and Literature','General Mathematics','Biology','Chemistry','Physics','Economics','Geography','History','Environment','Political Science','Legal Studies','Accounting','Tourism Studies','Computer Studies','Design and Technology','Construction','Food Technology','Textile Technology','Applied Science','Geology','Information and Communication Technology (ICT)' ].map(subj => (
-                    <label key={subj} className="flex items-center gap-2 text-sm">
+                    <label key={subj} className="flex items-center gap-2 text-sm select-none">
                       <input
                         type="checkbox"
                         checked={(formData.assignedSubjects || []).includes(subj)}
@@ -3517,6 +3524,10 @@ function UserForm({
                       {subj}
                     </label>
                   ))}
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button type="button" variant="outline" size="sm" onMouseDown={(e) => e.stopPropagation()} onClick={() => setFormData(prev => ({ ...prev, assignedSubjects: [] }))}>Clear</Button>
+                  <Button type="button" size="sm" onMouseDown={(e) => e.stopPropagation()} onClick={() => setSubjectsOpen(false)}>Done</Button>
                 </div>
               </PopoverContent>
             </Popover>
