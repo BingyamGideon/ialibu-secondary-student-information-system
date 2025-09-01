@@ -95,8 +95,18 @@ class UsersAPI {
                 ];
             }
 
-            // Hash password
-            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+            // Determine password and registration token
+            $registrationToken = null;
+            $registrationExpires = null;
+            $mustSetPassword = 0;
+            if (!empty($password)) {
+                $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+            } else {
+                $passwordHash = password_hash(bin2hex(random_bytes(8)), PASSWORD_DEFAULT);
+                $registrationToken = bin2hex(random_bytes(16));
+                $registrationExpires = date('Y-m-d H:i:s', strtotime('+7 days'));
+                $mustSetPassword = 1;
+            }
 
             // Set permissions based on user type
             $permissions = json_encode($userType === 'admin' ? ['all'] : ['students', 'attendance', 'grades', 'reports']);
@@ -131,6 +141,24 @@ class UsersAPI {
                 'message' => 'Database error while adding user',
                 'error' => $e->getMessage()
             ];
+        }
+    }
+
+    public function inviteUser($userId) {
+        try {
+            // Ensure user exists and is active
+            $stmt = $this->db->prepare("SELECT id FROM users WHERE id = ? AND is_active = 1");
+            $stmt->execute([$userId]);
+            if (!$stmt->fetch()) {
+                return [ 'success' => false, 'message' => 'User not found or inactive' ];
+            }
+            $token = bin2hex(random_bytes(16));
+            $expires = date('Y-m-d H:i:s', strtotime('+7 days'));
+            $upd = $this->db->prepare("UPDATE users SET registration_token = ?, registration_expires = ?, must_set_password = 1 WHERE id = ?");
+            $ok = $upd->execute([$token, $expires, $userId]);
+            return [ 'success' => $ok, 'registrationToken' => $token, 'expires' => $expires ];
+        } catch (PDOException $e) {
+            return [ 'success' => false, 'message' => 'Database error while creating invite' ];
         }
     }
 
@@ -314,16 +342,7 @@ switch ($method) {
             case 'invite':
                 $userId = $_GET['id'] ?? '';
                 if ($userId) {
-                    // Generate new token
-                    $token = bin2hex(random_bytes(16));
-                    $expires = date('Y-m-d H:i:s', strtotime('+7 days'));
-                    $stmt = $usersAPI->db->prepare("UPDATE users SET registration_token = ?, registration_expires = ?, must_set_password = 1 WHERE id = ?");
-                    $ok = $stmt->execute([$token, $expires, $userId]);
-                    echo json_encode([
-                        'success' => $ok,
-                        'registrationToken' => $token,
-                        'expires' => $expires
-                    ]);
+                    echo json_encode($usersAPI->inviteUser($userId));
                 } else {
                     echo json_encode([
                         'success' => false,
