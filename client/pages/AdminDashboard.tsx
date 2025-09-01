@@ -794,7 +794,7 @@ export default function AdminDashboard() {
                     <p className="text-sm text-gray-600 mb-4">
                       Monitor and manage student attendance across all grades.
                     </p>
-                    <Button onClick={() => setActiveSection('attendance')} className="w-full">
+                    <Button onClick={() => setActiveSection('attendance-records')} className="w-full">
                       View Attendance
                     </Button>
                   </CardContent>
