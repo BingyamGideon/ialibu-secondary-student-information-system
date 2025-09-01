@@ -2380,9 +2380,13 @@ function IndividualGradeForm({
     }));
   };
 
-  // Get available subjects for the student
+  // Get available subjects for the student, restricted by teacher mapping if provided
   const getStudentSubjects = () => {
-    return student.subjects || [];
+    const subs = student.subjects || [];
+    if (assignedSubjects && assignedSubjects.length > 0) {
+      return subs.filter(s => assignedSubjects.includes(s));
+    }
+    return subs;
   };
 
   const handleSave = () => {
