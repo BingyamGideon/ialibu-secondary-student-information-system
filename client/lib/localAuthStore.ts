@@ -142,7 +142,10 @@ class LocalAuthStore {
         department: user.department,
         position: user.position,
         is_active: user.isActive,
-        permissions: user.permissions
+        permissions: user.permissions,
+        assigned_classes: user.assignedClasses,
+        assigned_subjects: user.assignedSubjects,
+        allow_cross_class: user.allowCrossClass
       }
     };
   }
