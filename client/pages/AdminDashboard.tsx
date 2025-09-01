@@ -33,9 +33,6 @@ import {
   X,
   Clock,
   Eye,
-  Download,
-  Mail,
-  Printer,
   BarChart3,
   PieChart,
   FileBarChart,
@@ -123,8 +120,6 @@ export default function AdminDashboard() {
   const [selectedReportType, setSelectedReportType] = useState<string | null>(null);
   const [reportGrade, setReportGrade] = useState('all');
   const [reportClass, setReportClass] = useState('all');
-  const [emailAddress, setEmailAddress] = useState('');
-  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
   // Modal states
   const [studentModal, setStudentModal] = useState({ open: false, mode: 'add', data: null as Student | null });
@@ -465,37 +460,8 @@ export default function AdminDashboard() {
     };
   };
 
-  const handleAdminEmailReport = async (reportType: string) => {
-    if (!emailAddress) {
-      toast({ title: 'Error', description: 'Please enter an email address' });
-      return;
-    }
 
-    setIsGeneratingReport(true);
-    // Simulate email sending
-    setTimeout(() => {
-      setIsGeneratingReport(false);
-      toast({
-        title: 'Success',
-        description: `${reportType} report has been sent to ${emailAddress}`
-      });
-    }, 2000);
-  };
 
-  const handleAdminPrintReport = (reportType: string) => {
-    toast({
-      title: 'Printing',
-      description: `${reportType} report is being prepared for printing`
-    });
-    window.print();
-  };
-
-  const handleAdminDownloadReport = (reportType: string) => {
-    toast({
-      title: 'Download Started',
-      description: `${reportType} report is being downloaded as PDF`
-    });
-  };
 
   // Get students for grade filtering
   const getGradeFilteredStudents = () => {
@@ -2297,35 +2263,6 @@ export default function AdminDashboard() {
                             </div>
                           </div>
 
-                          <div className="flex gap-2 items-center">
-                            <Input
-                              placeholder="Enter email address"
-                              value={emailAddress}
-                              onChange={(e) => setEmailAddress(e.target.value)}
-                              className="flex-1"
-                            />
-                            <Button
-                              onClick={() => handleAdminEmailReport('Student Performance')}
-                              disabled={isGeneratingReport}
-                            >
-                              <Mail className="mr-1 h-4 w-4" />
-                              Email
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handleAdminDownloadReport('Student Performance')}
-                            >
-                              <Download className="mr-1 h-4 w-4" />
-                              Download PDF
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handleAdminPrintReport('Student Performance')}
-                            >
-                              <Printer className="mr-1 h-4 w-4" />
-                              Print
-                            </Button>
-                          </div>
                         </div>
                       ) : (
                         <Button
@@ -2377,35 +2314,6 @@ export default function AdminDashboard() {
                             </div>
                           </div>
 
-                          <div className="flex gap-2 items-center">
-                            <Input
-                              placeholder="Enter email address"
-                              value={emailAddress}
-                              onChange={(e) => setEmailAddress(e.target.value)}
-                              className="flex-1"
-                            />
-                            <Button
-                              onClick={() => handleAdminEmailReport('Grade Distribution')}
-                              disabled={isGeneratingReport}
-                            >
-                              <Mail className="mr-1 h-4 w-4" />
-                              Email
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handleAdminDownloadReport('Grade Distribution')}
-                            >
-                              <Download className="mr-1 h-4 w-4" />
-                              Download PDF
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handleAdminPrintReport('Grade Distribution')}
-                            >
-                              <Printer className="mr-1 h-4 w-4" />
-                              Print
-                            </Button>
-                          </div>
                         </div>
                       ) : (
                         <Button
@@ -2460,35 +2368,6 @@ export default function AdminDashboard() {
                             </div>
                           </div>
 
-                          <div className="flex gap-2 items-center">
-                            <Input
-                              placeholder="Enter email address"
-                              value={emailAddress}
-                              onChange={(e) => setEmailAddress(e.target.value)}
-                              className="flex-1"
-                            />
-                            <Button
-                              onClick={() => handleAdminEmailReport('Financial Report')}
-                              disabled={isGeneratingReport}
-                            >
-                              <Mail className="mr-1 h-4 w-4" />
-                              Email
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handleAdminDownloadReport('Financial Report')}
-                            >
-                              <Download className="mr-1 h-4 w-4" />
-                              Download PDF
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handleAdminPrintReport('Financial Report')}
-                            >
-                              <Printer className="mr-1 h-4 w-4" />
-                              Print
-                            </Button>
-                          </div>
                         </div>
                       ) : (
                         <Button
@@ -2543,35 +2422,6 @@ export default function AdminDashboard() {
                             </div>
                           </div>
 
-                          <div className="flex gap-2 items-center">
-                            <Input
-                              placeholder="Enter email address"
-                              value={emailAddress}
-                              onChange={(e) => setEmailAddress(e.target.value)}
-                              className="flex-1"
-                            />
-                            <Button
-                              onClick={() => handleAdminEmailReport('Attendance Summary')}
-                              disabled={isGeneratingReport}
-                            >
-                              <Mail className="mr-1 h-4 w-4" />
-                              Email
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handleAdminDownloadReport('Attendance Summary')}
-                            >
-                              <Download className="mr-1 h-4 w-4" />
-                              Download PDF
-                            </Button>
-                            <Button
-                              variant="outline"
-                              onClick={() => handleAdminPrintReport('Attendance Summary')}
-                            >
-                              <Printer className="mr-1 h-4 w-4" />
-                              Print
-                            </Button>
-                          </div>
                         </div>
                       ) : (
                         <Button
