@@ -288,7 +288,10 @@ export default function AdminDashboard() {
         lastName: userData.lastName,
         userType: userData.userType,
         department: userData.department,
-        position: userData.position
+        position: userData.position,
+        assignedClasses: userData.assignedClasses,
+        assignedSubjects: userData.assignedSubjects,
+        allowCrossClass: userData.allowCrossClass
       });
 
       if (result.success) {
