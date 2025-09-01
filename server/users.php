@@ -31,11 +31,22 @@ class UsersAPI {
             $stmt->execute();
             $users = $stmt->fetchAll();
 
-            // Parse permissions for each user
+            // Parse permissions and assignments for each user
             foreach ($users as &$user) {
                 if ($user['permissions']) {
                     $user['permissions'] = json_decode($user['permissions'], true);
                 }
+                if (isset($user['assigned_classes']) && $user['assigned_classes']) {
+                    $user['assigned_classes'] = json_decode($user['assigned_classes'], true);
+                } else {
+                    $user['assigned_classes'] = [];
+                }
+                if (isset($user['assigned_subjects']) && $user['assigned_subjects']) {
+                    $user['assigned_subjects'] = json_decode($user['assigned_subjects'], true);
+                } else {
+                    $user['assigned_subjects'] = [];
+                }
+                $user['allow_cross_class'] = isset($user['allow_cross_class']) ? (bool)$user['allow_cross_class'] : false;
             }
 
             return [
