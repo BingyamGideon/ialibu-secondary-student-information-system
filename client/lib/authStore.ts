@@ -244,6 +244,11 @@ class AuthStore {
         };
       }
 
+      // Enforce school email domain
+      if (!/@ialibu\.edu\.pg$/i.test(userData.email)) {
+        return { success: false, message: 'Email must be a valid ialibu.edu.pg address' };
+      }
+
       const response = await apiService.register({
         username: userData.username,
         email: userData.email,
