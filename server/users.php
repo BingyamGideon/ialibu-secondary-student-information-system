@@ -23,7 +23,7 @@ class UsersAPI {
         try {
             $stmt = $this->db->prepare("
                 SELECT id, username, email, first_name, last_name, user_type, 
-                       department, position, is_active, permissions, last_login,
+                       department, position, is_active, permissions, assigned_classes, assigned_subjects, allow_cross_class, last_login,
                        created_at, updated_at
                 FROM users 
                 ORDER BY created_at DESC
