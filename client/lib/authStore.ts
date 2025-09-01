@@ -199,7 +199,10 @@ class AuthStore {
             department: response.user.department,
             position: response.user.position,
             isActive: response.user.is_active,
-            permissions: response.user.permissions || []
+            permissions: response.user.permissions || [],
+            assignedClasses: response.user.assigned_classes || response.user.assignedClasses || [],
+            assignedSubjects: response.user.assigned_subjects || response.user.assignedSubjects || [],
+            allowCrossClass: !!(response.user.allow_cross_class ?? response.user.allowCrossClass)
           },
           currentSession: session,
           isAuthenticated: true,
