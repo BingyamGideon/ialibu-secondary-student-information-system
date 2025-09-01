@@ -3348,6 +3348,8 @@ function UserForm({
     }
   );
 
+  const [subjectsOpen, setSubjectsOpen] = useState(false);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.email || !/@ialibu\.edu\.pg$/i.test(formData.email)) {
