@@ -3487,26 +3487,44 @@ function UserForm({
           </div>
           <div>
             <Label>Assigned Subjects</Label>
-            <div className="grid grid-cols-3 gap-2 mt-2 max-h-40 overflow-auto border p-2 rounded">
-              {[ 'Mathematics','English','Science','Social Science','Business Studies','Information Technology','Arts','Personal Development','Language and Literature','General Mathematics','Biology','Chemistry','Physics','Economics','Geography','History','Environment','Political Science','Legal Studies','Accounting','Tourism Studies','Computer Studies','Design and Technology','Construction','Food Technology','Textile Technology','Applied Science','Geology','Information and Communication Technology (ICT)' ].map(subj => (
-                <label key={subj} className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={(formData.assignedSubjects || []).includes(subj)}
-                    onChange={(e) => {
-                      const checked = e.target.checked;
-                      setFormData(prev => ({
-                        ...prev,
-                        assignedSubjects: checked
-                          ? ([...(prev.assignedSubjects || []), subj])
-                          : (prev.assignedSubjects || []).filter(s => s !== subj)
-                      }));
-                    }}
-                  />
-                  {subj}
-                </label>
-              ))}
-            </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="mt-2">
+                  {(formData.assignedSubjects || []).length > 0
+                    ? `Selected: ${(formData.assignedSubjects || []).length}`
+                    : 'Select Subjects'}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-96 max-h-64 overflow-auto">
+                <div className="grid grid-cols-2 gap-2">
+                  {[ 'Mathematics','English','Science','Social Science','Business Studies','Information Technology','Arts','Personal Development','Language and Literature','General Mathematics','Biology','Chemistry','Physics','Economics','Geography','History','Environment','Political Science','Legal Studies','Accounting','Tourism Studies','Computer Studies','Design and Technology','Construction','Food Technology','Textile Technology','Applied Science','Geology','Information and Communication Technology (ICT)' ].map(subj => (
+                    <label key={subj} className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={(formData.assignedSubjects || []).includes(subj)}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setFormData(prev => ({
+                            ...prev,
+                            assignedSubjects: checked
+                              ? ([...(prev.assignedSubjects || []), subj])
+                              : (prev.assignedSubjects || []).filter(s => s !== subj)
+                          }));
+                        }}
+                      />
+                      {subj}
+                    </label>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+            {(formData.assignedSubjects || []).length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-2">
+                {(formData.assignedSubjects || []).map((s, idx) => (
+                  <Badge key={idx} variant="outline" className="text-xs">{s}</Badge>
+                ))}
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <input
