@@ -520,6 +520,9 @@ class AuthStore {
 
   async updateUser(userId: number, userData: Partial<User>): Promise<{ success: boolean; message: string }> {
     try {
+      if (userData.email && !/@ialibu\.edu\.pg$/i.test(userData.email)) {
+        return { success: false, message: 'Email must be a valid ialibu.edu.pg address' };
+      }
       const response = await apiService.updateUser(userId, {
         username: userData.username,
         email: userData.email,
@@ -528,7 +531,10 @@ class AuthStore {
         userType: userData.userType,
         department: userData.department,
         position: userData.position,
-        isActive: userData.isActive
+        isActive: userData.isActive,
+        assignedClasses: userData.assignedClasses,
+        assignedSubjects: userData.assignedSubjects,
+        allowCrossClass: userData.allowCrossClass
       });
 
       // If API is unavailable, fallback to localStorage
