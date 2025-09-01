@@ -14,6 +14,9 @@ export interface LocalUser {
   createdAt: string;
   lastLogin?: string;
   permissions: string[];
+  assignedClasses: string[];
+  assignedSubjects: string[];
+  allowCrossClass: boolean;
 }
 
 interface LocalAuthData {
