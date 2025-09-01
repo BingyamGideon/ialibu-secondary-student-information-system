@@ -177,8 +177,9 @@ class UsersAPI {
             ");
             
             $stmt->execute([
-                $username, $email, $firstName, $lastName, 
-                $userType, $department, $position, $permissions, 
+                $username, $email, $firstName, $lastName,
+                $userType, $department, $position, $permissions,
+                json_encode($assignedClasses ?? []), json_encode($assignedSubjects ?? []), ($allowCrossClass === null ? 0 : ($allowCrossClass ? 1 : 0)),
                 $isActive, $userId
             ]);
 
