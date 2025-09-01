@@ -158,9 +158,31 @@ export default function StaffDashboard() {
   ];
 
   // For staff dashboard, show all students (in real implementation, this would be filtered by assigned classes)
-  const myStudents = dataStore.students || [];
-  const myAttendance = dataStore.attendance || [];
-  const myGrades = dataStore.grades || [];
+  // Apply teacher permissions: class-level and subject mapping
+  const assignedClasses = (currentUser && 'assignedClasses' in currentUser) ? (currentUser as any).assignedClasses || [] : [];
+  const assignedSubjects = (currentUser && 'assignedSubjects' in currentUser) ? (currentUser as any).assignedSubjects || [] : [];
+  const allowCrossClass = (currentUser && 'allowCrossClass' in currentUser) ? !!(currentUser as any).allowCrossClass : false;
+
+  const myStudents = (dataStore.students || []).filter(s => {
+    if (!currentUser || currentUser.userType !== 'staff') return true;
+    if (allowCrossClass) return true;
+    if (!assignedClasses || assignedClasses.length === 0) return false;
+    return assignedClasses.includes(s.class);
+  });
+  const myAttendance = (dataStore.attendance || []).filter(a => {
+    if (!currentUser || currentUser.userType !== 'staff') return true;
+    if (allowCrossClass) return true;
+    const student = (dataStore.students || []).find(s => s.id === a.studentId);
+    return student ? assignedClasses.includes(student.class) : false;
+  });
+  const myGrades = (dataStore.grades || []).filter(g => {
+    if (!currentUser || currentUser.userType !== 'staff') return true;
+    const classCode = g.class;
+    const subject = g.subject;
+    const classOk = allowCrossClass || (assignedClasses && assignedClasses.includes(classCode));
+    const subjectOk = assignedSubjects.length === 0 || assignedSubjects.includes(subject);
+    return classOk && subjectOk;
+  });
   const myReports = dataStore.reports || [];
 
   // Calculate stats dynamically
@@ -379,6 +401,10 @@ export default function StaffDashboard() {
   // Get students for selected class in attendance
   const getAttendanceStudents = () => {
     if (attendanceGrade === 'all' || attendanceClass === 'all') return [];
+    // Enforce class-level permission
+    if (currentUser && currentUser.userType === 'staff' && !allowCrossClass) {
+      if (!assignedClasses.includes(attendanceClass)) return [];
+    }
     return (myStudents || []).filter(student =>
       student.grade === attendanceGrade && student.class === attendanceClass
     );
@@ -521,7 +547,9 @@ export default function StaffDashboard() {
   const getClassOptions = (grade: string) => {
     if (grade === 'all') return [];
     const gradeNumber = grade.replace('Grade ', '');
-    return ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(letter => `${gradeNumber}${letter}`);
+    const all = ['A','B','C','D','E','F','G','H'].map(letter => `${gradeNumber}${letter}`);
+    if (!currentUser || currentUser.userType !== 'staff' || allowCrossClass || assignedClasses.length === 0) return all;
+    return all.filter(c => assignedClasses.includes(c));
   };
 
   // Filter functions
@@ -2974,7 +3002,9 @@ function GradeForm({
         .filter(student => student.grade === targetGrade)
         .map(student => student.class)
     );
-    return Array.from(classes).sort();
+    const list = Array.from(classes).sort();
+    if (!currentUser || currentUser.userType !== 'staff' || allowCrossClass || assignedClasses.length === 0) return list;
+    return list.filter(c => assignedClasses.includes(c));
   };
 
   // Get available subjects for selected class
@@ -2989,7 +3019,10 @@ function GradeForm({
       student.subjects.forEach(subject => allSubjects.add(subject));
     });
 
-    return Array.from(allSubjects).sort();
+    const subjects = Array.from(allSubjects).sort();
+    if (!currentUser || currentUser.userType !== 'staff') return subjects;
+    if (assignedSubjects.length === 0) return subjects;
+    return subjects.filter(s => assignedSubjects.includes(s));
   };
 
   return (
