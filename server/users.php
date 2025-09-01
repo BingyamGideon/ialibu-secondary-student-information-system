@@ -109,8 +109,9 @@ class UsersAPI {
             ");
             
             $stmt->execute([
-                $username, $email, $passwordHash, $firstName, $lastName, 
-                $userType, $department, $position, $permissions
+                $username, $email, $passwordHash, $firstName, $lastName,
+                $userType, $department, $position, $permissions,
+                json_encode($assignedClasses), json_encode($assignedSubjects), $allowCrossClass ? 1 : 0
             ]);
 
             $userId = $this->db->lastInsertId();
