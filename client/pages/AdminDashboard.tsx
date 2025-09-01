@@ -3488,17 +3488,17 @@ function UserForm({
             </div>
           </div>
           <div>
-            <Label>Assigned Subjects</Label>
-            <Popover>
+            <Label className="mb-2 block">Assigned Subjects</Label>
+            <Popover open={subjectsOpen} onOpenChange={setSubjectsOpen}>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="mt-2">
+                <Button variant="outline" className="mt-3">
                   {(formData.assignedSubjects || []).length > 0
                     ? `Selected: ${(formData.assignedSubjects || []).length}`
                     : 'Select Subjects'}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-96 max-h-64 overflow-auto">
-                <div className="grid grid-cols-2 gap-2">
+              <PopoverContent className="w-96 max-h-64 overflow-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
+                <div className="grid grid-cols-2 gap-2" onMouseDownCapture={(e) => e.stopPropagation()}>
                   {[ 'Mathematics','English','Science','Social Science','Business Studies','Information Technology','Arts','Personal Development','Language and Literature','General Mathematics','Biology','Chemistry','Physics','Economics','Geography','History','Environment','Political Science','Legal Studies','Accounting','Tourism Studies','Computer Studies','Design and Technology','Construction','Food Technology','Textile Technology','Applied Science','Geology','Information and Communication Technology (ICT)' ].map(subj => (
                     <label key={subj} className="flex items-center gap-2 text-sm">
                       <input
