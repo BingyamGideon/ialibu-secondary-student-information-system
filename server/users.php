@@ -103,9 +103,9 @@ class UsersAPI {
 
             // Insert new user
             $stmt = $this->db->prepare("
-                INSERT INTO users (username, email, password_hash, first_name, last_name, 
-                                 user_type, department, position, permissions)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO users (username, email, password_hash, first_name, last_name,
+                                 user_type, department, position, permissions, assigned_classes, assigned_subjects, allow_cross_class)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
             
             $stmt->execute([
