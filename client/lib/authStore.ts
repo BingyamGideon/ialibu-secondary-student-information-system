@@ -15,6 +15,9 @@ export interface User {
   createdAt?: string;
   lastLogin?: string;
   permissions: string[];
+  assignedClasses?: string[];
+  assignedSubjects?: string[];
+  allowCrossClass?: boolean;
 }
 
 export interface Session {
