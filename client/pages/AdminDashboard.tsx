@@ -2498,6 +2498,8 @@ export default function AdminDashboard() {
                           <TableHead>Email</TableHead>
                           <TableHead>User Type</TableHead>
                           <TableHead>Department</TableHead>
+                          <TableHead>Class</TableHead>
+                          <TableHead>Subjects</TableHead>
                           <TableHead>Status</TableHead>
                           <TableHead>Last Login</TableHead>
                           <TableHead>Actions</TableHead>
@@ -2525,6 +2527,35 @@ export default function AdminDashboard() {
                                 </Badge>
                               </TableCell>
                               <TableCell>{user.department || 'N/A'}</TableCell>
+                              <TableCell>
+                                {user.userType === 'staff' && (user.assignedClasses && user.assignedClasses.length > 0) ? (
+                                  <div className="flex flex-wrap gap-1">
+                                    {user.assignedClasses.map((cls) => (
+                                      <Badge key={cls} variant="outline" className="text-xs">{cls}</Badge>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <span className="text-gray-400">—</span>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {user.userType === 'staff' && (user.assignedSubjects && user.assignedSubjects.length > 0) ? (
+                                  <div className="flex flex-wrap gap-1 max-w-xs">
+                                    {user.assignedSubjects.slice(0,3).map((subj, idx) => (
+                                      <Badge key={idx} variant="outline" className="text-xs">
+                                        {subj.length > 14 ? subj.substring(0, 14) + '...' : subj}
+                                      </Badge>
+                                    ))}
+                                    {user.assignedSubjects.length > 3 && (
+                                      <Badge variant="secondary" className="text-xs">
+                                        +{user.assignedSubjects.length - 3} more
+                                      </Badge>
+                                    )}
+                                  </div>
+                                ) : (
+                                  <span className="text-gray-400">—</span>
+                                )}
+                              </TableCell>
                               <TableCell>
                                 <Badge variant={user.isActive ? 'default' : 'secondary'}>
                                   {user.isActive ? 'Active' : 'Inactive'}
