@@ -418,7 +418,10 @@ class AuthStore {
           isActive: user.is_active,
           createdAt: user.created_at,
           lastLogin: user.last_login,
-          permissions: user.permissions || []
+          permissions: user.permissions || [],
+          assignedClasses: user.assigned_classes || user.assignedClasses || [],
+          assignedSubjects: user.assigned_subjects || user.assignedSubjects || [],
+          allowCrossClass: !!(user.allow_cross_class ?? user.allowCrossClass)
         }));
       }
       return [];
