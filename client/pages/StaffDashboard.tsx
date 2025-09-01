@@ -2204,13 +2204,20 @@ function AttendanceForm({
     }
   );
 
+  const { currentUser } = useAuth();
+  const assignedSubjects = (currentUser && (currentUser as any).assignedSubjects) || [];
+
   // Get the selected student's enrolled subjects
   const getStudentSubjects = () => {
     const selectedStudent = formData.studentId
       ? students.find(s => s.id === formData.studentId)
       : null;
 
-    return selectedStudent?.subjects || [];
+    const subjects = selectedStudent?.subjects || [];
+    if (assignedSubjects && assignedSubjects.length > 0) {
+      return subjects.filter(s => assignedSubjects.includes(s));
+    }
+    return subjects;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
