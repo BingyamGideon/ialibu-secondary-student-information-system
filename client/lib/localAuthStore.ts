@@ -44,7 +44,10 @@ class LocalAuthStore {
           position: 'System Administrator',
           isActive: true,
           createdAt: new Date().toISOString(),
-          permissions: ['all']
+          permissions: ['all'],
+          assignedClasses: [],
+          assignedSubjects: [],
+          allowCrossClass: true
         },
         {
           id: 2,
@@ -57,7 +60,10 @@ class LocalAuthStore {
           position: 'Teacher',
           isActive: true,
           createdAt: new Date().toISOString(),
-          permissions: ['students', 'attendance', 'grades', 'reports']
+          permissions: ['students', 'attendance', 'grades', 'reports'],
+          assignedClasses: ['9A', '10A'],
+          assignedSubjects: ['Mathematics', 'English', 'Science'],
+          allowCrossClass: false
         }
       ],
       currentUser: null,
@@ -148,6 +154,9 @@ class LocalAuthStore {
     firstName: string;
     lastName: string;
     userType: 'admin' | 'staff';
+    assignedClasses?: string[];
+    assignedSubjects?: string[];
+    allowCrossClass?: boolean;
   }) {
     const data = this.loadData();
     
@@ -163,6 +172,11 @@ class LocalAuthStore {
       };
     }
 
+    // Domain validation
+    if (!/@ialibu\.edu\.pg$/i.test(userData.email)) {
+      return { success: false, message: 'Email must be a valid ialibu.edu.pg address' };
+    }
+
     // Create new user
     const newUser: LocalUser = {
       id: Math.max(...data.users.map(u => u.id)) + 1,
@@ -173,7 +187,10 @@ class LocalAuthStore {
       userType: userData.userType,
       isActive: true,
       createdAt: new Date().toISOString(),
-      permissions: userData.userType === 'admin' ? ['all'] : ['students', 'attendance', 'grades', 'reports']
+      permissions: userData.userType === 'admin' ? ['all'] : ['students', 'attendance', 'grades', 'reports'],
+      assignedClasses: userData.assignedClasses || [],
+      assignedSubjects: userData.assignedSubjects || [],
+      allowCrossClass: !!userData.allowCrossClass
     };
 
     data.users.push(newUser);
@@ -201,6 +218,9 @@ class LocalAuthStore {
         position: user.position,
         is_active: user.isActive,
         permissions: user.permissions,
+        assigned_classes: user.assignedClasses,
+        assigned_subjects: user.assignedSubjects,
+        allow_cross_class: user.allowCrossClass,
         created_at: user.createdAt,
         last_login: user.lastLogin
       }))
@@ -235,6 +255,11 @@ class LocalAuthStore {
       };
     }
 
+    // Domain validation if email updated
+    if (updateData.email && !/@ialibu\.edu\.pg$/i.test(updateData.email)) {
+      return { success: false, message: 'Email must be a valid ialibu.edu.pg address' };
+    }
+
     // Update user
     data.users[userIndex] = {
       ...data.users[userIndex],
@@ -243,10 +268,13 @@ class LocalAuthStore {
       firstName: updateData.firstName || data.users[userIndex].firstName,
       lastName: updateData.lastName || data.users[userIndex].lastName,
       userType: updateData.userType || data.users[userIndex].userType,
-      department: updateData.department,
-      position: updateData.position,
+      department: updateData.department ?? data.users[userIndex].department,
+      position: updateData.position ?? data.users[userIndex].position,
       isActive: updateData.isActive !== undefined ? updateData.isActive : data.users[userIndex].isActive,
-      permissions: updateData.userType === 'admin' ? ['all'] : ['students', 'attendance', 'grades', 'reports']
+      permissions: updateData.userType === 'admin' ? ['all'] : ['students', 'attendance', 'grades', 'reports'],
+      assignedClasses: updateData.assignedClasses ?? data.users[userIndex].assignedClasses,
+      assignedSubjects: updateData.assignedSubjects ?? data.users[userIndex].assignedSubjects,
+      allowCrossClass: updateData.allowCrossClass !== undefined ? updateData.allowCrossClass : data.users[userIndex].allowCrossClass
     };
 
     this.saveData(data);
