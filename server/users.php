@@ -170,7 +170,8 @@ class UsersAPI {
             $stmt = $this->db->prepare("
                 UPDATE users 
                 SET username = ?, email = ?, first_name = ?, last_name = ?, 
-                    user_type = ?, department = ?, position = ?, permissions = ?, 
+                    user_type = ?, department = ?, position = ?, permissions = ?,
+                    assigned_classes = ?, assigned_subjects = ?, allow_cross_class = ?,
                     is_active = ?, updated_at = CURRENT_TIMESTAMP
                 WHERE id = ?
             ");
