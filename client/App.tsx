@@ -11,6 +11,19 @@ import AdminDashboard from "./pages/AdminDashboard";
 import StaffDashboard from "./pages/StaffDashboard";
 import NotFound from "./pages/NotFound";
 
+// Suppress benign ResizeObserver loop errors caused by UI libraries measuring elements
+if (typeof window !== 'undefined') {
+  const handler = (e: ErrorEvent) => {
+    if (
+      e.message === 'ResizeObserver loop completed with undelivered notifications.' ||
+      e.message === 'ResizeObserver loop limit exceeded'
+    ) {
+      e.stopImmediatePropagation();
+    }
+  };
+  window.addEventListener('error', handler);
+}
+
 const queryClient = new QueryClient();
 
 const App = () => (
