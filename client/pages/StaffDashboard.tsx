@@ -552,6 +552,16 @@ export default function StaffDashboard() {
     return all.filter(c => assignedClasses.includes(c));
   };
 
+  const getAvailableGrades = () => {
+    const all = ['Grade 9','Grade 10','Grade 11','Grade 12'];
+    if (!currentUser || currentUser.userType !== 'staff' || allowCrossClass || assignedClasses.length === 0) return all;
+    const grades = Array.from(new Set((assignedClasses || []).map((c: string) => {
+      const num = parseInt(c.replace(/[^0-9]/g, ''), 10);
+      return num ? `Grade ${num}` : '';
+    }).filter(Boolean)));
+    return grades.sort((a, b) => parseInt(a.split(' ')[1]) - parseInt(b.split(' ')[1]));
+  };
+
   // Filter functions
   const filteredStudents = (myStudents || []).filter(student => {
     // Apply text search filter
@@ -863,10 +873,9 @@ export default function StaffDashboard() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Students</SelectItem>
-                        <SelectItem value="Grade 9">Grade 9</SelectItem>
-                        <SelectItem value="Grade 10">Grade 10</SelectItem>
-                        <SelectItem value="Grade 11">Grade 11</SelectItem>
-                        <SelectItem value="Grade 12">Grade 12</SelectItem>
+                        {getAvailableGrades().map((g) => (
+                          <SelectItem key={g} value={g}>{g}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -1153,10 +1162,9 @@ export default function StaffDashboard() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">Select Grade</SelectItem>
-                          <SelectItem value="Grade 9">Grade 9</SelectItem>
-                          <SelectItem value="Grade 10">Grade 10</SelectItem>
-                          <SelectItem value="Grade 11">Grade 11</SelectItem>
-                          <SelectItem value="Grade 12">Grade 12</SelectItem>
+                          {getAvailableGrades().map((g) => (
+                            <SelectItem key={g} value={g}>{g}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -1421,10 +1429,9 @@ export default function StaffDashboard() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Students</SelectItem>
-                        <SelectItem value="Grade 9">Grade 9</SelectItem>
-                        <SelectItem value="Grade 10">Grade 10</SelectItem>
-                        <SelectItem value="Grade 11">Grade 11</SelectItem>
-                        <SelectItem value="Grade 12">Grade 12</SelectItem>
+                        {getAvailableGrades().map((g) => (
+                          <SelectItem key={g} value={g}>{g}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -1881,10 +1888,9 @@ export default function StaffDashboard() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">All Grades</SelectItem>
-                          <SelectItem value="Grade 9">Grade 9</SelectItem>
-                          <SelectItem value="Grade 10">Grade 10</SelectItem>
-                          <SelectItem value="Grade 11">Grade 11</SelectItem>
-                          <SelectItem value="Grade 12">Grade 12</SelectItem>
+                          {getAvailableGrades().map((g) => (
+                            <SelectItem key={g} value={g}>{g}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -2061,11 +2067,27 @@ function StudentForm({
     }
   );
 
+  const { currentUser: formUser } = useAuth();
+  const formAssignedClasses = (formUser && (formUser as any).assignedClasses) || [];
+  const formAllowCrossClass = (formUser && (formUser as any).allowCrossClass) || false;
+
+  const getAllowedGrades = () => {
+    const all = ['Grade 9','Grade 10','Grade 11','Grade 12'];
+    if (!formUser || formUser.userType !== 'staff' || formAllowCrossClass || formAssignedClasses.length === 0) return all;
+    const grades = Array.from(new Set((formAssignedClasses || []).map((c: string) => {
+      const num = parseInt(c.replace(/[^0-9]/g, ''), 10);
+      return num ? `Grade ${num}` : '';
+    }).filter(Boolean)));
+    return grades.sort((a, b) => parseInt(a.split(' ')[1]) - parseInt(b.split(' ')[1]));
+  };
+
   // Generate class options based on selected grade in form
   const getFormClassOptions = (grade: string) => {
     if (!grade) return [];
     const gradeNumber = grade.replace('Grade ', '');
-    return ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(letter => `${gradeNumber}${letter}`);
+    const all = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map(letter => `${gradeNumber}${letter}`);
+    if (!formUser || formUser.userType !== 'staff' || formAllowCrossClass || formAssignedClasses.length === 0) return all;
+    return all.filter(c => formAssignedClasses.includes(c));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -2108,10 +2130,9 @@ function StudentForm({
               <SelectValue placeholder="Select Grade" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Grade 9">Grade 9</SelectItem>
-              <SelectItem value="Grade 10">Grade 10</SelectItem>
-              <SelectItem value="Grade 11">Grade 11</SelectItem>
-              <SelectItem value="Grade 12">Grade 12</SelectItem>
+              {getAllowedGrades().map((g) => (
+                <SelectItem key={g} value={g}>{g}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -3003,7 +3024,13 @@ function GradeForm({
 
   // Get available grade levels
   const getAvailableGradeLevels = () => {
-    return ['9', '10', '11', '12'];
+    const all = ['9','10','11','12'];
+    const { currentUser } = useAuth();
+    const assigned = (currentUser && (currentUser as any).assignedClasses) || [];
+    const allow = (currentUser && (currentUser as any).allowCrossClass) || false;
+    if (!currentUser || currentUser.userType !== 'staff' || allow || assigned.length === 0) return all;
+    const grades = Array.from(new Set((assigned || []).map((c: string) => c.replace(/[^0-9]/g, '')).filter(Boolean)));
+    return grades.sort();
   };
 
   // Get available classes for selected grade level
