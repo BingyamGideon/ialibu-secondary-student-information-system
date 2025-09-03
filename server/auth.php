@@ -34,7 +34,7 @@ class AuthAPI {
             // Query user from database
             $stmt = $this->db->prepare("
                 SELECT id, username, email, first_name, last_name, user_type,
-                       department, position, is_active, permissions, password_hash, must_set_password
+                       department, position, is_active, permissions, assigned_classes, assigned_subjects, allow_cross_class, password_hash, must_set_password
                 FROM users 
                 WHERE username = ? AND is_active = 1
             ");
@@ -82,10 +82,21 @@ class AuthAPI {
             // Remove password from response
             unset($user['password_hash']);
 
-            // Parse permissions if JSON
+            // Parse JSON fields
             if ($user['permissions']) {
                 $user['permissions'] = json_decode($user['permissions'], true);
             }
+            if (isset($user['assigned_classes']) && $user['assigned_classes']) {
+                $user['assigned_classes'] = json_decode($user['assigned_classes'], true);
+            } else {
+                $user['assigned_classes'] = [];
+            }
+            if (isset($user['assigned_subjects']) && $user['assigned_subjects']) {
+                $user['assigned_subjects'] = json_decode($user['assigned_subjects'], true);
+            } else {
+                $user['assigned_subjects'] = [];
+            }
+            $user['allow_cross_class'] = isset($user['allow_cross_class']) ? (bool)$user['allow_cross_class'] : false;
 
             return [
                 'success' => true,
@@ -165,9 +176,9 @@ class AuthAPI {
     public function getUserProfile($userId) {
         try {
             $stmt = $this->db->prepare("
-                SELECT id, username, email, first_name, last_name, user_type, 
-                       department, position, is_active, permissions
-                FROM users 
+                SELECT id, username, email, first_name, last_name, user_type,
+                       department, position, is_active, permissions, assigned_classes, assigned_subjects, allow_cross_class
+                FROM users
                 WHERE id = ? AND is_active = 1
             ");
             $stmt->execute([$userId]);
@@ -180,10 +191,21 @@ class AuthAPI {
                 ];
             }
 
-            // Parse permissions if JSON
+            // Parse JSON fields
             if ($user['permissions']) {
                 $user['permissions'] = json_decode($user['permissions'], true);
             }
+            if (isset($user['assigned_classes']) && $user['assigned_classes']) {
+                $user['assigned_classes'] = json_decode($user['assigned_classes'], true);
+            } else {
+                $user['assigned_classes'] = [];
+            }
+            if (isset($user['assigned_subjects']) && $user['assigned_subjects']) {
+                $user['assigned_subjects'] = json_decode($user['assigned_subjects'], true);
+            } else {
+                $user['assigned_subjects'] = [];
+            }
+            $user['allow_cross_class'] = isset($user['allow_cross_class']) ? (bool)$user['allow_cross_class'] : false;
 
             return [
                 'success' => true,
