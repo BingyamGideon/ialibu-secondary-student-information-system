@@ -36,6 +36,12 @@ CREATE TABLE users (
     position VARCHAR(100),
     is_active BOOLEAN DEFAULT TRUE,
     permissions JSON,
+    assigned_classes JSON,
+    assigned_subjects JSON,
+    allow_cross_class BOOLEAN DEFAULT FALSE,
+    registration_token VARCHAR(64) NULL,
+    registration_expires TIMESTAMP NULL,
+    must_set_password BOOLEAN DEFAULT FALSE,
     last_login TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
