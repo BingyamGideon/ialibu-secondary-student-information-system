@@ -179,166 +179,232 @@ export default function Index() {
         <div className="p-8">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-gray-800">
-              {isLogin ? 'School Login' : 'Create Account'}
+              {isActivation ? 'Activate Account' : isLogin ? 'School Login' : 'Create Account'}
             </h2>
             <p className="text-gray-600 mt-2">
-              {isLogin ? 'Sign in to access your dashboard' : 'Fill in your details to register'}
+              {isActivation
+                ? 'Enter your registration code provided by the admin to set your password'
+                : isLogin
+                  ? 'Sign in to access your dashboard'
+                  : 'Fill in your details to register'}
             </p>
           </div>
 
           <form onSubmit={handleAuth} className="space-y-4">
-            <div>
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                type="text"
-                value={loginForm.username}
-                onChange={(e) => setLoginForm(prev => ({ ...prev, username: e.target.value }))}
-                placeholder="Enter your username"
-                required
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={loginForm.password}
-                onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
-                placeholder="Enter your password"
-                required
-              />
-            </div>
-
-            {!isLogin && (
+            {isActivation ? (
               <>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input
-                      id="firstName"
-                      type="text"
-                      value={loginForm.firstName}
-                      onChange={(e) => setLoginForm(prev => ({ ...prev, firstName: e.target.value }))}
-                      placeholder="First name"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input
-                      id="lastName"
-                      type="text"
-                      value={loginForm.lastName}
-                      onChange={(e) => setLoginForm(prev => ({ ...prev, lastName: e.target.value }))}
-                      placeholder="Last name"
-                      required
-                    />
-                  </div>
-                </div>
-
                 <div>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="act-username">Username</Label>
                   <Input
-                    id="email"
-                    type="email"
-                    value={loginForm.email}
-                    onChange={(e) => setLoginForm(prev => ({ ...prev, email: e.target.value }))}
-                    placeholder="Enter your email"
+                    id="act-username"
+                    type="text"
+                    value={activationForm.username}
+                    onChange={(e) => setActivationForm(prev => ({ ...prev, username: e.target.value }))}
+                    placeholder="Your username"
                     required
                   />
                 </div>
-
                 <div>
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Label htmlFor="act-token">Registration Code</Label>
                   <Input
-                    id="confirmPassword"
+                    id="act-token"
+                    type="text"
+                    value={activationForm.token}
+                    onChange={(e) => setActivationForm(prev => ({ ...prev, token: e.target.value }))}
+                    placeholder="Enter the code from admin"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="act-password">New Password</Label>
+                  <Input
+                    id="act-password"
                     type="password"
-                    value={loginForm.confirmPassword}
-                    onChange={(e) => setLoginForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                    placeholder="Confirm your password"
+                    value={activationForm.password}
+                    onChange={(e) => setActivationForm(prev => ({ ...prev, password: e.target.value }))}
+                    placeholder="Create your password"
+                    required
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full bg-blue-900 hover:bg-blue-800 text-white"
+                  disabled={isSubmitting || loading}
+                >
+                  {(isSubmitting || loading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Activate Account
+                </Button>
+              </>
+            ) : (
+              <>
+                <div>
+                  <Label htmlFor="username">Username</Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    value={loginForm.username}
+                    onChange={(e) => setLoginForm(prev => ({ ...prev, username: e.target.value }))}
+                    placeholder="Enter your username"
                     required
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="department">Department</Label>
-                    <Input
-                      id="department"
-                      type="text"
-                      value={loginForm.department}
-                      onChange={(e) => setLoginForm(prev => ({ ...prev, department: e.target.value }))}
-                      placeholder="Department"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="position">Position</Label>
-                    <Input
-                      id="position"
-                      type="text"
-                      value={loginForm.position}
-                      onChange={(e) => setLoginForm(prev => ({ ...prev, position: e.target.value }))}
-                      placeholder="Position"
-                    />
-                  </div>
+                <div>
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={loginForm.password}
+                    onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
+                    placeholder="Enter your password"
+                    required
+                  />
                 </div>
 
-                <div>
-                  <Label htmlFor="userType">User Type</Label>
-                  <Select
-                    value={loginForm.userType}
-                    onValueChange={(value: 'admin' | 'staff') => setLoginForm(prev => ({ ...prev, userType: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="staff">Staff Member</SelectItem>
-                      <SelectItem value="admin">Administrator</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                {!isLogin && (
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="firstName">First Name</Label>
+                        <Input
+                          id="firstName"
+                          type="text"
+                          value={loginForm.firstName}
+                          onChange={(e) => setLoginForm(prev => ({ ...prev, firstName: e.target.value }))}
+                          placeholder="First name"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="lastName">Last Name</Label>
+                        <Input
+                          id="lastName"
+                          type="text"
+                          value={loginForm.lastName}
+                          onChange={(e) => setLoginForm(prev => ({ ...prev, lastName: e.target.value }))}
+                          placeholder="Last name"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={loginForm.email}
+                        onChange={(e) => setLoginForm(prev => ({ ...prev, email: e.target.value }))}
+                        placeholder="Enter your email"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="confirmPassword">Confirm Password</Label>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        value={loginForm.confirmPassword}
+                        onChange={(e) => setLoginForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                        placeholder="Confirm your password"
+                        required
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="department">Department</Label>
+                        <Input
+                          id="department"
+                          type="text"
+                          value={loginForm.department}
+                          onChange={(e) => setLoginForm(prev => ({ ...prev, department: e.target.value }))}
+                          placeholder="Department"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="position">Position</Label>
+                        <Input
+                          id="position"
+                          type="text"
+                          value={loginForm.position}
+                          onChange={(e) => setLoginForm(prev => ({ ...prev, position: e.target.value }))}
+                          placeholder="Position"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="userType">User Type</Label>
+                      <Select
+                        value={loginForm.userType}
+                        onValueChange={(value: 'admin' | 'staff') => setLoginForm(prev => ({ ...prev, userType: value }))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="staff">Staff Member</SelectItem>
+                          <SelectItem value="admin">Administrator</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </>
+                )}
+
+                <Button
+                  type="submit"
+                  className="w-full bg-blue-900 hover:bg-blue-800 text-white"
+                  disabled={isSubmitting || loading}
+                >
+                  {(isSubmitting || loading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isLogin ? 'Login' : 'Register'}
+                </Button>
               </>
             )}
-
-            <Button
-              type="submit"
-              className="w-full bg-blue-900 hover:bg-blue-800 text-white"
-              disabled={isSubmitting || loading}
-            >
-              {(isSubmitting || loading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isLogin ? 'Login' : 'Register'}
-            </Button>
           </form>
 
-          {/* Demo Credentials */}
-
           <div className="text-center mt-6">
-            <span className="text-gray-600">
-              {isLogin ? "Don't have an account?" : 'Already have an account?'}
-            </span>
-            <button
-              onClick={() => {
-                setIsLogin(!isLogin);
-                setLoginForm({
-                  username: '',
-                  password: '',
-                  confirmPassword: '',
-                  email: '',
-                  firstName: '',
-                  lastName: '',
-                  department: '',
-                  position: '',
-                  userType: 'staff'
-                });
-              }}
-              className="ml-2 text-blue-900 font-semibold hover:underline"
-              disabled={isSubmitting || loading}
-            >
-              {isLogin ? 'Register here' : 'Login here'}
-            </button>
+            {!isActivation && (
+              <>
+                <span className="text-gray-600">
+                  {isLogin ? "Don't have an account?" : 'Already have an account?'}
+                </span>
+                <button
+                  onClick={() => {
+                    setIsLogin(!isLogin);
+                    setLoginForm({
+                      username: '',
+                      password: '',
+                      confirmPassword: '',
+                      email: '',
+                      firstName: '',
+                      lastName: '',
+                      department: '',
+                      position: '',
+                      userType: 'staff'
+                    });
+                  }}
+                  className="ml-2 text-blue-900 font-semibold hover:underline"
+                  disabled={isSubmitting || loading}
+                >
+                  {isLogin ? 'Register here' : 'Login here'}
+                </button>
+              </>
+            )}
+            <div className="mt-3">
+              <button
+                onClick={() => {
+                  setIsActivation(!isActivation);
+                  setIsLogin(isActivation ? true : false);
+                }}
+                className="text-blue-900 font-semibold hover:underline"
+                disabled={isSubmitting || loading}
+              >
+                {isActivation ? 'Back to Login' : 'Have a registration code? Activate account'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
