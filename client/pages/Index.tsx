@@ -11,10 +11,11 @@ import { Loader2 } from 'lucide-react';
 export default function Index() {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { login, register, loading, isAuthenticated, currentUser } = useAuth();
+  const { login, register, completeRegistration, loading, isAuthenticated, currentUser } = useAuth();
 
   // Authentication state
   const [isLogin, setIsLogin] = useState(true);
+  const [isActivation, setIsActivation] = useState(false);
   const [loginForm, setLoginForm] = useState({
     username: '',
     password: '',
@@ -25,6 +26,11 @@ export default function Index() {
     department: '',
     position: '',
     userType: 'staff' as 'admin' | 'staff'
+  });
+  const [activationForm, setActivationForm] = useState({
+    username: '',
+    token: '',
+    password: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -45,6 +51,24 @@ export default function Index() {
     setIsSubmitting(true);
 
     try {
+      if (isActivation) {
+        if (!activationForm.username || !activationForm.token || activationForm.password.length < 6) {
+          toast({ title: 'Activation failed', description: 'Provide username, registration code, and a valid password (6+ chars).', variant: 'destructive' });
+          return;
+        }
+        const res = await completeRegistration(activationForm.username, activationForm.token, activationForm.password);
+        if (res.success) {
+          toast({ title: 'Account activated', description: 'You can now log in with your password.' });
+          setIsActivation(false);
+          setIsLogin(true);
+          setLoginForm(prev => ({ ...prev, username: activationForm.username, password: '' }));
+          setActivationForm({ username: '', token: '', password: '' });
+        } else {
+          toast({ title: 'Activation failed', description: res.message, variant: 'destructive' });
+        }
+        return;
+      }
+
       if (isLogin) {
         const result = await login({
           username: loginForm.username,
@@ -56,32 +80,25 @@ export default function Index() {
             title: 'Login successful',
             description: `Welcome back, ${result.user.firstName} ${result.user.lastName}!`
           });
-
-          // Navigation will be handled by useEffect
         } else {
-          toast({
-            title: 'Login failed',
-            description: result.message,
-            variant: 'destructive'
-          });
+          const msg = result.message || '';
+          if (msg.toLowerCase().includes('complete registration') || msg.toLowerCase().includes('not activated')) {
+            setIsActivation(true);
+            setIsLogin(false);
+            setActivationForm(prev => ({ ...prev, username: loginForm.username }));
+            toast({ title: 'Activation required', description: 'Enter your registration code to set your password.' });
+          } else {
+            toast({ title: 'Login failed', description: msg, variant: 'destructive' });
+          }
         }
       } else {
-        // Validation
+        // Registration (self-signup)
         if (!loginForm.firstName.trim() || !loginForm.lastName.trim()) {
-          toast({
-            title: 'Registration failed',
-            description: 'First name and last name are required',
-            variant: 'destructive'
-          });
+          toast({ title: 'Registration failed', description: 'First name and last name are required', variant: 'destructive' });
           return;
         }
-
         if (!loginForm.email.trim() || !loginForm.email.includes('@')) {
-          toast({
-            title: 'Registration failed',
-            description: 'Please enter a valid email address',
-            variant: 'destructive'
-          });
+          toast({ title: 'Registration failed', description: 'Please enter a valid email address', variant: 'destructive' });
           return;
         }
 
@@ -98,11 +115,9 @@ export default function Index() {
         });
 
         if (result.success) {
-          toast({
-            title: 'Registration successful',
-            description: 'You can now login with your credentials!'
-          });
+          toast({ title: 'Registration successful', description: 'You can now login with your credentials!' });
           setIsLogin(true);
+          setIsActivation(false);
           setLoginForm({
             username: '',
             password: '',
@@ -115,11 +130,7 @@ export default function Index() {
             userType: 'staff'
           });
         } else {
-          toast({
-            title: 'Registration failed',
-            description: result.message,
-            variant: 'destructive'
-          });
+          toast({ title: 'Registration failed', description: result.message, variant: 'destructive' });
         }
       }
     } catch (error) {
