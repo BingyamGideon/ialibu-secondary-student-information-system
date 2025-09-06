@@ -421,7 +421,9 @@ class AuthStore {
           permissions: user.permissions || [],
           assignedClasses: user.assigned_classes || user.assignedClasses || [],
           assignedSubjects: user.assigned_subjects || user.assignedSubjects || [],
-          allowCrossClass: !!(user.allow_cross_class ?? user.allowCrossClass)
+          allowCrossClass: !!(user.allow_cross_class ?? user.allowCrossClass),
+          mustSetPassword: !!user.must_set_password,
+          registrationToken: user.registration_token ?? null
         }));
       }
       return [];
