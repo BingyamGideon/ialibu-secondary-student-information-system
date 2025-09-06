@@ -45,6 +45,16 @@ export function useAuth() {
     }
   };
 
+  const completeRegistration = async (username: string, token: string, password: string) => {
+    setLoading(true);
+    try {
+      const res = await authStore.completeRegistration(username, token, password);
+      return res;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     authStore.logout();
   };
@@ -73,6 +83,7 @@ export function useAuth() {
     loading,
     login,
     register,
+    completeRegistration,
     logout,
     updateProfile,
     changePassword,
