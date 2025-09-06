@@ -2558,9 +2558,15 @@ export default function AdminDashboard() {
                                 )}
                               </TableCell>
                               <TableCell>
-                                <Badge variant={user.isActive ? 'default' : 'secondary'}>
-                                  {user.isActive ? 'Active' : 'Inactive'}
-                                </Badge>
+                                {user.isActive ? (
+                                  user.mustSetPassword ? (
+                                    <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Pending Activation</Badge>
+                                  ) : (
+                                    <Badge variant="default">Active</Badge>
+                                  )
+                                ) : (
+                                  <Badge variant="secondary">Inactive</Badge>
+                                )}
                               </TableCell>
                               <TableCell>
                                 {user.lastLogin
