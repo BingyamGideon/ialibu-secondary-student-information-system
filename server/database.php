@@ -26,6 +26,7 @@ class Database {
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false
             ]);
+            $this->ensureLatestSchema();
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode([
@@ -39,6 +40,27 @@ class Database {
                 ]
             ]);
             exit;
+        }
+    }
+
+    private function ensureLatestSchema() {
+        try {
+            $stmts = [
+                // Users table columns used by new features
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS permissions JSON",
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS assigned_classes JSON",
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS assigned_subjects JSON",
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS allow_cross_class BOOLEAN DEFAULT FALSE",
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS registration_token VARCHAR(64) NULL",
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS registration_expires TIMESTAMP NULL",
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS must_set_password BOOLEAN DEFAULT FALSE",
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS last_login TIMESTAMP NULL"
+            ];
+            foreach ($stmts as $sql) {
+                try { $this->pdo->exec($sql); } catch (Throwable $ignore) { /* ignore if not supported or already exists */ }
+            }
+        } catch (Throwable $e) {
+            // Silent fail to avoid breaking the app if ALTER privileges are missing
         }
     }
 
