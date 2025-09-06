@@ -398,7 +398,9 @@ class AuthStore {
             permissions: user.permissions || [],
             assignedClasses: user.assigned_classes || user.assignedClasses || [],
             assignedSubjects: user.assigned_subjects || user.assignedSubjects || [],
-            allowCrossClass: !!(user.allow_cross_class ?? user.allowCrossClass)
+            allowCrossClass: !!(user.allow_cross_class ?? user.allowCrossClass),
+            mustSetPassword: false,
+            registrationToken: null
           }));
         }
         return [];
@@ -448,7 +450,9 @@ class AuthStore {
             permissions: user.permissions || [],
             assignedClasses: user.assigned_classes || user.assignedClasses || [],
             assignedSubjects: user.assigned_subjects || user.assignedSubjects || [],
-            allowCrossClass: !!(user.allow_cross_class ?? user.allowCrossClass)
+            allowCrossClass: !!(user.allow_cross_class ?? user.allowCrossClass),
+            mustSetPassword: false,
+            registrationToken: null
           }));
         }
       } catch (localError) {
