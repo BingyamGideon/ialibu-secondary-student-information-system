@@ -1,4 +1,5 @@
 RewriteEngine On
+DirectoryIndex index.php
 
 # Enable CORS for API requests
 Header always set Access-Control-Allow-Origin "*"
@@ -13,13 +14,14 @@ RewriteRule ^(.*)$ - [R=200,L]
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
 
-# Handle API routes - direct to PHP files
+# Handle API routes - direct to PHP files under /server
 RewriteRule ^api/(.*)$ server/$1 [L]
+RewriteRule ^server/(.*)$ server/$1 [L]
 
-# For React Router - send all non-file requests to index.html
+# SPA fallback for React Router - send all other requests to index.php (no hardcoded subfolder)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /school-management/index.html [L]
+RewriteRule . index.php [L]
 
 # Security headers
 Header always set X-Content-Type-Options nosniff
