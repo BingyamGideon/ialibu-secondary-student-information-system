@@ -2907,6 +2907,16 @@ function GradeForm({
   const assignedSubjects = (currentUser && 'assignedSubjects' in currentUser) ? (currentUser as any).assignedSubjects || [] : [];
   const allowCrossClass = (currentUser && 'allowCrossClass' in currentUser) ? !!(currentUser as any).allowCrossClass : false;
 
+  // Auto-select first available grade on mount for better UX
+  useEffect(() => {
+    if (!selectedGradeLevel) {
+      const grades = getAvailableGradeLevels();
+      if (grades.length > 0) {
+        setSelectedGradeLevel(grades[0]);
+      }
+    }
+  }, [currentUser]);
+
   // State for student grades (up to 6 students)
   const [studentGrades, setStudentGrades] = useState<Array<{
     studentId: number;
@@ -2977,6 +2987,28 @@ function GradeForm({
     setSelectedGradeLevel(gradeLevel);
     setSelectedClass(''); // Reset class selection
     setStudentGrades([]); // Clear student grades
+
+    // If there is only one class available for this grade, auto-select it
+    const available = computeAvailableClassesForGrade(gradeLevel);
+    if (available.length === 1) {
+      const onlyClass = available[0];
+      setSelectedClass(onlyClass);
+      const targetGrade = `Grade ${gradeLevel}`;
+      const classStudents = (students || []).filter(student => student.grade === targetGrade && student.class === onlyClass).slice(0, 6);
+      setStudentGrades(classStudents.map(student => ({
+        studentId: student.id,
+        studentName: student.name,
+        class: student.class,
+        weeklyTests: [0, 0, 0, 0, 0, 0],
+        projects: [0, 0, 0, 0, 0, 0],
+        assignments: [0, 0, 0, 0, 0, 0],
+        takeHomeTests: [0, 0, 0, 0, 0, 0],
+        openBookTests: [0, 0, 0, 0, 0, 0],
+        endOfTermTests: [0, 0, 0, 0, 0, 0],
+        totalMarks: 0,
+        letterGrade: 'F'
+      })));
+    }
   };
 
   // Update individual assessment component
@@ -3036,18 +3068,31 @@ function GradeForm({
     return grades.sort();
   };
 
+  // Compute available classes for a given grade level (robust with fallbacks)
+  const computeAvailableClassesForGrade = (gradeLevel: string) => {
+    const targetGrade = `Grade ${gradeLevel}`;
+    let list = Array.from(new Set((students || [])
+      .filter(student => student.grade === targetGrade)
+      .map(student => student.class)
+    )).sort();
+
+    // Fallback: if no classes found from students, derive from assignedClasses or default A-H
+    if (list.length === 0) {
+      const byAssigned = (assignedClasses || []).filter(c => c.startsWith(gradeLevel));
+      list = byAssigned.length > 0 ? byAssigned : ['A','B','C','D','E','F','G','H'].map(letter => `${gradeLevel}${letter}`);
+    }
+
+    // Permission filter for staff
+    if (currentUser && currentUser.userType === 'staff' && !allowCrossClass && assignedClasses.length > 0) {
+      list = list.filter(c => assignedClasses.includes(c));
+    }
+    return list;
+  };
+
   // Get available classes for selected grade level
   const getAvailableClasses = () => {
     if (!selectedGradeLevel) return [];
-    const targetGrade = `Grade ${selectedGradeLevel}`;
-    const classes = new Set(
-      students
-        .filter(student => student.grade === targetGrade)
-        .map(student => student.class)
-    );
-    const list = Array.from(classes).sort();
-    if (!currentUser || currentUser.userType !== 'staff' || allowCrossClass || assignedClasses.length === 0) return list;
-    return list.filter(c => assignedClasses.includes(c));
+    return computeAvailableClassesForGrade(selectedGradeLevel);
   };
 
   // Get available subjects for selected class
