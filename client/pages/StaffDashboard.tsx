@@ -2901,6 +2901,12 @@ function GradeForm({
   const [selectedGradeLevel, setSelectedGradeLevel] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
 
+  // Auth context for teacher permissions (scoped to this component)
+  const { currentUser } = useAuth();
+  const assignedClasses = (currentUser && 'assignedClasses' in currentUser) ? (currentUser as any).assignedClasses || [] : [];
+  const assignedSubjects = (currentUser && 'assignedSubjects' in currentUser) ? (currentUser as any).assignedSubjects || [] : [];
+  const allowCrossClass = (currentUser && 'allowCrossClass' in currentUser) ? !!(currentUser as any).allowCrossClass : false;
+
   // State for student grades (up to 6 students)
   const [studentGrades, setStudentGrades] = useState<Array<{
     studentId: number;
@@ -3025,11 +3031,8 @@ function GradeForm({
   // Get available grade levels
   const getAvailableGradeLevels = () => {
     const all = ['9','10','11','12'];
-    const { currentUser } = useAuth();
-    const assigned = (currentUser && (currentUser as any).assignedClasses) || [];
-    const allow = (currentUser && (currentUser as any).allowCrossClass) || false;
-    if (!currentUser || currentUser.userType !== 'staff' || allow || assigned.length === 0) return all;
-    const grades = Array.from(new Set((assigned || []).map((c: string) => c.replace(/[^0-9]/g, '')).filter(Boolean)));
+    if (!currentUser || currentUser.userType !== 'staff' || allowCrossClass || assignedClasses.length === 0) return all;
+    const grades = Array.from(new Set((assignedClasses || []).map((c: string) => c.replace(/[^0-9]/g, '')).filter(Boolean)));
     return grades.sort();
   };
 
