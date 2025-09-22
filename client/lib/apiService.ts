@@ -23,22 +23,13 @@ class ApiService {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = API_BASE_URL;
+    this.baseUrl = isCloudEnvironment() ? '/api' : API_BASE_URL;
   }
 
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
-    // If we're in a cloud environment, immediately return API unavailable
-    if (isCloudEnvironment()) {
-      return {
-        success: false,
-        message: 'API server not available in cloud environment. Using local storage instead.',
-        error: 'API_UNAVAILABLE'
-      };
-    }
-
     try {
       const url = `${this.baseUrl}/${endpoint}`;
 
@@ -82,7 +73,8 @@ class ApiService {
 
   // Authentication API calls
   async login(credentials: { username: string; password: string }) {
-    return this.request('auth.php?action=login', {
+    const endpoint = isCloudEnvironment() ? 'auth/login' : 'auth.php?action=login';
+    return this.request(endpoint, {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
@@ -96,7 +88,8 @@ class ApiService {
     lastName: string;
     userType: 'admin' | 'staff';
   }) {
-    return this.request('auth.php?action=register', {
+    const endpoint = isCloudEnvironment() ? 'auth/register' : 'auth.php?action=register';
+    return this.request(endpoint, {
       method: 'POST',
       body: JSON.stringify(userData),
     });
@@ -112,7 +105,9 @@ class ApiService {
   }
 
   async getDatabaseStats() {
-    return this.request('database.php?action=stats');
+    const endpoint = isCloudEnvironment() ? 'users' : 'database.php?action=stats';
+    // In cloud demo, return users count etc. For simplicity, hit users list
+    return this.request(endpoint as any);
   }
 
   // Students API calls
@@ -200,44 +195,51 @@ class ApiService {
 
   // Users API calls
   async getAllUsers() {
-    return this.request('users.php?action=list');
+    const endpoint = isCloudEnvironment() ? 'users' : 'users.php?action=list';
+    return this.request(endpoint);
   }
 
   async addUser(userData: any) {
-    return this.request('users.php?action=add', {
+    const endpoint = isCloudEnvironment() ? 'users' : 'users.php?action=add';
+    return this.request(endpoint, {
       method: 'POST',
       body: JSON.stringify(userData),
     });
   }
 
   async updateUser(userId: number, userData: any) {
-    return this.request(`users.php?action=update&id=${userId}`, {
+    const endpoint = isCloudEnvironment() ? `users/${userId}` : `users.php?action=update&id=${userId}`;
+    return this.request(endpoint, {
       method: 'PUT',
       body: JSON.stringify(userData),
     });
   }
 
   async deleteUser(userId: number) {
-    return this.request(`users.php?action=delete&id=${userId}`, {
+    const endpoint = isCloudEnvironment() ? `users/${userId}` : `users.php?action=delete&id=${userId}`;
+    return this.request(endpoint, {
       method: 'DELETE',
     });
   }
 
   async changeUserPassword(userId: number, newPassword: string) {
-    return this.request(`users.php?action=change_password&id=${userId}`, {
+    const endpoint = isCloudEnvironment() ? `users/${userId}` : `users.php?action=change_password&id=${userId}`;
+    return this.request(endpoint, {
       method: 'PUT',
       body: JSON.stringify({ password: newPassword }),
     });
   }
 
   async inviteUser(userId: number) {
-    return this.request(`users.php?action=invite&id=${userId}`, {
+    const endpoint = isCloudEnvironment() ? `users/${userId}/invite` : `users.php?action=invite&id=${userId}`;
+    return this.request(endpoint, {
       method: 'POST'
     });
   }
 
   async completeRegistration(data: { username: string; token: string; password: string }) {
-    return this.request('auth.php?action=complete_registration', {
+    const endpoint = isCloudEnvironment() ? 'auth/complete_registration' : 'auth.php?action=complete_registration';
+    return this.request(endpoint, {
       method: 'POST',
       body: JSON.stringify(data),
     });
